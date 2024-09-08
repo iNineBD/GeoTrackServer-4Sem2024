@@ -1,4 +1,4 @@
-package com.api_geotrack;
+package com.geotrack.apigeotrack;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
