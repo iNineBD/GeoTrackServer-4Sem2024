@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "dispositivo")
+@Table(name = "dispositivo", schema = "ITO1")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,7 +18,7 @@ public class Dispositivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_dispositivo")
-    private int id_dispositivo;
+    private int idDispositivo;
     @Column(name = "nome")
     private String nome;
     @Column(name = "tipo")
@@ -30,7 +30,6 @@ public class Dispositivo {
     @JoinColumn(name = "fk_id_usuario", nullable = false)
     private Usuario usuario;
 
-    @OneToMany
-    @JoinColumn(name = "id_localizacao")
+    @OneToMany(mappedBy = "dispositivo")
     private List<Localizacao> localizacoes;
 }

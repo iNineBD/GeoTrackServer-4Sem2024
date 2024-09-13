@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "localizacao")
+@Table(name = "localizacao", schema = "ITO1")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,15 +19,15 @@ public class Localizacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_localizacao")
-    private int id_localizacao;
+    private int idLocalizacao;
     @Column(name = "longitude")
     private int longitude;
     @Column(name = "latitude")
     private int latitude;
     @Column(name = "data_hora")
-    private LocalDate dataHora;
+    private LocalDateTime dataHora;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_dispositivo", nullable = false)
-    private Dispositivo id_dispositivo;
+    private Dispositivo dispositivo;
 }
