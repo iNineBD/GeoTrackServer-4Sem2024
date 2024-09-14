@@ -1,4 +1,4 @@
-package com.geotrack.apigeotrack.dto.filterdevices;
+package com.geotrack.apigeotrack.dto.filterusers;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
