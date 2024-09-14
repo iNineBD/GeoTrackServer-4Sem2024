@@ -2,9 +2,8 @@ package com.geotrack.apigeotrack.dto.filterusers;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ResponseUsers(@JsonAlias("UsersList") List<DataUsers> listUsers) {
+public record ResponseUsers(@JsonAlias("UsersList") Page<DataUsers> listUsers) {
 }

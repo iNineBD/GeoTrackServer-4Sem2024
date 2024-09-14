@@ -11,4 +11,5 @@ public record DataUsers(@JsonAlias("id") int id,
     public DataUsers(Usuario usuario){
         this(usuario.getIdUsuario(),usuario.getNome());
     }
+
 }

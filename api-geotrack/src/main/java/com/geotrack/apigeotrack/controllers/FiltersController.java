@@ -1,7 +1,8 @@
 package com.geotrack.apigeotrack.controllers;
 
+import com.geotrack.apigeotrack.dto.filterdevices.RequestDevice;
 import com.geotrack.apigeotrack.dto.filterdevices.ResponseDevices;
-import com.geotrack.apigeotrack.dto.filterusers.RequestDevice;
+import com.geotrack.apigeotrack.dto.filterusers.RequestUser;
 import com.geotrack.apigeotrack.dto.filterusers.ResponseUsers;
 import com.geotrack.apigeotrack.service.FiltersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class FiltersController {
     FiltersService filtersService;
 
     @GetMapping("/users")
-    public ResponseEntity<ResponseUsers> filterUsers() {
-        ResponseUsers users = new ResponseUsers(filtersService.listUsers());
+    public ResponseEntity<ResponseUsers> filterUsers(@RequestBody RequestUser request) {
+        ResponseUsers users = new ResponseUsers(filtersService.listUsers(request));
         return ResponseEntity.ok().body(users);
     }
 
