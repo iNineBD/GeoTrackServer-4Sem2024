@@ -98,7 +98,7 @@ import java.util.NoSuchElementException;
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<RestErrorMessage> handleAccessDeniedException(AccessDeniedException ex) {
         ex.printStackTrace();
-        RestErrorMessage message = new RestErrorMessage("Você não tem permissão "+ex.getLocalizedMessage());
+        RestErrorMessage message = new RestErrorMessage("Você não tem permissão " + ex.getLocalizedMessage());
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
