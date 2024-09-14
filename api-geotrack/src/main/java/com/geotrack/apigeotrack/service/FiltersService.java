@@ -25,33 +25,33 @@ public class FiltersService  {
     DispositivoRepository dispositivoRepository;
 
 
-    public Page<DataUsers> listUsers(RequestUser request){
+    public Page<DataUsers> listUsers(RequestUser request) throws Exception{
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
 
         // Here I consult the users in the DB and bring them in the form of a list
         Optional<Page<Usuario>> users = usuarioRepository.listUser(page);
 
-        if(users.isPresent()){
+        if(users.get().isEmpty()){
+            throw new RuntimeException("Nenhum usuário encontrado");
+        }else{
             // In my return I modify the user objects to only show their ID and name
             return users.get().map(DataUsers::new);
-        }else{
-            throw new RuntimeException("Nenhum usuário encontrado");
         }
     }
 
-    public Page<DataDevices> listDevices(RequestDevice request){
+    public Page<DataDevices> listDevices(RequestDevice request) throws Exception {
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
 
         // Here I consult the devices in the DB and bring them in the form of a list
         Optional<Page<Dispositivo>> devices = dispositivoRepository.listDevices(request.idUser(),page);
 
-        if(devices.isPresent()){
+        if(devices.get().isEmpty()){
+            throw new Exception("Nenhum dispositivo encontrado para o usuário");
+        }else{
             // In my return I modify the devices objects to only show their ID and name
             return devices.get().map(DataDevices::new);
-        }else{
-            throw new RuntimeException("Nenhum dispositivo encontrado para o usuário");
         }
     }
 }
