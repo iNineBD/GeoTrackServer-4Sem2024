@@ -12,6 +12,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.AccessDeniedException;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
     public class GlobalExceptionHandler {
@@ -107,4 +108,12 @@ import java.nio.file.AccessDeniedException;
         RestErrorMessage message = new RestErrorMessage("URL solicitada não corresponde a nenhum endpoint do servidor: "+ex.getMessage());
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<RestErrorMessage> handleNoSuchElementException(NoSuchElementException ex) {
+        ex.printStackTrace();
+        RestErrorMessage message = new RestErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
 }

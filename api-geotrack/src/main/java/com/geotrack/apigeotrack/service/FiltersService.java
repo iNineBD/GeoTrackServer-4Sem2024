@@ -1,8 +1,8 @@
 package com.geotrack.apigeotrack.service;
 
-import com.geotrack.apigeotrack.dto.filterdevices.DataDevices;
+import com.geotrack.apigeotrack.dto.filterdevices.DataDevicesDTO;
 import com.geotrack.apigeotrack.dto.filterdevices.RequestDevice;
-import com.geotrack.apigeotrack.dto.filterusers.DataUsers;
+import com.geotrack.apigeotrack.dto.filterusers.DataUsersDTO;
 import com.geotrack.apigeotrack.dto.filterusers.RequestUser;
 import com.geotrack.apigeotrack.entities.Dispositivo;
 import com.geotrack.apigeotrack.entities.Usuario;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,7 +26,7 @@ public class FiltersService  {
     DispositivoRepository dispositivoRepository;
 
 
-    public Page<DataUsers> listUsers(RequestUser request) throws Exception{
+    public Page<DataUsersDTO> listUsers(RequestUser request) throws NoSuchElementException{
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
 
@@ -33,14 +34,14 @@ public class FiltersService  {
         Optional<Page<Usuario>> users = usuarioRepository.listUser(page);
 
         if(users.get().isEmpty()){
-            throw new RuntimeException("Nenhum usuário encontrado");
+            throw new NoSuchElementException("Nenhum usuário encontrado");
         }else{
             // In my return I modify the user objects to only show their ID and name
-            return users.get().map(DataUsers::new);
+            return users.get().map(DataUsersDTO::new);
         }
     }
 
-    public Page<DataDevices> listDevices(RequestDevice request) throws Exception {
+    public Page<DataDevicesDTO> listDevices(RequestDevice request) throws NoSuchElementException {
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
 
@@ -48,10 +49,10 @@ public class FiltersService  {
         Optional<Page<Dispositivo>> devices = dispositivoRepository.listDevices(request.idUser(),page);
 
         if(devices.get().isEmpty()){
-            throw new Exception("Nenhum dispositivo encontrado para o usuário");
+            throw new NoSuchElementException("Nenhum dispositivo encontrado para o usuário");
         }else{
             // In my return I modify the devices objects to only show their ID and name
-            return devices.get().map(DataDevices::new);
+            return devices.get().map(DataDevicesDTO::new);
         }
     }
 }

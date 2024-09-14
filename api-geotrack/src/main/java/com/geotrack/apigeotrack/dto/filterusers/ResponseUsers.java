@@ -5,5 +5,5 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.domain.Page;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ResponseUsers(@JsonAlias("UsersList") Page<DataUsers> listUsers) {
+public record ResponseUsers(@JsonAlias("UsersList") Page<DataUsersDTO> listUsers) {
 }
