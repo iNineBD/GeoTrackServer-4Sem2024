@@ -2,8 +2,10 @@ package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.filterdevices.DataDevicesDTO;
 import com.geotrack.apigeotrack.dto.filterdevices.RequestDevice;
+import com.geotrack.apigeotrack.dto.filterdevices.ResponseDevices;
 import com.geotrack.apigeotrack.dto.filterusers.DataUsersDTO;
 import com.geotrack.apigeotrack.dto.filterusers.RequestUser;
+import com.geotrack.apigeotrack.dto.filterusers.ResponseUsers;
 import com.geotrack.apigeotrack.entities.Dispositivo;
 import com.geotrack.apigeotrack.entities.Usuario;
 import com.geotrack.apigeotrack.repositories.DispositivoRepository;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -35,10 +38,17 @@ public class FiltersService  {
 
         if(users.get().isEmpty()){
             throw new NoSuchElementException("Nenhum usuário encontrado");
-        }else{
-            // In my return I modify the user objects to only show their ID and name
-            return users.get().map(DataUsersDTO::new);
         }
+        // In my return I modify the user objects to only show their ID and name
+        return users.get().map(DataUsersDTO::new);
+    }
+
+    public ResponseUsers listUsersResponse(Page<DataUsersDTO> page){
+        int pageAtual = page.getNumber();
+        int totalPages = page.getTotalPages();
+        List<DataUsersDTO> users = page.getContent();
+
+        return new ResponseUsers(users,pageAtual,totalPages);
     }
 
     public Page<DataDevicesDTO> listDevices(RequestDevice request) throws NoSuchElementException {
@@ -54,5 +64,13 @@ public class FiltersService  {
             // In my return I modify the devices objects to only show their ID and name
             return devices.get().map(DataDevicesDTO::new);
         }
+    }
+
+    public ResponseDevices listDevicesResponse(Page<DataDevicesDTO> page){
+        int pageAtual = page.getNumber();
+        int totalPages = page.getTotalPages();
+        List<DataDevicesDTO> devices = page.getContent();
+
+        return new ResponseDevices(devices,pageAtual,totalPages);
     }
 }
