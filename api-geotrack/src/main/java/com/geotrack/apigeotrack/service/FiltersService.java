@@ -29,7 +29,7 @@ public class FiltersService  {
     DispositivoRepository dispositivoRepository;
 
 
-    public Page<DataUsersDTO> listUsers(RequestUser request) throws NoSuchElementException{
+    public ResponseUsers listUsers(RequestUser request) throws NoSuchElementException{
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
 
@@ -40,18 +40,22 @@ public class FiltersService  {
             throw new NoSuchElementException("Nenhum usuário encontrado");
         }
         // In my return I modify the user objects to only show their ID and name
-        return users.get().map(DataUsersDTO::new);
+        Page<DataUsersDTO> usersPage = users.get().map(DataUsersDTO::new);
+
+        //Get the current page number
+        int pageAtual = usersPage.getNumber();
+
+        //Get the total number of pages
+        int totalPages = usersPage.getTotalPages();
+
+        // Get the list of users
+        List<DataUsersDTO> usersResponse = usersPage.getContent();
+
+        return new ResponseUsers(usersResponse,pageAtual,totalPages);
+
     }
 
-    public ResponseUsers listUsersResponse(Page<DataUsersDTO> page){
-        int pageAtual = page.getNumber();
-        int totalPages = page.getTotalPages();
-        List<DataUsersDTO> users = page.getContent();
-
-        return new ResponseUsers(users,pageAtual,totalPages);
-    }
-
-    public Page<DataDevicesDTO> listDevices(RequestDevice request) throws NoSuchElementException {
+    public ResponseDevices listDevices(RequestDevice request) throws NoSuchElementException {
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
 
@@ -60,17 +64,19 @@ public class FiltersService  {
 
         if(devices.get().isEmpty()){
             throw new NoSuchElementException("Nenhum dispositivo encontrado para o usuário");
-        }else{
-            // In my return I modify the devices objects to only show their ID and name
-            return devices.get().map(DataDevicesDTO::new);
         }
-    }
+        // In my return I modify the devices objects to only show their ID and name
+        Page<DataDevicesDTO> devicesPage = devices.get().map(DataDevicesDTO::new);
 
-    public ResponseDevices listDevicesResponse(Page<DataDevicesDTO> page){
-        int pageAtual = page.getNumber();
-        int totalPages = page.getTotalPages();
-        List<DataDevicesDTO> devices = page.getContent();
+        //Get the current page number
+        int pageAtual = devicesPage.getNumber();
 
-        return new ResponseDevices(devices,pageAtual,totalPages);
+        //Get the total number of pages
+        int totalPages = devicesPage.getTotalPages();
+
+        // Get the list of devices
+        List<DataDevicesDTO> devicesResponse = devicesPage.getContent();
+
+        return new ResponseDevices(devicesResponse,pageAtual,totalPages);
     }
 }
