@@ -27,15 +27,17 @@ public class FiltersController {
 
     @Operation(summary = "Retorna todos os usuários", description = "Retorna uma lista de usuários paginadas com o número de 5 elementos por página")
     @GetMapping("/users")
-    public ResponseEntity<ResponseUsers> filterUsers(@ModelAttribute RequestUser request) throws NoSuchElementException {
+    public ResponseEntity<ResponseUsers> filterUsers(@RequestParam int page) throws NoSuchElementException {
+        RequestUser request = new RequestUser(page);
         ResponseUsers response = filtersService.listUsers(request);
         return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary = "Retorna todos os dispositivos do usuário", description = "Retorna uma lista de dispositivos do usuário paginadas com o número de 5 elementos por página")
     @GetMapping("/devices")
-    public ResponseEntity<ResponseDevices> filterDevices(@ModelAttribute RequestDevice request) throws NoSuchElementException {
-        ResponseDevices response = filtersService.listDevices(request);
+    public ResponseEntity<ResponseDevices> filterDevices(@RequestParam int idUser, @RequestParam int page) throws NoSuchElementException {
+        RequestDevice req = new RequestDevice(idUser, page);
+        ResponseDevices response = filtersService.listDevices(req);
         return ResponseEntity.ok().body(response);
     }
 }
