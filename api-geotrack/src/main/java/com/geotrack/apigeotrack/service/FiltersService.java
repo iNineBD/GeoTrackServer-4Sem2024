@@ -11,6 +11,7 @@ import com.geotrack.apigeotrack.entities.Usuario;
 import com.geotrack.apigeotrack.repositories.DispositivoRepository;
 import com.geotrack.apigeotrack.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class FiltersService  {
     DispositivoRepository dispositivoRepository;
 
 
+    @Cacheable(value = "lists", key = "#request")
     public ResponseUsers listUsers(RequestUser request) throws NoSuchElementException{
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
@@ -55,6 +57,7 @@ public class FiltersService  {
 
     }
 
+    @Cacheable(value = "lists", key = "#request")
     public ResponseDevices listDevices(RequestDevice request) throws NoSuchElementException {
         // Here it says which page I want and the number of items per page
         PageRequest page = PageRequest.of(request.page(),5);
