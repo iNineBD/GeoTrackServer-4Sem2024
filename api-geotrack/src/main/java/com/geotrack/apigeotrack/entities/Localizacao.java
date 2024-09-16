@@ -21,9 +21,9 @@ public class Localizacao {
     @Column(name = "id_localizacao")
     private int idLocalizacao;
     @Column(name = "longitude")
-    private int longitude;
+    private double longitude;
     @Column(name = "latitude")
-    private int latitude;
+    private double latitude;
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
 
