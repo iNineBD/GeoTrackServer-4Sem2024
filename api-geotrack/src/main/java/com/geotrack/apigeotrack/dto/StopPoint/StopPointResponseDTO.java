@@ -1,4 +1,11 @@
 package com.geotrack.apigeotrack.dto.StopPoint;
 
-public record StopPointResponseDTO(String user, String device, GeoJsonDTO geojson) {
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record StopPointResponseDTO(@JsonAlias("nameUser")String user,
+                                   @JsonAlias("nameDevice")String device)
+                                  // @JsonAlias("geojson")GeoJsonDTO geojson)
+                                    {
 }
