@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record LocalizacaoDTO(@JsonAlias("latitude") BigDecimal latitude,
-                             @JsonAlias("longitude") BigDecimal longitude
-                             ){
+                             @JsonAlias("longitude") BigDecimal longitude) {
 
 }
