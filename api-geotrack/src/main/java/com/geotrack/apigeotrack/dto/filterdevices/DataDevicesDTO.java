@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.geotrack.apigeotrack.entities.Dispositivo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record DataDevicesDTO(@JsonAlias("id") int idDevice,
+public record DataDevicesDTO(@JsonAlias("id") Long idDevice,
                              @JsonAlias("name") String name) {
 
     public DataDevicesDTO(Dispositivo dispositivo){

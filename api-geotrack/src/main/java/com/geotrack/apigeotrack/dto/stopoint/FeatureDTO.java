@@ -5,10 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record FeatureDTO(@JsonAlias("type") String type,
-                         @JsonAlias("properties")String properties,
+                         @JsonAlias("properties")PropertiesDTO properties,
                          @JsonAlias("geometry")GeometryDTO geometry) {
-    public FeatureDTO {
-        properties = "";
-        type = "Feature";
-    }
 }
