@@ -8,5 +8,5 @@ import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GeometryDTO(@JsonAlias("type") String type,
-                          @JsonAlias("coordinates") Set<BigDecimal> coordinates) {
+                          @JsonAlias("coordinates") BigDecimal[] coordinates) {
 }

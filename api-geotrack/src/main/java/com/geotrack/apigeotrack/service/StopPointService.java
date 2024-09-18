@@ -37,26 +37,23 @@ public class StopPointService {
         return userDevice;
     }
 
-    public List<FeatureDTO> latLongCal(StopPointRequestDTO requestDTO) {
+    public Set<LocalizacaoDTO>  latLongCal(StopPointRequestDTO requestDTO) {
 
-        List<Localizacao> localizations = localizacaoRepository.findByDispositivoIdDispositivo(
-                requestDTO.device(), requestDTO.dataInicio(), requestDTO.dataFim());
+        List<Localizacao> localizations = localizacaoRepository.findByDispositivoIdDispositivo(requestDTO.device(),requestDTO.dataInicio(),requestDTO.dataFim());
 
         if (localizations.isEmpty()) {
             throw new RuntimeException("Nenhuma Localização encontrada");
         }
 
-        Set<LocalizacaoDTO> pontosParada = new HashSet<>();
-
+        Set<LocalizacaoDTO> pontosParada = new LinkedHashSet<>();
 
         for (int i = 0; i < localizations.size() - 1; i++) {
 
             if ((localizations.get(i).getLatitude().equals(localizations.get(i + 1).getLatitude())
                     && (localizations.get(i).getLongitude().equals(localizations.get(i + 1).getLongitude())))) {
 
-                Timestamp tempo15 =
-                        Timestamp.valueOf(localizations.get(i).getDataHora().toLocalDateTime().plusMinutes(15));
-                Timestamp tempoNormal = Timestamp.valueOf(localizations.get(i + 1).getDataHora().toLocalDateTime());
+                Timestamp tempo15 = Timestamp.valueOf(localizations.get(i).getDataHora().toLocalDateTime().plusMinutes(15));
+                Timestamp tempoNormal = Timestamp.valueOf(localizations.get(i+1).getDataHora().toLocalDateTime());
 
                 if (tempo15.after(tempoNormal)) {
                     BigDecimal latitude = localizations.get(i).getLatitude();
@@ -67,16 +64,22 @@ public class StopPointService {
             }
         }
 
+        return pontosParada;
+    }
+
+    public List<FeatureDTO> resquestGeoJson (Set<LocalizacaoDTO> pontosParada){
+
         List<FeatureDTO> feature = new ArrayList<>();
 
         for (LocalizacaoDTO ponto : pontosParada) {
 
-            Set<BigDecimal> listCoordenates = new HashSet<>();
+            BigDecimal[] listCoordenates = new BigDecimal[2];
+
             BigDecimal latitude = ponto.latitude();
             BigDecimal longitude = ponto.longitude();
 
-            listCoordenates.add(latitude);
-            listCoordenates.add(longitude);
+            listCoordenates[0] = latitude;
+            listCoordenates[1] = longitude;
 
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
             PropertiesDTO properties = new PropertiesDTO();
@@ -84,7 +87,5 @@ public class StopPointService {
         }
 
         return feature;
-
     }
-
 }

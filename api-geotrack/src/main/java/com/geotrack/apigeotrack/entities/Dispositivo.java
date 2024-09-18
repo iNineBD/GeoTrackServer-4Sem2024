@@ -29,4 +29,5 @@ public class Dispositivo {
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario", nullable = false)
     private Usuario usuario;
+
 }
