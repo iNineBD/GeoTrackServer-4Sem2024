@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "localizacao", schema = "ITO1")
@@ -25,7 +25,7 @@ public class Localizacao {
     @Column(name = "latitude")
     private BigDecimal latitude;
     @Column(name = "data_hora")
-    private LocalDateTime dataHora;
+    private Timestamp dataHora;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_dispositivo", nullable = false)
