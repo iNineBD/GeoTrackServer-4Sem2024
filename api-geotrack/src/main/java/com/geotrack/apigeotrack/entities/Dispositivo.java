@@ -18,7 +18,7 @@ public class Dispositivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_dispositivo")
-    private int idDispositivo;
+    private Long idDispositivo;
     @Column(name = "nome")
     private String nome;
     @Column(name = "tipo")
