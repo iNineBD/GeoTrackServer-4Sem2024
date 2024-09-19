@@ -11,63 +11,56 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class StopPointService {
 
     @Autowired
-    DispositivoRepository dispositivoRepository;
-
-    @Autowired
     LocalizacaoRepository localizacaoRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    public List<LocalizacaoDTO> latLongCal(StopPointRequestDTO requestDTO) {
 
-    public Optional<Dispositivo> userDeviceNames(StopPointRequestDTO requestDTO) {
 
-        Optional<Dispositivo> userDevice = dispositivoRepository.findByUsuarioIdUsuario(
-                requestDTO.user());
-
-        if (userDevice.isEmpty()) {
-            throw new RuntimeException("Nenhum dispositivo encontrado");
-        }
-
-        return userDevice;
-    }
-
-    public Set<LocalizacaoDTO>  latLongCal(StopPointRequestDTO requestDTO) {
-
-        List<Localizacao> localizations = localizacaoRepository.findByDispositivoIdDispositivo(requestDTO.device(),requestDTO.dataInicio(),requestDTO.dataFim());
-
+        LocalDateTime iha = LocalDateTime.now();
+        List<Localizacao> localizations = localizacaoRepository.listLocal(
+                requestDTO.device(), requestDTO.dataInicio(), requestDTO.dataFim());
+        System.out.printf("A consulta demorou: " + Duration.between(iha, LocalDateTime.now()));
         if (localizations.isEmpty()) {
             throw new RuntimeException("Nenhuma Localização encontrada");
         }
 
-        Set<LocalizacaoDTO> pontosParada = new LinkedHashSet<>();
+        List<LocalizacaoDTO> pontosParada = new ArrayList<>();
+        int iterator = 0;
 
-        for (int i = 0; i < localizations.size() - 1; i++) {
+        LocalizacaoDTO iteratorLocation = new LocalizacaoDTO(localizations.get(iterator).getLatitude(),localizations.get(iterator).getLongitude(),localizations.get(iterator).getDataHora());
+        for (int i = 1; i < localizations.size(); i++) {
+            LocalizacaoDTO currentLocation = new LocalizacaoDTO(localizations.get(i).getLatitude(),localizations.get(i).getLongitude(),localizations.get(i).getDataHora());
 
-            if ((localizations.get(i).getLatitude().equals(localizations.get(i + 1).getLatitude())
-                    && (localizations.get(i).getLongitude().equals(localizations.get(i + 1).getLongitude())))) {
+            BigDecimal latitude = iteratorLocation.latitude();
+            BigDecimal longitude = iteratorLocation.longitude();
+            LocalizacaoDTO local = new LocalizacaoDTO(latitude, longitude,null);
 
-                Timestamp tempo15 = Timestamp.valueOf(localizations.get(i).getDataHora().toLocalDateTime().plusMinutes(15));
-                Timestamp tempoNormal = Timestamp.valueOf(localizations.get(i+1).getDataHora().toLocalDateTime());
+            // Verifica se já existe no conjunto
+            if (pontosParada.contains(local)) {
+                iterator = i;
+                iteratorLocation = new LocalizacaoDTO(localizations.get(iterator).getLatitude(),localizations.get(iterator).getLongitude(),localizations.get(iterator).getDataHora());
+                continue;
+            }
+            Timestamp tempo15 = Timestamp.valueOf(iteratorLocation.dataHora().toLocalDateTime().plusMinutes(15));
+            Timestamp tempoNormal = Timestamp.valueOf(currentLocation.dataHora().toLocalDateTime());
 
-                if (tempo15.after(tempoNormal)) {
-                    BigDecimal latitude = localizations.get(i).getLatitude();
-                    BigDecimal longitude = localizations.get(i).getLongitude();
-                    LocalizacaoDTO local = new LocalizacaoDTO(latitude, longitude);
-                    pontosParada.add(local);
-                }
+            if (tempo15.after(tempoNormal)) {
+                pontosParada.add(local);
             }
         }
-
         return pontosParada;
     }
 
-    public List<FeatureDTO> resquestGeoJson (Set<LocalizacaoDTO> pontosParada){
+
+    public List<FeatureDTO> resquestGeoJson (List<LocalizacaoDTO> pontosParada){
 
         List<FeatureDTO> feature = new ArrayList<>();
 

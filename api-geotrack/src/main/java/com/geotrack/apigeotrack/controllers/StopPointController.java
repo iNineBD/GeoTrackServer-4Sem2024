@@ -19,21 +19,16 @@ public class StopPointController {
 
     @Autowired
     StopPointService stopPointService;
-    @Autowired
-    LocalizacaoRepository localizacaoRepository;
 
     @PostMapping
     public StopPointResponseDTO stopPointResponseDTO(@RequestBody StopPointRequestDTO requestDTO) {
-        Optional<Dispositivo> device =  stopPointService.userDeviceNames(requestDTO);
-        String userName = device.get().getUsuario().getNome();
-        String deviceName = device.get().getNome();
-        Set<LocalizacaoDTO> pontosParada = stopPointService.latLongCal(requestDTO);
+        List<LocalizacaoDTO> pontosParada = stopPointService.latLongCal(requestDTO);
         List<FeatureDTO> feature = stopPointService.resquestGeoJson(pontosParada);
 
 
         GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
 
-        return new StopPointResponseDTO(userName,deviceName,geoJson);
+        return new StopPointResponseDTO(requestDTO.userName(), requestDTO.userDevice(), geoJson);
     }
 
 }
