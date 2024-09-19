@@ -25,22 +25,23 @@ public class StopPointService {
 
 
         LocalDateTime iha = LocalDateTime.now();
-        List<Localizacao> localizations = localizacaoRepository.listLocal(
-                requestDTO.device(), requestDTO.dataInicio(), requestDTO.dataFim());
+        List<Localizacao> localizations = localizacaoRepository.listLocal(requestDTO.device(), requestDTO.dataInicio(), requestDTO.dataFim());
         System.out.printf("A consulta demorou: " + Duration.between(iha, LocalDateTime.now()));
+
         if (localizations.isEmpty()) {
-            throw new RuntimeException("Nenhuma Localização encontrada");
+            throw new NoSuchElementException("Nenhuma Localização encontrada");
         }
 
         List<LocalizacaoDTO> pontosParada = new ArrayList<>();
         int iterator = 0;
 
-        LocalizacaoDTO iteratorLocation = new LocalizacaoDTO(localizations.get(iterator).getLatitude(),localizations.get(iterator).getLongitude(),localizations.get(iterator).getDataHora());
+        LocalizacaoDTO iteratorLocation = new LocalizacaoDTO(localizations.getFirst().getLatitude(),localizations.getFirst().getLongitude(),localizations.getFirst().getDataHora());
         for (int i = 1; i < localizations.size(); i++) {
             LocalizacaoDTO currentLocation = new LocalizacaoDTO(localizations.get(i).getLatitude(),localizations.get(i).getLongitude(),localizations.get(i).getDataHora());
 
             BigDecimal latitude = iteratorLocation.latitude();
             BigDecimal longitude = iteratorLocation.longitude();
+
             LocalizacaoDTO local = new LocalizacaoDTO(latitude, longitude,null);
 
             // Verifica se já existe no conjunto
@@ -71,8 +72,8 @@ public class StopPointService {
             BigDecimal latitude = ponto.latitude();
             BigDecimal longitude = ponto.longitude();
 
-            listCoordenates[0] = latitude;
-            listCoordenates[1] = longitude;
+            listCoordenates[0] = longitude;
+            listCoordenates[1] = latitude;
 
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
             PropertiesDTO properties = new PropertiesDTO();
