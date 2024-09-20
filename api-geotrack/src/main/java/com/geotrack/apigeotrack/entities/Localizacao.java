@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -26,7 +27,7 @@ public class Localizacao {
     @Column(name = "latitude")
     private BigDecimal latitude;
     @Column(name = "data_hora")
-    private LocalDateTime dataHora;
+    private Timestamp dataHora;
 
     @Column(name = "id_base_cliente")
     private String idBaseCliente;

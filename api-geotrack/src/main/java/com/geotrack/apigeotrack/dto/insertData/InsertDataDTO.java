@@ -7,6 +7,7 @@ import com.geotrack.apigeotrack.entities.Usuario;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,19 +17,10 @@ import java.time.LocalDateTime;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InsertDataDTO {
-private int id;
-private LocalDateTime dataHora;
-private BigDecimal latitude;
-private BigDecimal longitude;
-private String nome;
-private int idCliente;
-
-    public InsertDataDTO(Usuario usuario, Localizacao localizacao, Dispositivo dispositivo) {
-this.id = localizacao.getIdLocalizacao();
-this.dataHora = localizacao.getDataHora();
-this.latitude = localizacao.getLatitude();
-this.longitude = localizacao.getLongitude();
-this.nome = usuario.getNome();
-this.idCliente = dispositivo.getUsuario().getIdUsuario();
-}
+    private int id;
+    private Timestamp dataHora;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
+    private String nome;
+    private int idCliente;
 }

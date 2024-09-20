@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,7 +39,7 @@ public class InsertDataService {
 
             Localizacao localizacao = new Localizacao();
             localizacao.setDispositivo(usuarioExistente.get().getDispositivos().getFirst());
-            localizacao.setDataHora(requestInsert.dataHora());
+            localizacao.setDataHora(Timestamp.valueOf(requestInsert.dataHora()));
             localizacao.setLatitude(requestInsert.latitude());
             localizacao.setLongitude(requestInsert.longitude());
             localizacao.setIdBaseCliente(requestInsert.idBaseCliente());
