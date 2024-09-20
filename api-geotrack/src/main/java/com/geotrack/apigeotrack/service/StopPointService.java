@@ -1,11 +1,8 @@
 package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.stopoint.*;
-import com.geotrack.apigeotrack.entities.Dispositivo;
 import com.geotrack.apigeotrack.entities.Localizacao;
-import com.geotrack.apigeotrack.repositories.DispositivoRepository;
 import com.geotrack.apigeotrack.repositories.LocalizacaoRepository;
-import com.geotrack.apigeotrack.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +10,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class StopPointService {
@@ -33,7 +32,6 @@ public class StopPointService {
         }
 
         List<LocalizacaoDTO> pontosParada = new ArrayList<>();
-        int iterator = 0;
 
         LocalizacaoDTO iteratorLocation = new LocalizacaoDTO(localizations.getFirst().getLatitude(),localizations.getFirst().getLongitude(),localizations.getFirst().getDataHora());
         for (int i = 1; i < localizations.size(); i++) {
@@ -46,8 +44,8 @@ public class StopPointService {
 
             // Verifica se já existe no conjunto
             if (pontosParada.contains(local)) {
-                iterator = i;
-                iteratorLocation = new LocalizacaoDTO(localizations.get(iterator).getLatitude(),localizations.get(iterator).getLongitude(),localizations.get(iterator).getDataHora());
+
+                iteratorLocation = new LocalizacaoDTO(localizations.get(i).getLatitude(),localizations.get(i).getLongitude(),localizations.get(i).getDataHora());
                 continue;
             }
             Timestamp tempo15 = Timestamp.valueOf(iteratorLocation.dataHora().toLocalDateTime().plusMinutes(15));
@@ -60,26 +58,18 @@ public class StopPointService {
         return pontosParada;
     }
 
+    public List<FeatureDTO> resquestGeoJson(List<LocalizacaoDTO> pontosParada) {
 
-    public List<FeatureDTO> resquestGeoJson (List<LocalizacaoDTO> pontosParada){
-
-        List<FeatureDTO> feature = new ArrayList<>();
+        List<FeatureDTO> feature = new ArrayList<>(pontosParada.size());
 
         for (LocalizacaoDTO ponto : pontosParada) {
 
-            BigDecimal[] listCoordenates = new BigDecimal[2];
-
-            BigDecimal latitude = ponto.latitude();
-            BigDecimal longitude = ponto.longitude();
-
-            listCoordenates[0] = longitude;
-            listCoordenates[1] = latitude;
+            BigDecimal[] listCoordenates = {ponto.longitude(),ponto.latitude()};
 
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
-            PropertiesDTO properties = new PropertiesDTO();
-            feature.add(new FeatureDTO("Feature", properties, geometry));
-        }
 
+            feature.add(new FeatureDTO("Feature",new PropertiesDTO(), geometry));
+        }
         return feature;
     }
 }
