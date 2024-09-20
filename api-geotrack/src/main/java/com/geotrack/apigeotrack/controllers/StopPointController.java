@@ -12,19 +12,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Tag(name = "stopoint", description = "Operations to return stopping points of the users and devices")
+@Tag(name = "stopPoint", description = "Operations to return stopping points of the users and devices")
 @RestController
-@RequestMapping("/stop-point")
+@RequestMapping("/stoppoint")
 public class StopPointController {
 
     @Autowired
     StopPointService stopPointService;
 
-    @PostMapping
+    @PostMapping("/find")
     public StopPointResponseDTO stopPointResponseDTO(@RequestBody StopPointRequestDTO requestDTO) {
         List<LocalizacaoDTO> pontosParada = stopPointService.latLongCal(requestDTO);
         List<FeatureDTO> feature = stopPointService.resquestGeoJson(pontosParada);
-
 
         GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
 
