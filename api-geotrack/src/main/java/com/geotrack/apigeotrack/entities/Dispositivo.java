@@ -23,10 +23,12 @@ public class Dispositivo {
     private String nome;
     @Column(name = "tipo")
     private String tipo;
+
     @Column(name = "status")
     private String status;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario", nullable = false)
     private Usuario usuario;
+
 }
