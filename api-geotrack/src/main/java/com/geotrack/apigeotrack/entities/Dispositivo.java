@@ -23,6 +23,7 @@ public class Dispositivo {
     private String nome;
     @Column(name = "tipo")
     private String tipo;
+
     @Column(name = "status")
     private String status;
 
