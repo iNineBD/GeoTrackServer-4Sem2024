@@ -6,10 +6,10 @@ import com.geotrack.apigeotrack.dto.filterdevices.ResponseDevices;
 import com.geotrack.apigeotrack.dto.filterusers.DataUsersDTO;
 import com.geotrack.apigeotrack.dto.filterusers.RequestUser;
 import com.geotrack.apigeotrack.dto.filterusers.ResponseUsers;
-import com.geotrack.apigeotrack.entities.Dispositivo;
-import com.geotrack.apigeotrack.entities.Usuario;
-import com.geotrack.apigeotrack.repositories.DispositivoRepository;
-import com.geotrack.apigeotrack.repositories.UsuarioRepository;
+import com.geotrack.apigeotrack.entities.Devices;
+import com.geotrack.apigeotrack.entities.User;
+import com.geotrack.apigeotrack.repositories.DevicesRepository;
+import com.geotrack.apigeotrack.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -24,10 +24,10 @@ import java.util.Optional;
 public class FiltersService  {
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    UserRepository userRepository;
 
     @Autowired
-    DispositivoRepository dispositivoRepository;
+    DevicesRepository devicesRepository;
 
 
     @Cacheable(value = "lists", key = "#request")
@@ -36,7 +36,7 @@ public class FiltersService  {
         PageRequest page = PageRequest.of(request.page(),5);
 
         // Here I consult the users in the DB and bring them in the form of a list
-        Optional<Page<Usuario>> users = usuarioRepository.listUser(page);
+        Optional<Page<User>> users = userRepository.listUser(page);
 
         if(users.get().isEmpty()){
             throw new NoSuchElementException("Nenhum usuário encontrado");
@@ -63,7 +63,7 @@ public class FiltersService  {
         PageRequest page = PageRequest.of(request.page(),5);
 
         // Here I consult the devices in the DB and bring them in the form of a list
-        Optional<Page<Dispositivo>> devices = dispositivoRepository.listDevices(request.idUser(),page);
+        Optional<Page<Devices>> devices = devicesRepository.listDevices(request.idUser(),page);
 
         if(devices.get().isEmpty()){
             throw new NoSuchElementException("Nenhum dispositivo encontrado para o usuário");

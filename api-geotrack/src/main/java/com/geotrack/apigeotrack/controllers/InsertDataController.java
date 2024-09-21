@@ -18,7 +18,7 @@ public class InsertDataController {
     private InsertDataService insertDataService;
 
     @PostMapping("/location")
-    public void inserirDados(@RequestBody List<RequestInsert> requestInserts) throws Exception {
+    public void enterDatas(@RequestBody List<RequestInsert> requestInserts) throws Exception {
         insertDataService.insertDataService(requestInserts);
     }
 

@@ -10,7 +10,7 @@ public record StopPointRequestDTO(@JsonAlias("idUser") int user,
                                   @JsonAlias("userName") String userName,
                                   @JsonAlias("idDevice") Long device,
                                   @JsonAlias("userDevice") String userDevice,
-                                  @JsonAlias("dataInicio") Timestamp dataInicio,
-                                  @JsonAlias("dataFim") Timestamp dataFim
+                                  @JsonAlias("startDate") Timestamp startDate,
+                                  @JsonAlias("finalDate") Timestamp finalDate
 ) {
 }

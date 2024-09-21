@@ -6,34 +6,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "dispositivo", schema = "ITO1")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Dispositivo {
+public class Devices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_dispositivo")
-    private Long idDispositivo;
+    private Long idDevices;
 
-    @Column(name = "nome")
-    private String nome;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "codigo")
-    private String codigo;
+    private String code;
 
     @Column(name = "tipo")
-    private String tipo;
+    private String type;
 
     @Column(name = "status")
     private int status;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    private User user;
 
 }

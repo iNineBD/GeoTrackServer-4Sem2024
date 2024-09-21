@@ -1,11 +1,11 @@
 package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.insertdata.RequestInsert;
-import com.geotrack.apigeotrack.entities.Localizacao;
-import com.geotrack.apigeotrack.entities.Usuario;
-import com.geotrack.apigeotrack.repositories.DispositivoRepository;
-import com.geotrack.apigeotrack.repositories.LocalizacaoRepository;
-import com.geotrack.apigeotrack.repositories.UsuarioRepository;
+import com.geotrack.apigeotrack.entities.Location;
+import com.geotrack.apigeotrack.entities.User;
+import com.geotrack.apigeotrack.repositories.DevicesRepository;
+import com.geotrack.apigeotrack.repositories.LocationRepository;
+import com.geotrack.apigeotrack.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,32 +19,32 @@ import java.util.Optional;
 @Service
 public class InsertDataService {
     @Autowired
-    UsuarioRepository usuarioRepository;
+    UserRepository userRepository;
     @Autowired
-    LocalizacaoRepository localizacaoRepository;
+    LocationRepository locationRepository;
     @Autowired
-    DispositivoRepository dispositivoRepository;
+    DevicesRepository devicesRepository;
 
     @Transactional
     public void insertDataService(List<RequestInsert> requestInserts) throws Exception {
-        List<Localizacao> listAll = new ArrayList<>();
+        List<Location> listAll = new ArrayList<>();
         for (RequestInsert requestInsert : requestInserts) {
 
-            Optional<Usuario> usuarioExistente = usuarioRepository.findById(Integer.valueOf(requestInsert.idUsuario()));
+            Optional<User> existingUser = userRepository.findById(Integer.valueOf(requestInsert.idUser()));
 
-            if (usuarioExistente.isEmpty()) {
+            if (existingUser.isEmpty()) {
                 throw new NoSuchElementException("Nenhum usuario encontrado");
             }
 
-            Localizacao localizacao = new Localizacao();
-            localizacao.setDispositivo(usuarioExistente.get().getDispositivos().getFirst());
-            localizacao.setDataHora(Timestamp.valueOf(requestInsert.dataHora()));
-            localizacao.setLatitude(requestInsert.latitude());
-            localizacao.setLongitude(requestInsert.longitude());
+            Location location = new Location();
+            location.setDevices(existingUser.get().getDevices().getFirst());
+            location.setDateTime(Timestamp.valueOf(requestInsert.dateTime()));
+            location.setLatitude(requestInsert.latitude());
+            location.setLongitude(requestInsert.longitude());
 
-            listAll.add(localizacao);
+            listAll.add(location);
         }
 
-        localizacaoRepository.saveAll(listAll);
+        locationRepository.saveAll(listAll);
     }
 }

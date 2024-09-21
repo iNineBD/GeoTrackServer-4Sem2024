@@ -14,9 +14,9 @@ import java.sql.Timestamp;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InsertDataDTO {
     private int id;
-    private Timestamp dataHora;
+    private Timestamp dateTime;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private String nome;
-    private int idCliente;
+    private String name;
+    private int idCustomer;
 }

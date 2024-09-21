@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record LocalizacaoDTO(@JsonAlias("latitude") BigDecimal latitude,
                              @JsonAlias("longitude") BigDecimal longitude,
-                             @JsonAlias("dataHora") Timestamp dataHora) {
+                             @JsonAlias("dateTime") Timestamp dataHora) {
 
 }
