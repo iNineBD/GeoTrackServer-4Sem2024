@@ -31,22 +31,33 @@ public class PopulateService {
     LocalizacaoRepository localizacaoRepository;
 
     public void populate(String pathToFile) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        JsonFactory jsonFactory = new JsonFactory();
-        JsonParser jsonParser = jsonFactory.createParser(new File(pathToFile));
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+        JsonParser jsonParser = new JsonFactory().createParser(new File(pathToFile));
         jsonParser.nextToken();
 
         List<Localizacao> insertAll = new ArrayList<>();
         while (jsonParser.nextToken() != null) {
             RequestInsert requestInsert = objectMapper.readValue(jsonParser, RequestInsert.class);
+
             Optional<Usuario> user = usuarioRepository.findById(Integer.valueOf(requestInsert.idUsuario()));
 
             if (user.isEmpty()){
+                System.out.println("User not found: " + requestInsert.idUsuario());
+                continue;
+            }
+
+            if (user.get().getDispositivos().isEmpty()) {
+                System.out.println("Dispositivos not found para usuario: " + requestInsert.idUsuario());
                 continue;
             }
 
             Localizacao localizacao = new Localizacao(requestInsert.idBaseCliente(), requestInsert.latitude(), requestInsert.longitude(), requestInsert.dataHora(), user.get().getDispositivos().getFirst());
+
+            if (localizacao.getIdLocalizacao().isEmpty()){
+                System.out.println("IDLocal not found para usuario: " + requestInsert.idUsuario());
+            }
+
             insertAll.add(localizacao);
 
             if (insertAll.size() >= 500){

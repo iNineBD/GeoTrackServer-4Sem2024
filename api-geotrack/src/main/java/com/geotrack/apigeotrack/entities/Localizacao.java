@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Localizacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_localizacao")
     private String idLocalizacao;
 
