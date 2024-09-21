@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "localizacao", schema = "ITO1")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -21,18 +20,30 @@ public class Localizacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_localizacao")
-    private int idLocalizacao;
+    private String idLocalizacao;
+
     @Column(name = "longitude")
     private BigDecimal longitude;
+
+    public Localizacao(String idLocalizacao, BigDecimal longitude, BigDecimal latitude, LocalDateTime dataHora, Dispositivo dispositivo) {
+        this.idLocalizacao = idLocalizacao;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.dataHora = Timestamp.valueOf(dataHora);
+        this.dataReferencia = LocalDate.of(dataHora.getYear(), dataHora.getMonthValue(), dataHora.getDayOfMonth());
+        this.dispositivo = dispositivo;
+    }
+
     @Column(name = "latitude")
     private BigDecimal latitude;
+
     @Column(name = "data_hora")
     private Timestamp dataHora;
 
-    @Column(name = "id_base_cliente")
-    private String idBaseCliente;
+    @Column(name = "data_referencia")
+    private LocalDate dataReferencia;
 
     @ManyToOne
-    @JoinColumn(name = "fk_id_dispositivo", nullable = false)
+    @JoinColumn(name = "id_dispositivo", nullable = false)
     private Dispositivo dispositivo;
 }

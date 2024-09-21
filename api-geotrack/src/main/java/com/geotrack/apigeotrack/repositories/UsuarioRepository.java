@@ -13,4 +13,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     @Query("select u from Usuario u order by u.nome asc ")
     Optional<Page<Usuario>> listUser(PageRequest page);
+
+    Optional<Usuario> findById(Integer id);
 }

@@ -19,16 +19,21 @@ public class Dispositivo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_dispositivo")
     private Long idDispositivo;
+
     @Column(name = "nome")
     private String nome;
+
+    @Column(name = "codigo")
+    private String codigo;
+
     @Column(name = "tipo")
     private String tipo;
 
     @Column(name = "status")
-    private String status;
+    private int status;
 
     @ManyToOne
-    @JoinColumn(name = "fk_id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
 }
