@@ -1,6 +1,6 @@
 package com.geotrack.apigeotrack.service;
 
-import com.geotrack.apigeotrack.dto.insertData.RequestInsert;
+import com.geotrack.apigeotrack.dto.insertdata.RequestInsert;
 import com.geotrack.apigeotrack.entities.Localizacao;
 import com.geotrack.apigeotrack.entities.Usuario;
 import com.geotrack.apigeotrack.repositories.DispositivoRepository;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class InsertDataService {
             localizacao.setDataHora(Timestamp.valueOf(requestInsert.dataHora()));
             localizacao.setLatitude(requestInsert.latitude());
             localizacao.setLongitude(requestInsert.longitude());
-            localizacao.setIdBaseCliente(requestInsert.idBaseCliente());
+
             listAll.add(localizacao);
         }
 

@@ -1,14 +1,10 @@
-package com.geotrack.apigeotrack.dto.insertData;
+package com.geotrack.apigeotrack.dto.insertdata;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.geotrack.apigeotrack.entities.Dispositivo;
-import com.geotrack.apigeotrack.entities.Localizacao;
-import com.geotrack.apigeotrack.entities.Usuario;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

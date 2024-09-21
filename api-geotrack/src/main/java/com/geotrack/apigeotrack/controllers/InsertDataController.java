@@ -1,10 +1,8 @@
 package com.geotrack.apigeotrack.controllers;
 
-import com.geotrack.apigeotrack.dto.insertData.RequestInsert;
+import com.geotrack.apigeotrack.dto.insertdata.RequestInsert;
 import com.geotrack.apigeotrack.service.InsertDataService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

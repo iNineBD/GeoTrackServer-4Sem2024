@@ -1,4 +1,4 @@
-package com.geotrack.apigeotrack.dto.insertData;
+package com.geotrack.apigeotrack.dto.insertdata;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
