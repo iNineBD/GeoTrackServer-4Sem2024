@@ -20,7 +20,7 @@ public class PopulateController {
 
     @PostMapping()
     public ResponseEntity<String> enterDatas() throws IOException {
-        populateService.populate("C:\\Users\\joaom\\Downloads\\Fatec_Locations.json");
+        populateService.populate("C:\\Users\\joaom\\Downloads\\Fatec_Locations_202409212325.json");
         return ResponseEntity.ok("Dados inseridos");
     }
 }

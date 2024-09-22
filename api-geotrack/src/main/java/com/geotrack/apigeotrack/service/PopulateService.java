@@ -39,6 +39,10 @@ public class PopulateService {
         while (jsonParser.nextToken() != null) {
             RequestInsert requestInsert = objectMapper.readValue(jsonParser, RequestInsert.class);
 
+            if (requestInsert == null) {
+                break;
+            }
+
             Optional<User> user = userRepository.findById(Integer.valueOf(requestInsert.idUser()));
 
             if (user.isEmpty()){
@@ -55,6 +59,7 @@ public class PopulateService {
 
             if (location.getIdLocation().isEmpty()){
                 System.out.println("IDLocal not found para usuario: " + requestInsert.idUser());
+                continue;
             }
 
             insertAll.add(location);
@@ -67,9 +72,7 @@ public class PopulateService {
             }
         }
 
-
-
-
+        jsonParser.close();
+        locationRepository.saveAll(insertAll);
     }
-
 }

@@ -18,7 +18,7 @@ public class Devices {
     @Column(name = "id_dispositivo")
     private Long idDevices;
 
-    @Column(name = "name")
+    @Column(name = "nome")
     private String name;
 
     @Column(name = "codigo")

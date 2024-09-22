@@ -19,7 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private int idUser;
-    @Column(name = "name")
+    @Column(name = "nome")
     private String name;
     @Column(name = "cargo")
     private String position;

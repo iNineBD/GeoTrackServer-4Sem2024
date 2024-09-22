@@ -15,6 +15,6 @@ public interface DevicesRepository extends JpaRepository<Devices, Integer> {
     @Query("select d from Devices d where d.user.idUser = :idUser order by d.name asc")
     Optional<Page<Devices>> listDevices(int idUser, PageRequest pageable);
 
-    Optional<Devices> findByUsuarioIdUsuario(int id);
+    Optional<Devices> findByIdDevices(Long id);
 
 }
