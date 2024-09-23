@@ -22,6 +22,8 @@ public class StopPointService {
 
     public List<LocalizacaoDTO> latLongCal(StopPointRequestDTO requestDTO) {
 
+        //TODO: Criar uma consulta "paginada" por dia... dia 1, dia 2, dia 3, dia 4...
+        //      Colocar em cache os retornos destas consultas
 
         LocalDateTime time = LocalDateTime.now();
         List<Location> localizations = locationRepository.listLocal(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate());
