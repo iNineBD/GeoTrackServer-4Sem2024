@@ -66,7 +66,7 @@ public class StopPointService {
 
         for (LocalizacaoDTO point : stopPoints) {
 
-            BigDecimal[] listCoordenates = {point.longitude(),point.latitude()};
+            BigDecimal[] listCoordenates = {point.latitude(),point.longitude()};
 
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
 
