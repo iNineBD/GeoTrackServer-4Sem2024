@@ -6,9 +6,9 @@ import com.geotrack.apigeotrack.entities.Devices;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DataDevicesDTO(@JsonAlias("id") Long idDevice,
-                             @JsonAlias("name") String name) {
+                             @JsonAlias("code") String code) {
 
     public DataDevicesDTO(Devices devices){
-        this(devices.getIdDevices(), devices.getName());
+        this(devices.getIdDevices(), devices.getCode());
     }
 }
