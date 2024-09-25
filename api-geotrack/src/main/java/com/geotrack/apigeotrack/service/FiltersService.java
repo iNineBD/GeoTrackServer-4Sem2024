@@ -33,7 +33,7 @@ public class FiltersService  {
     @Cacheable(value = "lists", key = "#request")
     public ResponseUsers listUsers(RequestUser request) throws NoSuchElementException{
         // Here it says which page I want and the number of items per page
-        PageRequest page = PageRequest.of(request.page(),5);
+        PageRequest page = PageRequest.of(request.page(), request.qtdPage());
 
         // Here I consult the users in the DB and bring them in the form of a list
         Optional<Page<User>> users = userRepository.listUser(page);

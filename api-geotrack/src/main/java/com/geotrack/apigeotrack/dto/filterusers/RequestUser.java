@@ -4,5 +4,5 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record RequestUser(@JsonAlias("page") int page)  {
+public record RequestUser(@JsonAlias("page") int page, @JsonAlias("page") int qtdPage)  {
 }
