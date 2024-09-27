@@ -11,24 +11,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class UtilsServices {
-
-    @Autowired
-    LocationRepository locationRepository;
-
-    public List<Location> getLocations(Long idDev, LocalDate startDate, LocalDate finalDate) {
-
-        List<Location> locations = new ArrayList<>();
-        PageRequest pageRequest = PageRequest.of(0, 800);
-
-        Page<Location> locationsInPage = locationRepository.findLocalizationByDataReferencePagination(idDev, startDate, finalDate, pageRequest);
-        while (!locationsInPage.isEmpty()){
-            locations.addAll(locationsInPage.getContent());
-            pageRequest.next();
-            locationsInPage = locationRepository.findLocalizationByDataReferencePagination(idDev, startDate, finalDate, pageRequest);
-        }
-        return locations;
-    }
-
-}
+//@Component
+//public class UtilsServices {
+//
+//    @Autowired
+//    LocationRepository locationRepository;
+//
+//    public List<Location> getLocations(Long idDev, LocalDate startDate, LocalDate finalDate) {
+//
+//        List<Location> locations = new ArrayList<>();
+//        PageRequest pageRequest = PageRequest.of(0, 800);
+//
+//        Page<Location> locationsInPage = locationRepository.findLocalizationByDataReferencePagination(idDev, startDate, finalDate, pageRequest);
+//        while (!locationsInPage.isEmpty()){
+//            locations.addAll(locationsInPage.getContent());
+//            pageRequest.next();
+//            locationsInPage = locationRepository.findLocalizationByDataReferencePagination(idDev, startDate, finalDate, pageRequest);
+//        }
+//        return locations;
+//    }
+//
+//}
