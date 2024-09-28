@@ -1,15 +1,15 @@
 package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.stopoint.*;
-import com.geotrack.apigeotrack.entities.Location;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
+import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
+import com.geotrack.apigeotrack.service.utils.HashGeneratorToRedis;
+import com.geotrack.apigeotrack.service.utils.UtilsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,56 +20,69 @@ public class StopPointService {
     @Autowired
     LocationRepository locationRepository;
 
-    public List<LocalizacaoDTO> latLongCal(StopPointRequestDTO requestDTO) {
+    @Autowired
+    GeoRedisServices geoRedisService;
 
-        //TODO: Criar uma consulta "paginada" por dia... dia 1, dia 2, dia 3, dia 4...
-        //      Colocar em cache os retornos destas consultas
+    public List<LocalizacaoDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
 
-        LocalDateTime time = LocalDateTime.now();
-        List<Object[]> localizations = locationRepository.listLocal2(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate());
-        List<StopPointDBDTO> listStop = convertToStopPointDTO(localizations);
-        System.out.printf("A consulta demorou: " + Duration.between(time, LocalDateTime.now()));
-
-        if (localizations.isEmpty()) {
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.listLocal2(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate()));
+        System.out.println("listStop.size() = " + listStop.size());
+        if (listStop.isEmpty()) {
             throw new NoSuchElementException("Nenhuma Localização encontrada");
         }
 
         List<LocalizacaoDTO> stopPoints = new ArrayList<>();
 
-//        LocalizacaoDTO iteratorLocation = new LocalizacaoDTO(localizations.getFirst().getLatitude(),localizations.getFirst().getLongitude(),localizations.getFirst().getDateTime());
-//        for (int i = 1; i < localizations.size(); i++) {
-//            LocalizacaoDTO currentLocation = new LocalizacaoDTO(localizations.get(i).getLatitude(),localizations.get(i).getLongitude(),localizations.get(i).getDateTime());
-//
-//            BigDecimal latitude = iteratorLocation.latitude();
-//            BigDecimal longitude = iteratorLocation.longitude();
-//
-//            LocalizacaoDTO location = new LocalizacaoDTO(latitude, longitude,null);
-//
-//            // Verifica se já existe no conjunto
-//            if (stopPoints.contains(location)) {
-//
-//                iteratorLocation = new LocalizacaoDTO(localizations.get(i).getLatitude(),localizations.get(i).getLongitude(),localizations.get(i).getDateTime());
-//                continue;
-//            }
-//            Timestamp timeMore15 = Timestamp.valueOf(iteratorLocation.dataHora().toLocalDateTime().plusMinutes(15));
-//            Timestamp normalTime = Timestamp.valueOf(currentLocation.dataHora().toLocalDateTime());
-//
-//            if (timeMore15.after(normalTime)) {
-//                stopPoints.add(location);
-//            }
-//        }
-        return stopPoints;
+        for (StopPointDBDTO stopPointDBDTO : listStop) {
+            LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
+            if (point != null) {
+                stopPoints.add(point);
+            }
+        }
+
+        if (stopPoints.isEmpty()) {
+            throw new NoSuchElementException("Nenhuma Localização encontrada");
+        }
+
+        return (stopPoints);
     }
 
-    public List<StopPointDBDTO> convertToStopPointDTO(List<Object[]> results) {
-        List<StopPointDBDTO> stopPoints = new ArrayList<>();
-        for (Object[] result : results) {
-            StopPointDBDTO stopPoint = new StopPointDBDTO(
-                    ((Number) result[0]).intValue(), (BigDecimal) result[1], (BigDecimal) result[2], ((Number) result[3]).intValue(), (String) result[4]);
-            stopPoints.add(stopPoint);
+    public LocalizacaoDTO toExecStopPoint(StopPointDBDTO in, List<LocalizacaoDTO> stopPoints) {
+
+        if (!stopPoints.isEmpty()) {
+            for (LocalizacaoDTO localizacaoDTO : stopPoints) {
+                if (localizacaoDTO.latitude().equals(in.latitude()) && localizacaoDTO.longitude().equals(in.longitude())){
+                    return null;
+                }
+            }
         }
-        return stopPoints;
+
+        String idRegister = in.startDate().toString() + in.endDate().toString() + in.latitude() + in.longitude();
+
+        geoRedisService.addLocation(idRegister, in.latitude(), in.longitude(), "pontoMedio");
+
+        String[] coordinates= in.latLongList().split("\\|");
+
+        for(int i = 0 ; i < coordinates.length ; i++) {
+            String[] latLongArray = coordinates[i].split(";");
+            BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
+            BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
+
+            geoRedisService.addLocation(idRegister, latitude, longitude, "p"+i);
+
+            Distance distance = geoRedisService.calculateDistance(idRegister, "pontoMedio", "p"+i);
+            geoRedisService.removeLocation(idRegister, "p"+i);
+
+            if (distance.getValue() > 8){
+                return null;
+            }
+        }
+        geoRedisService.removeLocation(idRegister, "pontoMedio");
+        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.startDate());
     }
+
+
+
     public List<FeatureDTO> resquestGeoJson(List<LocalizacaoDTO> stopPoints) {
 
         List<FeatureDTO> feature = new ArrayList<>(stopPoints.size());
