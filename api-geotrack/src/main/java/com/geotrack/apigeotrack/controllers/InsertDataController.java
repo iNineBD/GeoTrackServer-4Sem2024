@@ -22,5 +22,4 @@ public class InsertDataController {
         insertDataService.insertDataService(requestInserts);
     }
 
-    //todo: cadastrar user e dispositivo
 }
