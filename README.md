@@ -1,40 +1,62 @@
-# GeoTrack-4Sem2024
-Repository for the REST API of the integrator project (4th semester Database)
+# Projeto Geolocalização
 
-## Redis Docker Compose
+Este projeto é uma API desenvolvida em Java Spring que fornece dados de geolocalização a partir de uma base de dados de 500.000 registros. A API é projetada para responder com dados em formato GEOJSON e é adequada para visualização em mapas.
 
-Este repositório contém um arquivo `docker-compose.yml` que pode ser usado para criar e executar um contêiner Redis usando o Docker Compose.
+## Pré-requisitos
 
-### Pré-requisitos
+Antes de executar a aplicação, certifique-se de ter os seguintes itens instalados:
 
-Certifique-se de ter as seguintes ferramentas instaladas em seu ambiente:
-
+- [JDK 18 ou superior](https://openjdk.java.net/install/)
+- [Maven](https://maven.apache.org/install.html)
 - [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
 
-#### Verificando a instalação
+## Clonando o Repositório
 
-Para verificar se o Docker e o Docker Compose estão instalados corretamente, execute os comandos a seguir:
+Clone este repositório usando o comando:
 
 ```bash
-docker --version
-docker-compose --version
+git clone https://github.com/iNineBD/GeoTrackServer-4Sem2024.git
+cd GeoTrackServer-4Sem2024.git
 ```
 
-Para executar o compose:
+## Configuração do Banco de Dados
+
+Configure a conexão no arquivo `src/main/resources/external.properties` com as credenciais corretas:
+
+```properties
+DATABASE_URL=<tns cloud>
+DATABASE_USER=<usuário>
+DATABASE_PASSWORD=<senha>
+```
+
+### Executando o Redis em Docker
+
+Rode o comando abaixo via terminal. Certifique-se de estar no mesmo diretório do arquivo `docker-compose.yml`:
 
 ```bash
 docker-compose up -d
-
-
-
-
-
-
-
 ```
 
-Para para o container:
+## Executando a Aplicação
+
+Para executar a aplicação, utilize o seguinte comando:
+
 ```bash
-docker-compose down
+./mvnw spring-boot:run
+```
+
+Se você não tiver o Maven Wrapper, pode usar o comando Maven normal:
+
+```bash
+mvn spring-boot:run
+```
+
+## Testando a API
+
+Após a aplicação estar rodando, você pode testar a API usando ferramentas como [Swagger](http://localhost:8080/swagger-ui/index.html#/)
+
+A API estará disponível em:
+
+```
+http://localhost:8080/
 ```
