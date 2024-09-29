@@ -10,6 +10,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -50,8 +51,14 @@ public class StopPointService {
     public LocalizacaoDTO toExecStopPoint(StopPointDBDTO in, List<LocalizacaoDTO> stopPoints) {
 
         if (!stopPoints.isEmpty()) {
+            BigDecimal scaledInLatitude = in.latitude().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal scaledInLongitude = in.longitude().setScale(2, RoundingMode.HALF_UP);
+
             for (LocalizacaoDTO localizacaoDTO : stopPoints) {
-                if (localizacaoDTO.latitude().equals(in.latitude()) && localizacaoDTO.longitude().equals(in.longitude())){
+                BigDecimal scaledStopLatitude = localizacaoDTO.latitude().setScale(2, RoundingMode.HALF_UP);
+                BigDecimal scaledStopLongitude = localizacaoDTO.longitude().setScale(2, RoundingMode.HALF_UP);
+
+                if (scaledStopLatitude.equals(scaledInLatitude) && scaledStopLongitude.equals(scaledInLongitude)) {
                     return null;
                 }
             }
