@@ -19,6 +19,7 @@ public class StopPointController {
     @PostMapping("/find")
     public StopPointResponseDTO stopPointResponseDTO(@RequestBody StopPointRequestDTO requestDTO) {
         List<LocalizacaoDTO> pontosParada = stopPointService.findStopPointByDeviceAndData(requestDTO);
+
         List<FeatureDTO> feature = stopPointService.resquestGeoJson(pontosParada);
 
         GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);

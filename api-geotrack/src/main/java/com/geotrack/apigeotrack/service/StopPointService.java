@@ -3,9 +3,9 @@ package com.geotrack.apigeotrack.service;
 import com.geotrack.apigeotrack.dto.stopoint.*;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
-import com.geotrack.apigeotrack.service.utils.HashGeneratorToRedis;
 import com.geotrack.apigeotrack.service.utils.UtilsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +23,10 @@ public class StopPointService {
     @Autowired
     GeoRedisServices geoRedisService;
 
+    @Cacheable(value = "stoppingPoints", key = "#requestDTO")
     public List<LocalizacaoDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
 
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.listLocal2(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate()));
-        System.out.println("listStop.size() = " + listStop.size());
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate()));
         if (listStop.isEmpty()) {
             throw new NoSuchElementException("Nenhuma Localização encontrada");
         }
@@ -78,7 +78,7 @@ public class StopPointService {
             }
         }
         geoRedisService.removeLocation(idRegister, "pontoMedio");
-        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.startDate());
+        return new LocalizacaoDTO(in.latitude(), in.longitude());
     }
 
 
