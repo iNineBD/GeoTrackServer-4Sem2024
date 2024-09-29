@@ -14,20 +14,20 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Usuario {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private int idUsuario;
+    private int idUser;
     @Column(name = "nome")
-    private String nome;
+    private String name;
     @Column(name = "cargo")
-    private String cargo;
+    private String position;
     @Column(name = "senha")
-    private String senha;
+    private String password;
     @Column(name = "cpf")
     private String cpf;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Dispositivo> dispositivos;
+    @OneToMany(mappedBy = "user")
+    private List<Devices> devices;
 }

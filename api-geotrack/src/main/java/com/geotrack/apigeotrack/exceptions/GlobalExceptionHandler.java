@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 
@@ -114,6 +115,13 @@ import java.util.NoSuchElementException;
         ex.printStackTrace();
         RestErrorMessage message = new RestErrorMessage(ex.getMessage());
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<RestErrorMessage> handleNoSuchElementException(IOException ex) {
+        ex.printStackTrace();
+        RestErrorMessage message = new RestErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

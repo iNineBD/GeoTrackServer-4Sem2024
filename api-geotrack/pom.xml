@@ -8,7 +8,7 @@
         <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>api-geotrack.com</groupId>
+    <groupId>apigeotrack.geotrack.com</groupId>
     <artifactId>api-geotrack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Geotrack</name>
@@ -86,8 +86,11 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

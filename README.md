@@ -25,6 +25,13 @@ Para executar o compose:
 
 ```bash
 docker-compose up -d
+
+
+
+
+
+
+
 ```
 
 Para para o container:
