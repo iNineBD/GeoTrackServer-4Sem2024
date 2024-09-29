@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "stopPoint", description = "Operations to return stopping points of the users and devices")
+@Tag(name = "Stop Points", description = "Operations to return stopping points of the users and devices")
 @RestController
 @RequestMapping("/stoppoint")
 public class StopPointController {
