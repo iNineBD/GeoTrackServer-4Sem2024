@@ -1,4 +1,4 @@
-# GeoTrack
+# Back-end GeoTrack
 Este projeto é uma API desenvolvida em Java Spring que fornece dados de geolocalização a partir de uma base de dados de 500.000 registros. A API é projetada para responder com dados em formato GEOJSON e é adequada para visualização em mapas.
 
 ## Pré-requisitos
