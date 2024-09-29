@@ -28,6 +28,17 @@ DATABASE_USER=<usuário>
 DATABASE_PASSWORD=<senha>
 ```
 
+### Executando o Container DockerFile
+
+Rode o comando abaixo via terminal. Certifique-se de estar no mesmo diretório do arquivo DockerFile:
+
+```bash
+
+docker build -t geotrack .
+docker run -p 8080:8080 geotrack
+
+```
+
 ### Executando o Redis em Docker
 
 Rode o comando abaixo via terminal. Certifique-se de estar no mesmo diretório do arquivo `docker-compose.yml`:
