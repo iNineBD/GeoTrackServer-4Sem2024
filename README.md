@@ -28,37 +28,12 @@ DATABASE_USER=<usuário>
 DATABASE_PASSWORD=<senha>
 ```
 
-### Executando o Container DockerFile
-
-Rode o comando abaixo via terminal. Certifique-se de estar no mesmo diretório do arquivo DockerFile:
-
-```bash
-
-docker build -t geotrack .
-docker run -p 8080:8080 geotrack
-
-```
-
-### Executando o Redis em Docker
+### Executando a aplicação via Container Docker Compose
 
 Rode o comando abaixo via terminal. Certifique-se de estar no mesmo diretório do arquivo `docker-compose.yml`:
 
 ```bash
 docker-compose up -d
-```
-
-## Executando a Aplicação
-
-Para executar a aplicação, utilize o seguinte comando:
-
-```bash
-./mvnw spring-boot:run
-```
-
-Se você não tiver o Maven Wrapper, pode usar o comando Maven normal:
-
-```bash
-mvn spring-boot:run
 ```
 
 ## Testando a API
