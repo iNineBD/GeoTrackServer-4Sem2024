@@ -10,23 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/geometry")
+@RequestMapping("/session")
 public class GeometryController {
 
-    private final GeometryService geometryService;
-
-    @Autowired
-    public GeometryController(GeometryService geometryService) {
-        this.geometryService = geometryService;
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<String> addGeometry(@RequestBody GeometryRequestDTO geometryRequestDTO){
-
-        geometryService.insertGeometry(geometryRequestDTO);
-
-        return ResponseEntity.ok().body("Sessão Geografica cadastrada");
-
-    }
 
 }

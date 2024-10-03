@@ -6,27 +6,28 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
-import org.locationtech.jts.geom.Geometry;
+
+import java.util.Set;
 
 @Entity
-@Table(name = "geo_sessao", schema = "ITO1")
+@Table(name = "sessao", schema = "ITO1")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GeometrySession {
+public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     @Column(name = "id_sessao")
-    private int idSession;
+    private Integer idSession;
 
-    @Column(name = "nome")
-    private String name;
+    @Column(name = "nome", length = 50)
+    private String nome;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "GEOMETRY", columnDefinition = "SDO_GEOMETRY")
-    private Geometry geometry;
+    @Column(name = "status")
+    private Integer status;
 
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Coordinates> coordinates;
 }
