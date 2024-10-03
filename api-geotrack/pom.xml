@@ -90,21 +90,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.locationtech.jts</groupId>
-            <artifactId>jts-core</artifactId>
-            <version>1.18.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.bedatadriven</groupId>
-            <artifactId>jackson-datatype-jts</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-            <version>7.0.0.Beta1</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
