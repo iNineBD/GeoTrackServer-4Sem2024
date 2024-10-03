@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Session {
+public class GeometryZone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
@@ -28,6 +28,6 @@ public class Session {
     @Column(name = "status")
     private Integer status;
 
-    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Coordinates> coordinates;
+    @OneToMany(mappedBy = "geometryZone", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<GeometryCoordinates> coordinates;
 }

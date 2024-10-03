@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Coordinates {
+public class GeometryCoordinates {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
@@ -30,5 +30,5 @@ public class Coordinates {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao", referencedColumnName = "id_sessao")
-    private Session session;
+    private GeometryZone geometryZone;
 }
