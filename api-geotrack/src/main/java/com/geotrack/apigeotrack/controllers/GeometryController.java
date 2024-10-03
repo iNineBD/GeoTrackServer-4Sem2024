@@ -1,6 +1,5 @@
 package com.geotrack.apigeotrack.controllers;
 
-import com.geotrack.apigeotrack.dto.geometry.GeometryRequestDTO;
 import com.geotrack.apigeotrack.service.GeometryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
