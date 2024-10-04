@@ -17,14 +17,14 @@ public class StopPointController {
     StopPointService stopPointService;
 
     @PostMapping("/find")
-    public StopPointResponseDTO stopPointResponseDTO(@RequestBody StopPointRequestDTO requestDTO) {
-        List<LocalizacaoDTO> pontosParada = stopPointService.findStopPointByDeviceAndData(requestDTO);
+    public List<StopPointResponseDTO> stopPointResponseDTO(@RequestBody StopPointRequestDTO requestDTO) {
+        List<StopPointResponseDTO> pontosParada = stopPointService.findStopPointByDeviceAndData(requestDTO);
 
-        List<FeatureDTO> feature = stopPointService.resquestGeoJson(pontosParada);
+//        List<FeatureDTO> feature = stopPointService.resquestGeoJson(pontosParada);
+//
+//        GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
 
-        GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
-
-        return new StopPointResponseDTO(requestDTO.userName(), requestDTO.userDevice(), geoJson);
+        return pontosParada;
     }
 
 }

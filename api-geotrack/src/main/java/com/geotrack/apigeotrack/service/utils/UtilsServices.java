@@ -21,12 +21,13 @@ public class UtilsServices {
         List<StopPointDBDTO> stopPoints = new ArrayList<>();
         for (Object[] result : results) {
             StopPointDBDTO stopPoint = new StopPointDBDTO(
-                    ((BigDecimal) result[0]).setScale(4, RoundingMode.HALF_UP),
+                    ((Number) result[0]).intValue(),
                     ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
-                    ((Number) result[2]).intValue(),
-                    (String) result[5],
-                    ((Timestamp) result[3]).toLocalDateTime(),
-                    ((Timestamp) result[4]).toLocalDateTime()
+                    ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
+                    ((Number) result[3]).intValue(),
+                    (String) result[6],
+                    ((Timestamp) result[4]).toLocalDateTime(),
+                    ((Timestamp) result[5]).toLocalDateTime()
             );
             stopPoints.add(stopPoint);
         }

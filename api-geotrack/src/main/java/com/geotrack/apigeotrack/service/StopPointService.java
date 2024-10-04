@@ -25,28 +25,51 @@ public class StopPointService {
     GeoRedisServices geoRedisService;
 
     @Cacheable(value = "stoppingPoints", key = "#requestDTO")
-    public List<LocalizacaoDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
+    public List<StopPointResponseDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
 
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate()));
-        if (listStop.isEmpty()) {
-            throw new NoSuchElementException("Nenhuma Localização encontrada");
-        }
+        List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(
+                locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate())
+        );
 
-        List<LocalizacaoDTO> stopPoints = new ArrayList<>();
+        for (int i = 0; i < requestDTO.device().size(); i++) {
+            Long deviceId = requestDTO.device().get(i);
+            String userName = requestDTO.usersName().get(i);
 
-        for (StopPointDBDTO stopPointDBDTO : listStop) {
-            LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
-            if (point != null) {
-                stopPoints.add(point);
+            if (listStop.isEmpty()) {
+                throw new NoSuchElementException("Nenhuma Localização encontrada para o dispositivo " + deviceId);
             }
+
+            List<LocalizacaoDTO> stopPoints = new ArrayList<>();
+            Integer idAnterior = listStop.get(0).idDev();
+
+            for (StopPointDBDTO stopPointDBDTO : listStop) {
+                Integer idAtual = stopPointDBDTO.idDev();
+                if(!idAtual.equals(idAnterior)){
+                    if (!stopPoints.isEmpty()) {
+                        // Gera o GeoJSON específico para o dispositivo e adiciona à lista
+                        List<FeatureDTO> feature = resquestGeoJson(stopPoints);
+                        GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
+                        deviceGeoJsonList.add(new StopPointResponseDTO(userName,deviceId.toString(), geoJson));
+                    }
+                    idAnterior = idAtual;
+                }
+                LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
+                if (point != null) {
+                    stopPoints.add(point);
+                }
+            }
+
+
         }
 
-        if (stopPoints.isEmpty()) {
-            throw new NoSuchElementException("Nenhuma Localização encontrada");
+        if (deviceGeoJsonList.isEmpty()) {
+            throw new NoSuchElementException("Nenhuma Localização encontrada para os dispositivos.");
         }
 
-        return (stopPoints);
+        return deviceGeoJsonList;
     }
+
 
     public LocalizacaoDTO toExecStopPoint(StopPointDBDTO in, List<LocalizacaoDTO> stopPoints) {
 
