@@ -33,5 +33,4 @@ public class UtilsServices {
         }
         return stopPoints;
     }
-
 }
