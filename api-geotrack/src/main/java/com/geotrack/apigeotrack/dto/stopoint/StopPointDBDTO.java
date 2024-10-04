@@ -7,8 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record StopPointDBDTO(@JsonAlias("time_group") int timeGroup,
-                             @JsonAlias("avg_latitude") BigDecimal latitude,
+public record StopPointDBDTO(@JsonAlias("avg_latitude") BigDecimal latitude,
                              @JsonAlias("avg_longitude") BigDecimal longitude,
                              @JsonAlias("contador") int contador,
                              @JsonAlias("lat_long_list") String latLongList,
