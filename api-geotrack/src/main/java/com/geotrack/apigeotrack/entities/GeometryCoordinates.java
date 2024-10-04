@@ -1,7 +1,7 @@
 package com.geotrack.apigeotrack.entities;
 
+import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +18,7 @@ import java.math.BigDecimal;
 public class GeometryCoordinates {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
-    @Column(name = "id_referencia")
+    @Column(name = "id_referencia",nullable = false)
     private Integer idReferencia;
 
     @Column(name = "longitude")
@@ -28,7 +27,8 @@ public class GeometryCoordinates {
     @Column(name = "latitude")
     private BigDecimal latitude;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sessao", referencedColumnName = "id_sessao")
-    private GeometryZone geometryZone;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo")
+    private GeometryForms type;
+
 }

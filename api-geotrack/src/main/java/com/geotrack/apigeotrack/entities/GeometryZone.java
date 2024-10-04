@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "sessao", schema = "ITO1")
@@ -18,8 +18,7 @@ import java.util.Set;
 public class GeometryZone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
-    @Column(name = "id_sessao")
+    @Column(name = "id_sessao",nullable = false)
     private Integer idSession;
 
     @Column(name = "nome", length = 50)
@@ -28,6 +27,7 @@ public class GeometryZone {
     @Column(name = "status")
     private Integer status;
 
-    @OneToMany(mappedBy = "geometryZone", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<GeometryCoordinates> coordinates;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sessao")
+    private List<GeometryCoordinates> coordinates;
 }
