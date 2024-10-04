@@ -1,7 +1,7 @@
 package com.geotrack.apigeotrack.entities;
 
+import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.List;
 public class GeometryZone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_sessao",nullable = false)
+    @Column(name = "id_sessao", nullable = false)
     private Integer idSession;
 
     @Column(name = "nome", length = 50)
@@ -26,6 +26,10 @@ public class GeometryZone {
 
     @Column(name = "status")
     private Integer status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo")
+    private GeometryForms type;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
