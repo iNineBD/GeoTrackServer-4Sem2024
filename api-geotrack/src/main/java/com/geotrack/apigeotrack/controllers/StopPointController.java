@@ -20,10 +20,6 @@ public class StopPointController {
     public List<StopPointResponseDTO> stopPointResponseDTO(@RequestBody StopPointRequestDTO requestDTO) {
         List<StopPointResponseDTO> pontosParada = stopPointService.findStopPointByDeviceAndData(requestDTO);
 
-//        List<FeatureDTO> feature = stopPointService.resquestGeoJson(pontosParada);
-//
-//        GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
-
         return pontosParada;
     }
 

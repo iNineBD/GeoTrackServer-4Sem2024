@@ -1,6 +1,7 @@
 package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.stopoint.*;
+import com.geotrack.apigeotrack.repositories.DevicesRepository;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
 import com.geotrack.apigeotrack.service.utils.UtilsServices;
@@ -22,50 +23,45 @@ public class StopPointService {
     LocationRepository locationRepository;
 
     @Autowired
+    DevicesRepository devicesRepository;
+
+    @Autowired
     GeoRedisServices geoRedisService;
 
     @Cacheable(value = "stoppingPoints", key = "#requestDTO")
     public List<StopPointResponseDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
 
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(
-                locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate())
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.device(), requestDTO.startDate(), requestDTO.finalDate())
         );
 
-        for (int i = 0; i < requestDTO.device().size(); i++) {
-            Long deviceId = requestDTO.device().get(i);
-            String userName = requestDTO.usersName().get(i);
-
-            if (listStop.isEmpty()) {
-                throw new NoSuchElementException("Nenhuma Localização encontrada para o dispositivo " + deviceId);
-            }
+        if (listStop.isEmpty()) {
+            throw new NoSuchElementException("Nenhuma Localização encontrada para os dispositivos. ");
+        }
 
             List<LocalizacaoDTO> stopPoints = new ArrayList<>();
             Integer idAnterior = listStop.get(0).idDev();
 
+            int i = 0;
             for (StopPointDBDTO stopPointDBDTO : listStop) {
                 Integer idAtual = stopPointDBDTO.idDev();
-                if(!idAtual.equals(idAnterior)){
+                if(!idAtual.equals(idAnterior) || i == listStop.size() -1){
                     if (!stopPoints.isEmpty()) {
-                        // Gera o GeoJSON específico para o dispositivo e adiciona à lista
+                        String userName = devicesRepository.findById(idAnterior).get().getUser().getName().toUpperCase();
                         List<FeatureDTO> feature = resquestGeoJson(stopPoints);
                         GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
-                        deviceGeoJsonList.add(new StopPointResponseDTO(userName,deviceId.toString(), geoJson));
+                        deviceGeoJsonList.add(new StopPointResponseDTO(userName,idAnterior.toString(), geoJson));
                     }
                     idAnterior = idAtual;
+                    stopPoints.clear();
                 }
                 LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
                 if (point != null) {
                     stopPoints.add(point);
                 }
+
+                i++;
             }
-
-
-        }
-
-        if (deviceGeoJsonList.isEmpty()) {
-            throw new NoSuchElementException("Nenhuma Localização encontrada para os dispositivos.");
-        }
 
         return deviceGeoJsonList;
     }

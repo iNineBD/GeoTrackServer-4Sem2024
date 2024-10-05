@@ -36,7 +36,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "HAVING\n" +
             "    COUNT(*) > 2 \n" +
             "  ORDER BY\n" +
-            "    time_group,grouped_data.id_dispositivo", nativeQuery = true)
+            "    grouped_data.id_dispositivo,time_group", nativeQuery = true)
     List<Object[]> findLocalizationGroupedByDateWithInterval(List<Long> idsDev, LocalDate startDate, LocalDate finalDate);
 }
 
