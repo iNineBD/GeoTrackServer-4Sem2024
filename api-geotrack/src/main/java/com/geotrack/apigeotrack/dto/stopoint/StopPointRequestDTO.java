@@ -8,10 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record StopPointRequestDTO(@JsonAlias("idsUsers") List<Integer> users,
-                                  @JsonAlias("usersNames") List<String> usersName,
-                                  @JsonAlias("idsDevices") List<Long> device,
-                                  @JsonAlias("usersDevices") List<String> userDevice,
+public record StopPointRequestDTO(@JsonAlias("idsDevices") List<Long> devices,
                                   @JsonAlias("startDate") LocalDate startDate,
                                   @JsonAlias("finalDate") LocalDate finalDate
 ) {
