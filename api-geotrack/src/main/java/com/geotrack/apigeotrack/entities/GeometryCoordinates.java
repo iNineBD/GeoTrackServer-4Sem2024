@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 public class GeometryCoordinates {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_referencia", nullable = false)
+    @Column(name = "id_coord", nullable = false)
     private Integer idReferencia;
 
     @Column(name = "longitude",precision = 9,scale = 6)
