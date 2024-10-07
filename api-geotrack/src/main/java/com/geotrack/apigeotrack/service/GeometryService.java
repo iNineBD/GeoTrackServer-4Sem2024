@@ -26,7 +26,11 @@ public class GeometryService {
 
         // verifica se o nome não esta vazio
         if (geometryZoneRequestDTO.name().isEmpty()) {
-            throw new IllegalArgumentException("Defina um nome para sua Zona Geometrica!");
+            throw new IllegalArgumentException("Defina um nome para sua Zona Geométrica!");
+        }
+        // verifica se a lista de coordenadas não esta vazia
+        if(geometryZoneRequestDTO.coordinates().isEmpty()){
+            throw new IllegalArgumentException("Lista de coordenadas vazia, revise!");
         }
 
         // cria objeto para envio
