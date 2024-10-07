@@ -29,9 +29,17 @@ public class GeometryService {
         if (geometryZoneRequestDTO.name().isEmpty()) {
             throw new IllegalArgumentException("Defina um nome para sua Zona Geometrica!");
         }
-
-        // verifica as coordenadas (longitude e latitude)
+        // verificação das coordenadas
         for (ZoneCoordenatesDTO coordinates : geometryZoneRequestDTO.coordinates()) {
+
+            // verifica se long e lati não estão vazios
+            if (coordinates.longitude() == null) {
+                throw new IllegalArgumentException("Longitude não pode ser nula.");
+            }
+            if (coordinates.latitude() == null) {
+                throw new IllegalArgumentException("Latitude não pode ser nula.");
+            }
+            // verifica as coordenadas (longitude e latitude)
             if (coordinates.longitude().compareTo(BigDecimal.valueOf(-180)) < 0 ||
                     coordinates.longitude().compareTo(BigDecimal.valueOf(180)) > 0) {
                 throw new IllegalArgumentException("Longitude inválida: " + coordinates.longitude() + ". Deve estar " +
