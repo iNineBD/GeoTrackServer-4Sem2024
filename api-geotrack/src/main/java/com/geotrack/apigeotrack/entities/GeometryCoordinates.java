@@ -20,9 +20,9 @@ public class GeometryCoordinates {
     @Column(name = "id_referencia", nullable = false)
     private Integer idReferencia;
 
-    @Column(name = "longitude")
+    @Column(name = "longitude",precision = 9,scale = 6)
     private BigDecimal longitude;
 
-    @Column(name = "latitude")
+    @Column(name = "latitude",precision = 9,scale = 6)
     private BigDecimal latitude;
 }
