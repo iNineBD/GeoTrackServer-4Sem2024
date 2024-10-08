@@ -8,8 +8,8 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GeometryZoneRequestDTO(
-        @JsonAlias("name") String name, // nome da zona
-        @JsonAlias("type") GeometryForms type, // enum das formas geometricas
-        @JsonAlias("coordinates") List<ZoneCoordenatesDTO> coordinates) // lista das coordenadas
+        @JsonAlias("name") String name, // zone name
+        @JsonAlias("type") GeometryForms type, // enum geometry zones
+        @JsonAlias("coordinates") List<ZoneCoordenatesDTO> coordinates) // coordinates list
 {
 }

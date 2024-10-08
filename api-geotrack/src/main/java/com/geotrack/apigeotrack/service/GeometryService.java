@@ -21,39 +21,40 @@ public class GeometryService {
     @Autowired
     GeometryCoordinatesRepository geometryCoordinatesRepository;
 
-    // metodo para inserir as coordenadas da zona geometrica
+    // method to insert geometric zones coordinates
     public void insertGeometryZone(GeometryZoneRequestDTO geometryZoneRequestDTO) throws IllegalArgumentException {
 
-        // verifica se o nome não esta vazio
+        // verify if name is not empty
         if (geometryZoneRequestDTO.name().isEmpty()) {
             throw new IllegalArgumentException("Defina um nome para sua Zona Geométrica!");
         }
-        // verifica se a lista de coordenadas não esta vazia
+        // verify if coordinates list is not empty
         if(geometryZoneRequestDTO.coordinates().isEmpty()){
             throw new IllegalArgumentException("Lista de coordenadas vazia, revise!");
         }
 
-        // cria objeto para envio
+        // create object to send
         GeometryZone geometryZone = new GeometryZone();
         geometryZone.setNome(geometryZoneRequestDTO.name());
         geometryZone.setType(geometryZoneRequestDTO.type());
 
-        // Agora, cria as entidades GeometryCoordinates com base nos dados do requestDTO
+        // loop to create coordinates object
         List<GeometryCoordinates> coordinatesEntities = geometryZoneRequestDTO.coordinates().stream()
                 .map(coordDTO -> {
 
+                    // verify long and lag is not null or valid,
                     CoordinatesValidator.validatesCoordinator(coordDTO.longitude(), coordDTO.latitude());
 
                     GeometryCoordinates geometryCoordinates = new GeometryCoordinates();
                     geometryCoordinates.setLongitude(coordDTO.longitude());
                     geometryCoordinates.setLatitude(coordDTO.latitude());
-                    return geometryCoordinates; // Retorna cada entidade GeometryCoordinates
+                    return geometryCoordinates;
                 }).collect(Collectors.toList());
 
-        // relaciona com a chave estrangeira em geometryZone
         geometryZone.setCoordinates(coordinatesEntities);
+        geometryZone.setStatus(1);
 
-        // salva a GeometryZone com suas coordenadas
+        // save the object and send to database
         geometryZoneRepository.save(geometryZone);
     }
 

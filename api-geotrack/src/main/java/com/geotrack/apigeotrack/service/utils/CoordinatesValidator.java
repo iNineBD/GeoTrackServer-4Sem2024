@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 public class CoordinatesValidator {
 
     public static void validatesCoordinator(BigDecimal longitude, BigDecimal latitude) {
-        // verificar se long ou lati são nulos
+        // verify if lat or long are null
         if (longitude == null || latitude == null) {
             throw new IllegalArgumentException("Longitude ou Latitude São nulos, verifique!");
         }
-        // verifica se long ou lati são valores validos
+        // verify if lat or long are true values
         if (longitude.compareTo(BigDecimal.valueOf(-180)) < 0 || longitude.compareTo(BigDecimal.valueOf(180)) > 0) {
             throw new IllegalArgumentException("Longitude inválida: " + longitude + ". Deve estar " + "entre -180 e " +
                     "180 graus.");
