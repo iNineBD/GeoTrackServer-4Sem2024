@@ -11,7 +11,7 @@ import java.util.List;
 public record GeometryZoneRequestDTO(
         @JsonAlias("name") String name, // zone name
         @JsonAlias("type") GeometryForms type, // enum geometry zones
-        @JsonAlias("center") List<CenterCoordinatesData> center,
+        @JsonAlias("center") CenterCoordinatesData center,
         @JsonAlias("radius") BigDecimal radius) // coordinates list
 {
 }
