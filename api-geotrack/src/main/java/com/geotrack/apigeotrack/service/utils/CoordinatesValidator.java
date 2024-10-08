@@ -19,4 +19,11 @@ public class CoordinatesValidator {
                     "graus.");
         }
     }
+
+    // verify if radius are null
+    public static void validatesRadius(BigDecimal radius) {
+        if(radius == null){
+            throw new IllegalArgumentException("Valor do Raio vazio!");
+        }
+    }
 }

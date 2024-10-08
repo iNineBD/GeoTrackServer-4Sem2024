@@ -22,7 +22,7 @@ public class GeometryController {
     // method to insert geometry zones
     @PostMapping("/add")
     public ResponseEntity<String> insertPolygon(@RequestBody GeometryZoneRequestDTO geometryZoneRequestDTO) {
-        geometryService.insertGeometryZone(geometryZoneRequestDTO);
+
         return new ResponseEntity<>("Zone inserted successfully", HttpStatus.CREATED);
     }
 
