@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ZoneCoordenatesDTO(
+public record CenterCoordinatesData(
         @JsonAlias("longitude") BigDecimal longitude,
         @JsonAlias("latitude") BigDecimal latitude) {
 }

@@ -1,5 +1,6 @@
 package com.geotrack.apigeotrack.entities;
 
+import com.geotrack.apigeotrack.dto.geometry.CenterCoordinatesData;
 import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,22 +8,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "sessao", schema = "ITO1")
+@Table(name = "sessao_geometrica", schema = "ITO1")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GeometryZone {
+public class GeometrySession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sessao", nullable = false)
     private Integer idSession;
 
     @Column(name = "nome", length = 50)
-    private String nome;
+    private String name;
 
     @Column(name = "status")
     private Integer status;
@@ -31,7 +33,13 @@ public class GeometryZone {
     @Column(name = "tipo")
     private GeometryForms type;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sessao")
-    private List<GeometryCoordinates> coordinates;
+    @Column(name = "longitude_centro",precision = 17, scale = 15)
+    private BigDecimal longitude;
+
+    @Column(name = "latitude_centro", precision = 17, scale= 15)
+    private BigDecimal latitude ;
+
+    @Column(name = "raio", precision = 25, scale = 15)
+    private BigDecimal radius;
+
 }
