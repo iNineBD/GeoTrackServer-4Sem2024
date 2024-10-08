@@ -32,12 +32,4 @@ public class FiltersController {
         ResponseUsers response = filtersService.listUsers(request);
         return ResponseEntity.ok().body(response);
     }
-
-    @Operation(summary = "Retorna todos os dispositivos do usuário", description = "Retorna uma lista de dispositivos do usuário paginadas com o número de 5 elementos por página")
-    @GetMapping("/devices")
-    public ResponseEntity<ResponseDevices> filterDevices(@RequestParam int idUser, @RequestParam int page) throws NoSuchElementException {
-        RequestDevice req = new RequestDevice(idUser, page);
-        ResponseDevices response = filtersService.listDevices(req);
-        return ResponseEntity.ok().body(response);
-    }
 }
