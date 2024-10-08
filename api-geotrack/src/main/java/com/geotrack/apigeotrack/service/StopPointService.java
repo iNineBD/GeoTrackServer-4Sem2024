@@ -50,8 +50,8 @@ public class StopPointService {
 
             int i = 0;
             for (StopPointDBDTO stopPointDBDTO : listStop) {
-                Integer idAtual = stopPointDBDTO.idDev();
-                if(!idAtual.equals(idPrevious) || i == listStop.size() -1){
+                Integer idCurrent = stopPointDBDTO.idDev();
+                if(!idCurrent.equals(idPrevious) || i == listStop.size() -1){
                     if (!stopPoints.isEmpty()) {
                         Optional<Devices> device = devicesRepository.findById(idPrevious);
                         String userName = device.get().getUser().getName().toUpperCase();
@@ -61,7 +61,7 @@ public class StopPointService {
                         GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
                         deviceGeoJsonList.add(new StopPointResponseDTO(userName,nameDevice, geoJson));
                     }
-                    idPrevious = idAtual;
+                    idPrevious = idCurrent;
                     stopPoints.clear();
                 }
                 LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
