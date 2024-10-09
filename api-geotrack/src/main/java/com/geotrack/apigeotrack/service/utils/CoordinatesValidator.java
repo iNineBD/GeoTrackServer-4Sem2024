@@ -25,5 +25,8 @@ public class CoordinatesValidator {
         if(radius == null){
             throw new IllegalArgumentException("Valor do Raio vazio!");
         }
+        if(radius.compareTo(BigDecimal.ZERO) == 0){
+            throw new IllegalArgumentException("Valor do Raio não pode ser 0!");
+        }
     }
 }
