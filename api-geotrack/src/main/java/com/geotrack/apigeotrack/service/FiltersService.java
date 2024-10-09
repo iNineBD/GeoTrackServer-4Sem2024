@@ -44,6 +44,7 @@ public class FiltersService  {
             throw new NoSuchElementException("Nenhum usuário encontrado");
         }
 
+        // My DataUsersDTO has a constructor that takes the user id, device id and concatenates the userName with the device code
         Page<DataUsersDTO> usersPage = users.get().map(DataUsersDTO::new);
 
         //Get the current page number

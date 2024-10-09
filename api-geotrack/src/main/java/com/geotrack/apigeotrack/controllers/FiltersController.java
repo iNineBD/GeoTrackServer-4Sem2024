@@ -25,7 +25,7 @@ public class FiltersController {
     @Autowired
     FiltersService filtersService;
 
-    @Operation(summary = "Retorna todos os usuários", description = "Retorna uma lista de usuários paginadas com o número de 5 elementos por página")
+    @Operation(summary = "Retorna uma lista dos usuário com seus dispositivos", description = "Retorna uma lista de usuários com seus dispositivos paginadas com o número de elementos por página determinado pela requisição")
     @GetMapping("/users")
     public ResponseEntity<ResponseUsers> filterUsers(@RequestParam int page, @RequestParam int qtdPage) throws NoSuchElementException {
         RequestUser request = new RequestUser(page, qtdPage);
