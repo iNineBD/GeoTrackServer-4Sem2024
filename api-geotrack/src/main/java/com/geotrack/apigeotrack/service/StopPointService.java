@@ -78,7 +78,10 @@ public class StopPointService {
 
     public LocalizacaoDTO toExecStopPoint(StopPointDBDTO in, List<LocalizacaoDTO> stopPoints) {
 
+        // validates if the coordinate has already been inserted in the list
         if (!stopPoints.isEmpty()) {
+
+            // setScale 2 is a tecnic to decrease repetition
             BigDecimal scaledInLatitude = in.latitude().setScale(2, RoundingMode.HALF_UP);
             BigDecimal scaledInLongitude = in.longitude().setScale(2, RoundingMode.HALF_UP);
 
@@ -86,33 +89,46 @@ public class StopPointService {
                 BigDecimal scaledStopLatitude = localizacaoDTO.latitude().setScale(2, RoundingMode.HALF_UP);
                 BigDecimal scaledStopLongitude = localizacaoDTO.longitude().setScale(2, RoundingMode.HALF_UP);
 
+
+                // check lat equals lat and long equals long
                 if (scaledStopLatitude.equals(scaledInLatitude) && scaledStopLongitude.equals(scaledInLongitude)) {
                     return null;
                 }
             }
         }
 
+        // create a unique id to indentify register in cache
         String idRegister = in.startDate().toString() + in.endDate().toString() + in.latitude() + in.longitude();
 
+        // add avg lat and long in cache
         geoRedisService.addLocation(idRegister, in.latitude(), in.longitude(), "pontoMedio");
 
+        // db return a list of lat and long. Here we separate this
         String[] coordinates= in.latLongList().split("\\|");
-
         for(int i = 0 ; i < coordinates.length ; i++) {
+
+            // bd return a "map" to lat e long. Here we separate this
             String[] latLongArray = coordinates[i].split(";");
             BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
             BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
 
+            // add px in cache
             geoRedisService.addLocation(idRegister, latitude, longitude, "p"+i);
 
+            // calcule the distance between "pontoMedio" and px
             Distance distance = geoRedisService.calculateDistance(idRegister, "pontoMedio", "p"+i);
+
+            // remove px from cache
             geoRedisService.removeLocation(idRegister, "p"+i);
 
+            //verify if the distance between px and pontoMedio is greater than 8 meters
             if (distance.getValue() > 8){
                 return null;
             }
         }
+        // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
+
         return new LocalizacaoDTO(in.latitude(), in.longitude());
     }
 
