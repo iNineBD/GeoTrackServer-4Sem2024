@@ -1,11 +1,12 @@
 package com.geotrack.apigeotrack.service;
 
-import com.geotrack.apigeotrack.dto.geometry.GeometryZoneRequestDTO;
-import com.geotrack.apigeotrack.dto.geometry.GeometryZoneResponseDTO;
+import com.geotrack.apigeotrack.dto.geometry.delete.DeleteZoneDTO;
+import com.geotrack.apigeotrack.dto.geometry.insert.CenterCoordinatesDTO;
+import com.geotrack.apigeotrack.dto.geometry.insert.GeometryZoneRequestDTO;
+import com.geotrack.apigeotrack.dto.geometry.listAll.GeometryZoneResponseDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
 import com.geotrack.apigeotrack.service.utils.CoordinatesValidator;
-import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,10 +59,27 @@ public class GeometryService {
                 geometryZone.getIdSession(),
                 geometryZone.getName(),
                 geometryZone.getType(),
-                geometryZone.getLongitude(),
-                geometryZone.getLatitude(),
+                new CenterCoordinatesDTO(
+                        geometryZone.getLongitude(),
+                        geometryZone.getLatitude()
+                ),
                 geometryZone.getRadius()
         )).collect(Collectors.toList());
     }
+
+    // method to edit status geometry zones
+    public void deleteZones(DeleteZoneDTO deleteZoneDTO){
+
+        Optional<GeometrySession> zoneDeleted = geometryZoneRepository.findById(deleteZoneDTO.id());
+
+        if(zoneDeleted.isEmpty()){
+            throw new IllegalArgumentException("Esta zona não existe, verifique o número de identificação!");
+        }
+
+        zoneDeleted.get().setStatus(0);
+
+        geometryZoneRepository.save(zoneDeleted.get());
+    }
+
 
 }
