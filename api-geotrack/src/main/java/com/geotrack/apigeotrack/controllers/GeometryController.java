@@ -23,11 +23,11 @@ public class GeometryController {
     @PostMapping("/add")
     public ResponseEntity<String> insertGeometryZones(@RequestBody GeometryZoneRequestDTO geometryZoneRequestDTO) {
         geometryService.insertGeometryZones(geometryZoneRequestDTO);
-        return new ResponseEntity<>("Zone inserted successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("Zona inserida com Sucesso", HttpStatus.CREATED);
     }
 
     @GetMapping("list")
-    public ResponseEntity<List<GeometryZoneResponseDTO>> getAllZones(){
+    public ResponseEntity<List<GeometryZoneResponseDTO>> getAllZones() {
         geometryService.getAll();
         return ResponseEntity.ok().body(geometryService.getAll());
     }
@@ -35,5 +35,10 @@ public class GeometryController {
 
 
 
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteGeometryZones(@RequestBody DeleteZoneDTO deleteZoneDTO) {
+        geometryService.deleteZones(deleteZoneDTO);
+        return new ResponseEntity<>("Zona deletada com Sucesso", HttpStatus.OK);
+    }
 
 }
