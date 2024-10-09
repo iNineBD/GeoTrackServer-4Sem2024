@@ -1,11 +1,17 @@
 package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.geometry.GeometryZoneRequestDTO;
+import com.geotrack.apigeotrack.dto.geometry.GeometryZoneResponseDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
 import com.geotrack.apigeotrack.service.utils.CoordinatesValidator;
+import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GeometryService {
@@ -34,6 +40,7 @@ public class GeometryService {
         // create object to send
         GeometrySession geometrySession = new GeometrySession();
         geometrySession.setName(geometryZoneRequestDTO.name());
+        geometrySession.setStatus(1);
         geometrySession.setType(geometryZoneRequestDTO.type());
         geometrySession.setLongitude(geometryZoneRequestDTO.center().longitude());
         geometrySession.setLatitude(geometryZoneRequestDTO.center().latitude());
@@ -41,4 +48,20 @@ public class GeometryService {
 
         geometryZoneRepository.save(geometrySession);
     }
+
+    public List<GeometryZoneResponseDTO> getAll(){
+        // select in database
+        List<GeometrySession> geometryZones = geometryZoneRepository.listSessions();
+
+        // mapping select objects to return
+        return geometryZones.stream().map(geometryZone -> new GeometryZoneResponseDTO(
+                geometryZone.getIdSession(),
+                geometryZone.getName(),
+                geometryZone.getType(),
+                geometryZone.getLongitude(),
+                geometryZone.getLatitude(),
+                geometryZone.getRadius()
+        )).collect(Collectors.toList());
+    }
+
 }
