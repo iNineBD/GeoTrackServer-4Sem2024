@@ -10,10 +10,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DataUsersDTO(@JsonAlias("idUser") int idUser,
                            @JsonAlias("idDevice") Long idDevice,
-                           @JsonAlias("userDevice") String userDevice) {
+                           @JsonAlias("userName") String userName,
+                           @JsonAlias("deviceName") String deviceName) {
 
     public DataUsersDTO(User user){
-        this(user.getIdUser(),user.getDevices().get(0).getIdDevices(), user.getName() + " - " +user.getDevices().get(0).getCode());
+        this(user.getIdUser(),user.getDevices().get(0).getIdDevices(), user.getName(), user.getDevices().get(0).getCode());
     }
 
 }
