@@ -81,5 +81,50 @@ public class GeometryService {
         geometryZoneRepository.save(zoneDeleted.get());
     }
 
+    // method to update geometry zones
+    public void editZones(UpdateGeometryZonesDTO updateGeometryZonesDTO) throws IllegalArgumentException{
+
+        Optional<GeometrySession> zoneEdited = geometryZoneRepository.findByIdSession(updateGeometryZonesDTO.id());
+
+        if(zoneEdited.isEmpty()){
+                throw new IllegalArgumentException("Esta Zona não existe, verifique o número de identificação!");
+        }
+
+        if(updateGeometryZonesDTO.name() == null){
+            throw new IllegalArgumentException("Nome da Zona Geométrica vazio!");
+        };
+
+        String nameUpperCase = updateGeometryZonesDTO.name().toUpperCase();
+
+        zoneEdited.get().setName(nameUpperCase);
+
+        //
+        if(updateGeometryZonesDTO.type() != null){
+
+            GeometryValidator.validatesType(updateGeometryZonesDTO.type());
+
+            zoneEdited.get().setType(GeometryForms.valueOf(updateGeometryZonesDTO.type()));
+        }
+
+        // verify if long and lat are null and validate if are valid true
+        if(updateGeometryZonesDTO.center().longitude() != null || updateGeometryZonesDTO.center().latitude() != null){
+
+            GeometryValidator.validatesCoordinator(updateGeometryZonesDTO.center().longitude(), updateGeometryZonesDTO.center().latitude());
+
+            zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
+            zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());
+        }
+
+        // validate radius are null
+        if(updateGeometryZonesDTO.radius() != null){
+            // validate radius are null or 0
+            GeometryValidator.validatesRadius(updateGeometryZonesDTO.radius());
+            zoneEdited.get().setRadius(updateGeometryZonesDTO.radius());
+        }
+
+        geometryZoneRepository.save(zoneEdited.get());
+    }
+
+
 
 }
