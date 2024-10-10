@@ -1,12 +1,14 @@
 package com.geotrack.apigeotrack.service;
 
 import com.geotrack.apigeotrack.dto.geometry.delete.DeleteZoneDTO;
+import com.geotrack.apigeotrack.dto.geometry.update.UpdateGeometryZonesDTO;
 import com.geotrack.apigeotrack.dto.geometry.insert.CenterCoordinatesDTO;
 import com.geotrack.apigeotrack.dto.geometry.insert.GeometryZoneRequestDTO;
 import com.geotrack.apigeotrack.dto.geometry.listAll.GeometryZoneResponseDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
-import com.geotrack.apigeotrack.service.utils.CoordinatesValidator;
+import com.geotrack.apigeotrack.service.utils.GeometryValidator;
+import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,34 +25,43 @@ public class GeometryService {
     // method to insert geometry zones in database
     public void insertGeometryZones(GeometryZoneRequestDTO geometryZoneRequestDTO) {
 
+        String upperCaseName = geometryZoneRequestDTO.name().toUpperCase().trim();
+
+        // verificar se o nome ja existe no banco, se ja existir, lança um erro
+        if (geometryZoneRepository.existsByName(upperCaseName)) {
+            throw new IllegalArgumentException("Nome já existe no banco de dados!");
+        }
+
         if (geometryZoneRequestDTO.name().isEmpty()) {
             throw new IllegalArgumentException("Nome vazio!");
         }
 
-        if (geometryZoneRequestDTO.type() == null) {
-            throw new IllegalArgumentException("Tipo da Zona Geométrica vazio!");
-        }
+        // verify if type exists in Enum
+        GeometryValidator.validatesType(String.valueOf(geometryZoneRequestDTO.type()));
 
         // validate if long and lat are null and validate if are valid true
-        CoordinatesValidator.validatesCoordinator(geometryZoneRequestDTO.center().longitude(),
+        GeometryValidator.validatesCoordinator(geometryZoneRequestDTO.center().longitude(),
                 geometryZoneRequestDTO.center().latitude());
 
         // validate radius are null
-        CoordinatesValidator.validatesRadius(geometryZoneRequestDTO.radius());
+        GeometryValidator.validatesRadius(geometryZoneRequestDTO.radius());
 
-        // create object to send
-        GeometrySession geometrySession = new GeometrySession();
-        geometrySession.setName(geometryZoneRequestDTO.name());
-        geometrySession.setStatus(1);
-        geometrySession.setType(geometryZoneRequestDTO.type());
-        geometrySession.setLongitude(geometryZoneRequestDTO.center().longitude());
-        geometrySession.setLatitude(geometryZoneRequestDTO.center().latitude());
-        geometrySession.setRadius(geometryZoneRequestDTO.radius());
+        Integer status = 1;
+
+        // create a complete object to send and save in database
+        GeometrySession geometrySession = new GeometrySession(
+                null,
+                upperCaseName,
+                status,
+                geometryZoneRequestDTO.type(),
+                geometryZoneRequestDTO.center().longitude(),
+                geometryZoneRequestDTO.center().latitude(),
+                geometryZoneRequestDTO.radius());
 
         geometryZoneRepository.save(geometrySession);
     }
 
-    public List<GeometryZoneResponseDTO> getAll(){
+    public List<GeometryZoneResponseDTO> listAllGeometryZones(){
         // select in database
         List<GeometrySession> geometryZones = geometryZoneRepository.listSessions();
 
@@ -67,7 +78,7 @@ public class GeometryService {
         )).collect(Collectors.toList());
     }
 
-    // method to edit status geometry zones
+    // method to update status geometry zones
     public void deleteZones(DeleteZoneDTO deleteZoneDTO){
 
         Optional<GeometrySession> zoneDeleted = geometryZoneRepository.findById(deleteZoneDTO.id());
