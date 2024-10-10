@@ -33,44 +33,65 @@ public class StopPointService {
     @Cacheable(value = "stoppingPoints", key = "#requestDTO")
     public List<StopPointResponseDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
 
+        // Check if you made the request with more than 5 users
         if(requestDTO.devices().size() > 5){
             throw new IllegalArgumentException("Limite de dispositivos excedido. Máximo de 5 por consulta");
         }
-
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate())
-        );
 
+        //Returns a list, ordered by device id and grouped by a time of 15 minutes, with the average of latitudes and longitudes
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
+
+        // Checks if the list is empty
         if (listStop.isEmpty()) {
             throw new NoSuchElementException("Nenhuma Localização encontrada para os dispositivos. ");
         }
+        List<LocalizacaoDTO> stopPoints = new ArrayList<>();
 
-            List<LocalizacaoDTO> stopPoints = new ArrayList<>();
-            Integer idPrevious = listStop.get(0).idDev();
+        // Get the first device id from the list
+        Integer idPrevious = listStop.get(0).idDev();
 
-            int i = 0;
-            for (StopPointDBDTO stopPointDBDTO : listStop) {
-                Integer idCurrent = stopPointDBDTO.idDev();
-                if(!idCurrent.equals(idPrevious) || i == listStop.size() -1){
-                    if (!stopPoints.isEmpty()) {
-                        Optional<Devices> device = devicesRepository.findById(idPrevious);
-                        String userName = device.get().getUser().getName().toUpperCase();
-                        String nameDevice = device.get().getCode().toUpperCase();
+        // Create an iterator
+        int i = 0;
 
-                        List<FeatureDTO> feature = resquestGeoJson(stopPoints);
-                        GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
-                        deviceGeoJsonList.add(new StopPointResponseDTO(userName,nameDevice, geoJson));
-                    }
-                    idPrevious = idCurrent;
-                    stopPoints.clear();
+        // It will go through each line of the listStop
+        for (StopPointDBDTO stopPointDBDTO : listStop) {
+
+            //Gets the object's current device id number
+            Integer idCurrent = stopPointDBDTO.idDev();
+
+            // When the previous id is different from the current one, it will save that user's geojson list or when it is the last device on the list
+            if(!idCurrent.equals(idPrevious) || i == listStop.size() - 1){
+
+                // Checks whether the stopPoints list has any stop points
+                if (!stopPoints.isEmpty()) {
+                    // Search for device based on ID
+                    Optional<Devices> device = devicesRepository.findById(idPrevious);
+                    // Gets the name of the user to whom that device belongs
+                    String userName = device.get().getUser().getName().toUpperCase();
+                    // Get the device name
+                    String nameDevice = device.get().getCode().toUpperCase();
+
+                    // Create the feature list
+                    List<FeatureDTO> feature = resquestGeoJson(stopPoints);
+                    // Create the geojson object
+                    GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
+                    // Add that user's stopping points to the list
+                    deviceGeoJsonList.add(new StopPointResponseDTO(userName,nameDevice, geoJson));
                 }
-                LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
-                if (point != null) {
-                    stopPoints.add(point);
-                }
-
-                i++;
+                // Add the current id number to the previous id variable
+                idPrevious = idCurrent;
+                // Clears the list of stopping points
+                stopPoints.clear();
             }
+            // Calls toExecStopPoint to get stop points
+            LocalizacaoDTO point = toExecStopPoint(stopPointDBDTO, stopPoints);
+            // Checks if the point object is not null
+            if (point != null) {
+                stopPoints.add(point);
+            }
+            i++;
+        }
 
         return deviceGeoJsonList;
     }
@@ -136,14 +157,18 @@ public class StopPointService {
 
     public List<FeatureDTO> resquestGeoJson(List<LocalizacaoDTO> stopPoints) {
 
+        // Creates a list of feature objects
         List<FeatureDTO> feature = new ArrayList<>(stopPoints.size());
 
+        // It will pass through all the stopping points
         for (LocalizacaoDTO point : stopPoints) {
-
+            // Creates a list of coordinates with latitudes and longitudes
             BigDecimal[] listCoordenates = {point.latitude(),point.longitude()};
 
+            // Creates the GeometryDTO object with latitudes and longitudes
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
 
+            // Add the object to the list
             feature.add(new FeatureDTO("Feature",new PropertiesDTO(), geometry));
         }
         return feature;
