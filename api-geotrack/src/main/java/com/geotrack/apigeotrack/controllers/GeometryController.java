@@ -1,9 +1,9 @@
 package com.geotrack.apigeotrack.controllers;
 
-import com.geotrack.apigeotrack.dto.geometry.delete.DeleteZoneDTO;
-import com.geotrack.apigeotrack.dto.geometry.update.UpdateGeometryZonesDTO;
-import com.geotrack.apigeotrack.dto.geometry.insert.GeometryZoneRequestDTO;
-import com.geotrack.apigeotrack.dto.geometry.listAll.GeometryZoneResponseDTO;
+import com.geotrack.apigeotrack.dto.zone.delete.DeleteZoneDTO;
+import com.geotrack.apigeotrack.dto.zone.update.UpdateGeometryZonesDTO;
+import com.geotrack.apigeotrack.dto.zone.insert.GeometryZoneRequestDTO;
+import com.geotrack.apigeotrack.dto.zone.list.GeometryZoneResponseDTO;
 import com.geotrack.apigeotrack.service.GeometryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Geometry Zones", description = "Operations to geometry zones to insert, listing and exclusion")
+@Tag(name = "Geometry Zones", description = "Operations to zone zones to insert, listing and exclusion")
 @RestController
 @RequestMapping("/zone")
 public class GeometryController {
@@ -22,7 +22,7 @@ public class GeometryController {
     @Autowired
     GeometryService geometryService;
 
-    // method to insert geometry zones
+    // method to insert zone zones
     @Operation(summary = "Adiciona uma Zona Geométrica ao Banco de dados")
     @PostMapping("/insert")
     public ResponseEntity<String> insertCircle(@RequestBody GeometryZoneRequestDTO geometryZoneRequestDTO) {

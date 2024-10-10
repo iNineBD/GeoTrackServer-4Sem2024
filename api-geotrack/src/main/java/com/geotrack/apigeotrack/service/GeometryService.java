@@ -1,14 +1,15 @@
 package com.geotrack.apigeotrack.service;
 
-import com.geotrack.apigeotrack.dto.geometry.delete.DeleteZoneDTO;
-import com.geotrack.apigeotrack.dto.geometry.update.UpdateGeometryZonesDTO;
-import com.geotrack.apigeotrack.dto.geometry.insert.CenterCoordinatesDTO;
-import com.geotrack.apigeotrack.dto.geometry.insert.GeometryZoneRequestDTO;
-import com.geotrack.apigeotrack.dto.geometry.listAll.GeometryZoneResponseDTO;
+import com.geotrack.apigeotrack.dto.zone.delete.DeleteZoneDTO;
+import com.geotrack.apigeotrack.dto.zone.insert.CenterCoordinatesDTO;
+import com.geotrack.apigeotrack.dto.zone.insert.GeometryZoneRequestDTO;
+import com.geotrack.apigeotrack.dto.zone.list.GeometryZoneResponseDTO;
+import com.geotrack.apigeotrack.dto.zone.update.UpdateGeometryZonesDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
-import com.geotrack.apigeotrack.service.utils.GeometryValidator;
 import com.geotrack.apigeotrack.service.utils.GeometryForms;
+import com.geotrack.apigeotrack.service.utils.GeometryValidator;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class GeometryService {
     @Autowired
     GeometryZoneRepository geometryZoneRepository;
 
-    // method to insert geometry zones in database
+    // method to insert zone zones in database
     public void insertGeometryZones(GeometryZoneRequestDTO geometryZoneRequestDTO) {
 
         String upperCaseName = geometryZoneRequestDTO.name().toUpperCase().trim();
@@ -61,7 +62,7 @@ public class GeometryService {
         geometryZoneRepository.save(geometrySession);
     }
 
-    public List<GeometryZoneResponseDTO> listAllGeometryZones(){
+    public List<GeometryZoneResponseDTO> listAllGeometryZones() {
         // select in database
         List<GeometrySession> geometryZones = geometryZoneRepository.listSessions();
 
@@ -78,12 +79,12 @@ public class GeometryService {
         )).collect(Collectors.toList());
     }
 
-    // method to update status geometry zones
-    public void deleteZones(DeleteZoneDTO deleteZoneDTO){
+    // method to update status zone zones
+    public void deleteZones(DeleteZoneDTO deleteZoneDTO) {
 
         Optional<GeometrySession> zoneDeleted = geometryZoneRepository.findById(deleteZoneDTO.id());
 
-        if(zoneDeleted.isEmpty()){
+        if (zoneDeleted.isEmpty()) {
             throw new IllegalArgumentException("Esta zona não existe, verifique o número de identificação!");
         }
 
@@ -92,50 +93,58 @@ public class GeometryService {
         geometryZoneRepository.save(zoneDeleted.get());
     }
 
-    // method to update geometry zones
-    public void editZones(UpdateGeometryZonesDTO updateGeometryZonesDTO) throws IllegalArgumentException{
+    // method to update zone zones
+    public void editZones(UpdateGeometryZonesDTO updateGeometryZonesDTO) {
 
         Optional<GeometrySession> zoneEdited = geometryZoneRepository.findByIdSession(updateGeometryZonesDTO.id());
 
-        if(zoneEdited.isEmpty()){
-                throw new IllegalArgumentException("Esta Zona não existe, verifique o número de identificação!");
+        // verify if zone exists
+        if (zoneEdited.isEmpty()) {
+            throw new EntityNotFoundException("Esta Zona não existe, verifique o número de identificação!");
         }
 
-        if(updateGeometryZonesDTO.name() == null){
+        // verify if name is empty
+        if (updateGeometryZonesDTO.name().isEmpty()) {
             throw new IllegalArgumentException("Nome da Zona Geométrica vazio!");
-        };
+        } else {
+            zoneEdited.get().setName(updateGeometryZonesDTO.name().toUpperCase());
+        }
+        ;
 
-        String nameUpperCase = updateGeometryZonesDTO.name().toUpperCase();
+        // verify if type exists in Enum
+        if (updateGeometryZonesDTO.type() == null) {
+            throw new IllegalArgumentException("Tipo de Zona Geométrica invalido!");
 
-        zoneEdited.get().setName(nameUpperCase);
-
-        //
-        if(updateGeometryZonesDTO.type() != null){
-
+        } else {
             GeometryValidator.validatesType(updateGeometryZonesDTO.type());
-
             zoneEdited.get().setType(GeometryForms.valueOf(updateGeometryZonesDTO.type()));
         }
 
         // verify if long and lat are null and validate if are valid true
-        if(updateGeometryZonesDTO.center().longitude() != null || updateGeometryZonesDTO.center().latitude() != null){
+        if (updateGeometryZonesDTO.center().longitude() == null || updateGeometryZonesDTO.center().latitude() == null) {
 
-            GeometryValidator.validatesCoordinator(updateGeometryZonesDTO.center().longitude(), updateGeometryZonesDTO.center().latitude());
+            throw new IllegalArgumentException("Longitude ou Latitude inválidos!");
+
+        } else {
+            GeometryValidator.validatesCoordinator(updateGeometryZonesDTO.center().longitude(),
+                    updateGeometryZonesDTO.center().latitude());
 
             zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
             zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());
         }
 
         // validate radius are null
-        if(updateGeometryZonesDTO.radius() != null){
-            // validate radius are null or 0
+        if (updateGeometryZonesDTO.radius() == null) {
+            throw new IllegalArgumentException("Raio Invalido!");
+        } else {
+
             GeometryValidator.validatesRadius(updateGeometryZonesDTO.radius());
             zoneEdited.get().setRadius(updateGeometryZonesDTO.radius());
         }
 
+        // save in database
         geometryZoneRepository.save(zoneEdited.get());
     }
-
 
 
 }
