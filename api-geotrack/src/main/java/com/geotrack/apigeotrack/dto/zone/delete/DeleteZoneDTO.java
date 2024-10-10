@@ -1,4 +1,4 @@
-package com.geotrack.apigeotrack.dto.geometry.delete;
+package com.geotrack.apigeotrack.dto.zone.delete;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

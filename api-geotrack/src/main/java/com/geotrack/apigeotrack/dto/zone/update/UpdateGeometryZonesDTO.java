@@ -1,8 +1,8 @@
-package com.geotrack.apigeotrack.dto.geometry.update;
+package com.geotrack.apigeotrack.dto.zone.update;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.geotrack.apigeotrack.dto.geometry.insert.CenterCoordinatesDTO;
+import com.geotrack.apigeotrack.dto.zone.insert.CenterCoordinatesDTO;
 
 import java.math.BigDecimal;
 
