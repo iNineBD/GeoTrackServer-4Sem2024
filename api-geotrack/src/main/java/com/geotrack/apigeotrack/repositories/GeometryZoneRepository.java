@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GeometryZoneRepository extends JpaRepository<GeometrySession, Integer> {
@@ -13,6 +14,7 @@ public interface GeometryZoneRepository extends JpaRepository<GeometrySession, I
     @Query("select d from GeometrySession d where d.status = 1")
     List<GeometrySession> listSessions();
 
+    boolean existsByName(String name);
 
-
+    Optional<GeometrySession> findByIdSession(Integer id);
 }
