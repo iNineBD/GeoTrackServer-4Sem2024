@@ -2,7 +2,7 @@ package com.geotrack.apigeotrack.service.utils;
 
 import java.math.BigDecimal;
 
-public class CoordinatesValidator {
+public class GeometryValidator {
 
     public static void validatesCoordinator(BigDecimal longitude, BigDecimal latitude) {
         // verify if lat or long are null
@@ -22,11 +22,23 @@ public class CoordinatesValidator {
 
     // verify if radius are null
     public static void validatesRadius(BigDecimal radius) {
-        if(radius == null){
+        if (radius == null) {
             throw new IllegalArgumentException("Valor do Raio vazio!");
         }
-        if(radius.compareTo(BigDecimal.ZERO) == 0){
+        if (radius.compareTo(BigDecimal.ZERO) == 0) {
             throw new IllegalArgumentException("Valor do Raio não pode ser 0!");
+        }
+    }
+
+    // verify if type exists in Enum
+    public static void validatesType(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Tipo da Zona Geométrica vazio!");
+        }
+        try {
+            GeometryForms.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Tipo da Zona Geométrica inválido!");
         }
     }
 }
