@@ -1,8 +1,9 @@
-package com.geotrack.apigeotrack.dto.zone.update;
+package com.geotrack.apigeotrack.dto.zone.updateCircle;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.geotrack.apigeotrack.dto.zone.insert.CenterCoordinatesDTO;
+import com.geotrack.apigeotrack.dto.zone.insertCircle.CenterCoordinatesDTO;
+import com.geotrack.apigeotrack.service.utils.GeometryForms;
 
 import java.math.BigDecimal;
 
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 public record UpdateGeometryZonesDTO(
         @JsonAlias("id") Integer id,
         @JsonAlias("name") String name,
-        @JsonAlias("type") String type,
+        @JsonAlias("type") GeometryForms type,
         @JsonAlias("center") CenterCoordinatesDTO center,
         @JsonAlias("radius") BigDecimal radius) {
 }

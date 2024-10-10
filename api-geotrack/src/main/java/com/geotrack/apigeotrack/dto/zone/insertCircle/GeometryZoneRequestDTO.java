@@ -1,4 +1,4 @@
-package com.geotrack.apigeotrack.dto.zone.insert;
+package com.geotrack.apigeotrack.dto.zone.insertCircle;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,6 +11,6 @@ public record GeometryZoneRequestDTO(
         @JsonAlias("name") String name, // zone name
         @JsonAlias("type") GeometryForms type, // enum zone zones
         @JsonAlias("center") CenterCoordinatesDTO center,
-        @JsonAlias("radius") BigDecimal radius) // coordinates list
+        @JsonAlias("radius") BigDecimal radius) // coordinates getAllCircle
 {
 }

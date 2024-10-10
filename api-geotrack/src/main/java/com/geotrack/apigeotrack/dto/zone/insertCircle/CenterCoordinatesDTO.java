@@ -1,4 +1,4 @@
-package com.geotrack.apigeotrack.dto.zone.insert;
+package com.geotrack.apigeotrack.dto.zone.insertCircle;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
