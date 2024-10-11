@@ -1,6 +1,6 @@
 package com.geotrack.apigeotrack.service.utils;
 
-// geometry forms
+// zone forms
 public enum GeometryForms {
     POLYGON,
     POINT,
