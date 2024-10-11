@@ -28,7 +28,7 @@ public class GeometryService {
     @Transactional
     public void insertGeometryZones(GeometryZoneRequestDTO geometryZoneRequestDTO) {
 
-        if (geometryZoneRepository.existsByName(geometryZoneRequestDTO.name().toUpperCase())) {
+        if (geometryZoneRepository.existsByName(geometryZoneRequestDTO.name().toUpperCase().trim())) {
             throw new IllegalArgumentException("Nome já existe no banco de dados!");
         }
 
@@ -44,7 +44,7 @@ public class GeometryService {
         // create a complete object to send and save in database
         GeometrySession geometrySession = new GeometrySession(
                 null,
-                geometryZoneRequestDTO.name().toUpperCase(),
+                geometryZoneRequestDTO.name().toUpperCase().trim(),
                 1,
                 geometryZoneRequestDTO.type(),
                 geometryZoneRequestDTO.center().longitude(),
@@ -97,7 +97,7 @@ public class GeometryService {
         }
 
         // verify if exist this name in database execpt
-        if (geometryZoneRepository.existName(updateGeometryZonesDTO.name().toUpperCase(),updateGeometryZonesDTO.id())) {
+        if (geometryZoneRepository.existName(updateGeometryZonesDTO.name().toUpperCase().trim(),updateGeometryZonesDTO.id())) {
             throw new IllegalArgumentException("Nome já existe no banco de dados!");
         }
 
@@ -113,7 +113,7 @@ public class GeometryService {
         GeometryValidator.validatesAll(objectValid);
 
         // setting values to save in database
-        zoneEdited.get().setName(updateGeometryZonesDTO.name().toUpperCase());
+        zoneEdited.get().setName(updateGeometryZonesDTO.name().toUpperCase().trim());
         zoneEdited.get().setType(updateGeometryZonesDTO.type());
         zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
         zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());

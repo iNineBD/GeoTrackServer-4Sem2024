@@ -38,7 +38,7 @@ public class GeometryController {
     }
 
     @Operation(summary = "Deleta uma Zona Geométrica", description = "Deleta uma Zona Geométrica do banco de dados, alterando o status para 0")
-    @PostMapping("/delete")
+    @PutMapping("/delete")
     public ResponseEntity<String> deleteCircle(@RequestBody DeleteZoneDTO deleteZoneDTO) {
         geometryService.deleteZones(deleteZoneDTO);
         return new ResponseEntity<>("Zona deletada com Sucesso", HttpStatus.OK);
