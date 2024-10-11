@@ -1,17 +1,18 @@
 package com.geotrack.apigeotrack.service;
 
-import com.geotrack.apigeotrack.dto.zone.delete.DeleteZoneDTO;
-import com.geotrack.apigeotrack.dto.zone.insert.CenterCoordinatesDTO;
-import com.geotrack.apigeotrack.dto.zone.insert.GeometryZoneRequestDTO;
-import com.geotrack.apigeotrack.dto.zone.list.GeometryZoneResponseDTO;
-import com.geotrack.apigeotrack.dto.zone.update.UpdateGeometryZonesDTO;
+import com.geotrack.apigeotrack.dto.utils.ValidateZonesDTO;
+import com.geotrack.apigeotrack.dto.zone.deleteCircle.DeleteZoneDTO;
+import com.geotrack.apigeotrack.dto.zone.getAllCircle.GeometryZoneResponseDTO;
+import com.geotrack.apigeotrack.dto.zone.insertCircle.CenterCoordinatesDTO;
+import com.geotrack.apigeotrack.dto.zone.insertCircle.GeometryZoneRequestDTO;
+import com.geotrack.apigeotrack.dto.zone.updateCircle.UpdateGeometryZonesDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
-import com.geotrack.apigeotrack.service.utils.GeometryForms;
 import com.geotrack.apigeotrack.service.utils.GeometryValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,36 +24,29 @@ public class GeometryService {
     @Autowired
     GeometryZoneRepository geometryZoneRepository;
 
-    // method to insert zone zones in database
+    // method to insertCircle zone zones in database
+    @Transactional
     public void insertGeometryZones(GeometryZoneRequestDTO geometryZoneRequestDTO) {
 
-        String upperCaseName = geometryZoneRequestDTO.name().toUpperCase().trim();
-
-        // verificar se o nome ja existe no banco, se ja existir, lança um erro
-        if (geometryZoneRepository.existsByName(upperCaseName)) {
+        if (geometryZoneRepository.existsByName(geometryZoneRequestDTO.name().toUpperCase())) {
             throw new IllegalArgumentException("Nome já existe no banco de dados!");
         }
 
-        if (geometryZoneRequestDTO.name().isEmpty()) {
-            throw new IllegalArgumentException("Nome vazio!");
-        }
+        ValidateZonesDTO objectValid = new ValidateZonesDTO(
+                geometryZoneRequestDTO.name(),
+                geometryZoneRequestDTO.type(),
+                geometryZoneRequestDTO.center(),
+                geometryZoneRequestDTO.radius()
+        );
 
-        // verify if type exists in Enum
-        GeometryValidator.validatesType(String.valueOf(geometryZoneRequestDTO.type()));
-
-        // validate if long and lat are null and validate if are valid true
-        GeometryValidator.validatesCoordinator(geometryZoneRequestDTO.center().longitude(),
-                geometryZoneRequestDTO.center().latitude());
-
-        // validate radius are null
-        GeometryValidator.validatesRadius(geometryZoneRequestDTO.radius());
+        GeometryValidator.validatesAll(objectValid);
 
         Integer status = 1;
 
         // create a complete object to send and save in database
         GeometrySession geometrySession = new GeometrySession(
                 null,
-                upperCaseName,
+                geometryZoneRequestDTO.name().toUpperCase(),
                 status,
                 geometryZoneRequestDTO.type(),
                 geometryZoneRequestDTO.center().longitude(),
@@ -79,7 +73,7 @@ public class GeometryService {
         )).collect(Collectors.toList());
     }
 
-    // method to update status zone zones
+    // method to updateCircle status zone zones
     public void deleteZones(DeleteZoneDTO deleteZoneDTO) {
 
         Optional<GeometrySession> zoneDeleted = geometryZoneRepository.findById(deleteZoneDTO.id());
@@ -93,7 +87,8 @@ public class GeometryService {
         geometryZoneRepository.save(zoneDeleted.get());
     }
 
-    // method to update zone zones
+    // method to updateCircle zone zones
+    @Transactional
     public void editZones(UpdateGeometryZonesDTO updateGeometryZonesDTO) {
 
         Optional<GeometrySession> zoneEdited = geometryZoneRepository.findByIdSession(updateGeometryZonesDTO.id());
@@ -103,48 +98,31 @@ public class GeometryService {
             throw new EntityNotFoundException("Esta Zona não existe, verifique o número de identificação!");
         }
 
-        // verify if name is empty
-        if (updateGeometryZonesDTO.name().isEmpty()) {
-            throw new IllegalArgumentException("Nome da Zona Geométrica vazio!");
-        } else {
-            zoneEdited.get().setName(updateGeometryZonesDTO.name().toUpperCase());
-        }
-        ;
-
-        // verify if type exists in Enum
-        if (updateGeometryZonesDTO.type() == null) {
-            throw new IllegalArgumentException("Tipo de Zona Geométrica invalido!");
-
-        } else {
-            GeometryValidator.validatesType(updateGeometryZonesDTO.type());
-            zoneEdited.get().setType(GeometryForms.valueOf(updateGeometryZonesDTO.type()));
+        // verify if exist this name in database execpt
+        if (geometryZoneRepository.existName(updateGeometryZonesDTO.name().toUpperCase(),updateGeometryZonesDTO.id())) {
+            throw new IllegalArgumentException("Nome já existe no banco de dados!");
         }
 
-        // verify if long and lat are null and validate if are valid true
-        if (updateGeometryZonesDTO.center().longitude() == null || updateGeometryZonesDTO.center().latitude() == null) {
 
-            throw new IllegalArgumentException("Longitude ou Latitude inválidos!");
+        ValidateZonesDTO objectValid = new ValidateZonesDTO(
+                updateGeometryZonesDTO.name(),
+                updateGeometryZonesDTO.type(),
+                updateGeometryZonesDTO.center(),
+                updateGeometryZonesDTO.radius()
+        );
 
-        } else {
-            GeometryValidator.validatesCoordinator(updateGeometryZonesDTO.center().longitude(),
-                    updateGeometryZonesDTO.center().latitude());
+        // validating all values with validator
+        GeometryValidator.validatesAll(objectValid);
 
-            zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
-            zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());
-        }
-
-        // validate radius are null
-        if (updateGeometryZonesDTO.radius() == null) {
-            throw new IllegalArgumentException("Raio Invalido!");
-        } else {
-
-            GeometryValidator.validatesRadius(updateGeometryZonesDTO.radius());
-            zoneEdited.get().setRadius(updateGeometryZonesDTO.radius());
-        }
+        // setting values to save in database
+        zoneEdited.get().setName(updateGeometryZonesDTO.name().toUpperCase());
+        zoneEdited.get().setType(updateGeometryZonesDTO.type());
+        zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
+        zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());
+        zoneEdited.get().setRadius(updateGeometryZonesDTO.radius());
 
         // save in database
         geometryZoneRepository.save(zoneEdited.get());
     }
-
 
 }
