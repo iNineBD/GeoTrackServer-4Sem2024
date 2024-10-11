@@ -7,6 +7,6 @@ import java.math.BigDecimal;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record CenterCoordinatesData(
-        @JsonAlias("longitude") double longitude,
-        @JsonAlias("latitude") double latitude) {
+        @JsonAlias("longitude") BigDecimal longitude,
+        @JsonAlias("latitude") BigDecimal latitude) {
 }
