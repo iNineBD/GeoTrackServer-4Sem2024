@@ -41,13 +41,11 @@ public class GeometryService {
 
         GeometryValidator.validatesAll(objectValid);
 
-        Integer status = 1;
-
         // create a complete object to send and save in database
         GeometrySession geometrySession = new GeometrySession(
                 null,
                 geometryZoneRequestDTO.name().toUpperCase(),
-                status,
+                1,
                 geometryZoneRequestDTO.type(),
                 geometryZoneRequestDTO.center().longitude(),
                 geometryZoneRequestDTO.center().latitude(),
