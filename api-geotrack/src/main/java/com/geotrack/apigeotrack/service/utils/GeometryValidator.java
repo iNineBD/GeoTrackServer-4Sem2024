@@ -1,10 +1,31 @@
 package com.geotrack.apigeotrack.service.utils;
 
+import com.geotrack.apigeotrack.dto.utils.ValidateZonesDTO;
+import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 
+@Component
 public class GeometryValidator {
 
-    public static void validatesCoordinator(BigDecimal longitude, BigDecimal latitude) {
+    @Autowired
+    GeometryZoneRepository geometryZoneRepository;
+
+    public static void validatesAll(ValidateZonesDTO validateZonesDTO){
+
+        if(validateZonesDTO.name().trim().isEmpty()){
+            throw new IllegalArgumentException("Nome da Zona Geométrica esta vazio!");
+        }
+
+        validatesCoordinates(validateZonesDTO.center().longitude(),validateZonesDTO.center().latitude());
+        validatesRadius(validateZonesDTO.radius());
+        validatesType(validateZonesDTO.type().toString());
+
+    }
+
+    public static void validatesCoordinates(BigDecimal longitude, BigDecimal latitude) {
         // verify if lat or long are null
         if (longitude == null || latitude == null) {
             throw new IllegalArgumentException("Longitude ou Latitude São nulos, verifique!");
