@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class StopPointSessionController {
     @Autowired
     StopPointSessionService stopPointSessionService;
-
-    @GetMapping("/search")
+    @GetMapping
     // method that gets all stop points into a geographic session
     public StopPointSessionResponseDTO pointsInSession (@RequestBody StopPointSessionRequestDTO stopPointSessionRequestDTO){
        return stopPointSessionService.stopPointInSession(stopPointSessionRequestDTO);
