@@ -24,28 +24,28 @@ public class GeometryController {
 
     // method to insertCircle zone zones
     @Operation(summary = "Adiciona uma Zona Geométrica ao Banco de dados")
-    @PostMapping("/insert")
+    @PostMapping
     public ResponseEntity<String> insertCircle(@RequestBody GeometryZoneRequestDTO geometryZoneRequestDTO) {
         geometryService.insertGeometryZones(geometryZoneRequestDTO);
         return new ResponseEntity<>("Zona inserida com Sucesso", HttpStatus.CREATED);
     }
 
     @Operation(summary = "Listagem de Zonas Geométricas", description = "Retorna uma lista de Zonas Geométricas ativas no banco de dados")
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<GeometryZoneResponseDTO>> getAllCircle() {
         geometryService.listAllGeometryZones();
         return ResponseEntity.ok().body(geometryService.listAllGeometryZones());
     }
 
     @Operation(summary = "Deleta uma Zona Geométrica", description = "Deleta uma Zona Geométrica do banco de dados, alterando o status para 0")
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<String> deleteCircle(@RequestBody DeleteZoneDTO deleteZoneDTO) {
         geometryService.deleteZones(deleteZoneDTO);
         return new ResponseEntity<>("Zona deletada com Sucesso", HttpStatus.OK);
     }
 
     @Operation(summary = "Edita uma Zona Geométrica", description = "Recebe os dados alterados de uma zona geométrica, e salva-os no banco de dados")
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<String> updateCircle(@RequestBody UpdateGeometryZonesDTO updateGeometryZonesDTO){
         geometryService.editZones(updateGeometryZonesDTO);
         return new ResponseEntity<>("Zona Geométrica editada com Sucesso",HttpStatus.OK);
