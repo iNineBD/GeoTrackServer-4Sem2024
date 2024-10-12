@@ -9,6 +9,7 @@ import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
 import com.geotrack.apigeotrack.service.utils.UtilsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class StopPointSessionService {
     GeoRedisServices geoRedisService;
 
     // This function returns all Stop Point that are in a Geographic Session
+    @Cacheable(value = "stoppingPoints", key = "#stopPointSessionRequestDTO")
     public StopPointSessionResponseDTO stopPointInSession(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
         List<LocalizacaoDTO> stopPointsInSession = findStopPointInSessionByDeviceAndData(stopPointSessionRequestDTO);
