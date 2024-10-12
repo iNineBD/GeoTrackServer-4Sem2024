@@ -6,13 +6,17 @@ import com.geotrack.apigeotrack.dto.stopoint.StopPointDBDTO;
 import com.geotrack.apigeotrack.dto.stopointsessions.StopPointSessionRequestDTO;
 import com.geotrack.apigeotrack.dto.stopointsessions.StopPointSessionResponseDTO;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
+import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
 import com.geotrack.apigeotrack.service.utils.UtilsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 
 @Service
@@ -26,30 +30,23 @@ public class StopPointSessionService {
     @Autowired
     StopPointService stopService;
 
+    @Autowired
+    GeoRedisServices geoRedisService;
+
     // This function returns all Stop Point that are in a Geographic Session
     public StopPointSessionResponseDTO stopPointInSession(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
-        List<LocalizacaoDTO> stopPoints = findStopPointInSessionByDeviceAndData(stopPointSessionRequestDTO);
+        List<LocalizacaoDTO> stopPointsInSession = findStopPointInSessionByDeviceAndData(stopPointSessionRequestDTO);
 
-        List<LocalizacaoDTO> stopPointsInSession = new ArrayList<>();
-        // Add in the list stopPointsInSession just the points that are into the session selected
-        for (LocalizacaoDTO localizacao : stopPoints) {
-            double distance = haversine(stopPointSessionRequestDTO, localizacao.latitude().doubleValue(), localizacao.longitude().doubleValue());
-            if (distance <= stopPointSessionRequestDTO.radius()) {
-                stopPointsInSession.add(localizacao);
-            }
-        }
-
-        StopPointSessionResponseDTO stopPointSessionResponseDTO = new StopPointSessionResponseDTO(stopPointsInSession);
         // return list
-        return stopPointSessionResponseDTO;
+        return new StopPointSessionResponseDTO(stopPointsInSession);
     }
 
     // This function return a List from the database that bring the stop points referent a device
     public List<LocalizacaoDTO> findStopPointInSessionByDeviceAndData(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
         List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(
-                locationRepository.findOneLocalizationGroupedByDateWithInterval(
+                locationRepository.findStopPointsByUsersAndSession(
                         stopPointSessionRequestDTO.deviceId(),
                         stopPointSessionRequestDTO.startDate(),
                         stopPointSessionRequestDTO.endDate()
@@ -60,14 +57,20 @@ public class StopPointSessionService {
             throw new NoSuchElementException("Nenhuma Localização encontrada");
         }
 
-        List<LocalizacaoDTO> stopPoints = new ArrayList<>();
+        String uuidRedis = "stopPointInSession" + UUID.randomUUID().toString();
 
+        // add avg lat and long in cache
+        geoRedisService.addLocation(uuidRedis, stopPointSessionRequestDTO.coordinates().latitude(), stopPointSessionRequestDTO.coordinates().longitude(), "centerSession");
+
+        List<LocalizacaoDTO> stopPoints = new ArrayList<>();
         for (StopPointDBDTO stopPointDBDTO : listStop) {
-            LocalizacaoDTO point = stopService.toExecStopPoint(stopPointDBDTO, stopPoints);
+            LocalizacaoDTO point = toExecStopPointInSession(stopPointDBDTO, stopPoints, stopPointSessionRequestDTO.radius(), uuidRedis);
             if (point != null) {
                 stopPoints.add(point);
             }
         }
+
+        geoRedisService.removeLocation(uuidRedis, "centerSession");
 
         if (stopPoints.isEmpty()) {
             throw new NoSuchElementException("Nenhuma Localização encontrada");
@@ -76,21 +79,44 @@ public class StopPointSessionService {
         return (stopPoints);
     }
 
-    // This function calculate the distance between two points
-    public static double haversine(StopPointSessionRequestDTO stopPointSessionRequestDTO, double lat2, double lng2) {
-        double lat1 = stopPointSessionRequestDTO.coordinates().latitude().doubleValue();
-        double lng1 = stopPointSessionRequestDTO.coordinates().longitude().doubleValue();
 
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
+    public LocalizacaoDTO toExecStopPointInSession(StopPointDBDTO stopPointToCheck, List<LocalizacaoDTO> stopPointsInSession, double radiusMeters, String idRegisterRedis) {
 
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        // validates if the coordinate has already been inserted in the list
+        if (UtilsServices.checkStopPointDuplicate(stopPointToCheck, stopPointsInSession)) return null;
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        // add avg lat and long in cache
+        geoRedisService.addLocation(idRegisterRedis, stopPointToCheck.latitude(), stopPointToCheck.longitude(), "pontoMedio");
 
-        return EARTH_RADIUS * c;
+        Distance distanceToCenterSession = geoRedisService.calculateDistance(idRegisterRedis, "centerSession", "pontoMedio");
+
+        if (distanceToCenterSession.getValue() > radiusMeters) return null;
+
+        // db return a list of lat and long. Here we separate this
+        String[] coordinates= stopPointToCheck.latLongList().split("\\|");
+        for(int i = 0 ; i < coordinates.length ; i++) {
+
+            // bd return a "map" to lat e long. Here we separate this
+            String[] latLongArray = coordinates[i].split(";");
+            BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
+            BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
+
+            // add px in cache
+            geoRedisService.addLocation(idRegisterRedis, latitude, longitude, "p"+i);
+
+            // calcule the distance between "pontoMedio" and px
+            Distance distanceToAvg = geoRedisService.calculateDistance(idRegisterRedis, "pontoMedio", "p"+i);
+
+            // remove px from cache
+            geoRedisService.removeLocation(idRegisterRedis, "p"+i);
+
+            //verify if the distance between px and pontoMedio is greater than 8 meters
+            if (distanceToAvg.getValue() > 8) return null;
+
+        }
+        // remove pontoMedio from cache
+        geoRedisService.removeLocation(idRegisterRedis, "pontoMedio");
+
+        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude());
     }
-
 }

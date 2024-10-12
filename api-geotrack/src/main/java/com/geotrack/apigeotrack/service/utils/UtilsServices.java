@@ -1,5 +1,6 @@
 package com.geotrack.apigeotrack.service.utils;
 
+import com.geotrack.apigeotrack.dto.stopoint.LocalizacaoDTO;
 import com.geotrack.apigeotrack.dto.stopoint.StopPointDBDTO;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,26 @@ public class UtilsServices {
             stopPoints.add(stopPoint);
         }
         return stopPoints;
+    }
+
+    public static boolean checkStopPointDuplicate(StopPointDBDTO stopPointToCheck, List<LocalizacaoDTO> stopPointsInSession) {
+        if (!stopPointsInSession.isEmpty()) {
+
+            // setScale 2 is a tecnic to decrease repetition
+            BigDecimal scaledInLatitude = stopPointToCheck.latitude().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal scaledInLongitude = stopPointToCheck.longitude().setScale(2, RoundingMode.HALF_UP);
+
+            for (LocalizacaoDTO localizacaoDTO : stopPointsInSession) {
+                BigDecimal scaledStopLatitude = localizacaoDTO.latitude().setScale(2, RoundingMode.HALF_UP);
+                BigDecimal scaledStopLongitude = localizacaoDTO.longitude().setScale(2, RoundingMode.HALF_UP);
+
+
+                // check lat equals lat and long equals long
+                if (scaledStopLatitude.equals(scaledInLatitude) && scaledStopLongitude.equals(scaledInLongitude)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

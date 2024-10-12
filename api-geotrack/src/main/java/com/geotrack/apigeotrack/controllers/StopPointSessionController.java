@@ -20,13 +20,13 @@ public class StopPointSessionController {
     @Autowired
     StopPointSessionService stopPointSessionService;
 
-    @GetMapping("/pointsInSession/{deviceId}/{startDate}/{endDate}/{latitude}/{longitude}/{radius}")
-    public StopPointSessionResponseDTO pointsInSession(@PathVariable Long deviceId,
-                                                       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                                       @PathVariable BigDecimal latitude,
-                                                       @PathVariable BigDecimal longitude,
-                                                       @PathVariable double radius) {
+    @GetMapping("/pointsInSession")
+    public StopPointSessionResponseDTO pointsInSession(@RequestParam Long deviceId,
+                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                       @RequestParam BigDecimal latitude,
+                                                       @RequestParam BigDecimal longitude,
+                                                       @RequestParam double radius) {
 
         CenterCoordinatesDTO coordinates = new CenterCoordinatesDTO(latitude, longitude);
         StopPointSessionRequestDTO stopPointSessionRequestDTO = new StopPointSessionRequestDTO(

@@ -37,7 +37,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "    COUNT(*) > 2 \n" +
             "  ORDER BY\n" +
             "    grouped_data.id_dispositivo,time_group", nativeQuery = true)
-    List<Object[]> findLocalizationGroupedByDateWithInterval(List<Long> idsDev, LocalDate startDate, LocalDate finalDate);
+    List<Object[]> findStopPointsByUsers(List<Long> idsDev, LocalDate startDate, LocalDate finalDate);
 
     @Query(value = "WITH grouped_data AS (\n" +
             "    SELECT \n" +
@@ -62,6 +62,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "GROUP BY time_group\n" +
             "HAVING count(*) > 2\n" +
             "ORDER BY time_group", nativeQuery = true)
-    List<Object[]> findOneLocalizationGroupedByDateWithInterval(Long idDev, LocalDate startDate, LocalDate finalDate);
+    List<Object[]> findStopPointsByUsersAndSession(Long idDev, LocalDate startDate, LocalDate finalDate);
 }
 

@@ -12,7 +12,6 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -40,7 +39,7 @@ public class StopPointService {
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
 
         //Returns a list, ordered by device id and grouped by a time of 15 minutes, with the average of latitudes and longitudes
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findLocalizationGroupedByDateWithInterval(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findStopPointsByUsers(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
 
         // Checks if the list is empty
         if (listStop.isEmpty()) {
@@ -100,23 +99,7 @@ public class StopPointService {
     public LocalizacaoDTO toExecStopPoint(StopPointDBDTO in, List<LocalizacaoDTO> stopPoints) {
 
         // validates if the coordinate has already been inserted in the list
-        if (!stopPoints.isEmpty()) {
-
-            // setScale 2 is a tecnic to decrease repetition
-            BigDecimal scaledInLatitude = in.latitude().setScale(2, RoundingMode.HALF_UP);
-            BigDecimal scaledInLongitude = in.longitude().setScale(2, RoundingMode.HALF_UP);
-
-            for (LocalizacaoDTO localizacaoDTO : stopPoints) {
-                BigDecimal scaledStopLatitude = localizacaoDTO.latitude().setScale(2, RoundingMode.HALF_UP);
-                BigDecimal scaledStopLongitude = localizacaoDTO.longitude().setScale(2, RoundingMode.HALF_UP);
-
-
-                // check lat equals lat and long equals long
-                if (scaledStopLatitude.equals(scaledInLatitude) && scaledStopLongitude.equals(scaledInLongitude)) {
-                    return null;
-                }
-            }
-        }
+        if (UtilsServices.checkStopPointDuplicate(in, stopPoints)) return null;
 
         // create a unique id to indentify register in cache
         String idRegister = in.startDate().toString() + in.endDate().toString() + in.latitude() + in.longitude();
