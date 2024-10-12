@@ -29,7 +29,8 @@ public class StopPointSessionService {
     // This function returns all Stop Point that are in a Geographic Session
     public StopPointSessionResponseDTO stopPointInSession(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
-        List<LocalizacaoDTO> stopPoints = findStopPointByDeviceAndData(stopPointSessionRequestDTO);
+        List<LocalizacaoDTO> stopPoints = findStopPointInSessionByDeviceAndData(stopPointSessionRequestDTO);
+
         List<LocalizacaoDTO> stopPointsInSession = new ArrayList<>();
         // Add in the list stopPointsInSession just the points that are into the session selected
         for (LocalizacaoDTO localizacao : stopPoints) {
@@ -45,9 +46,16 @@ public class StopPointSessionService {
     }
 
     // This function return a List from the database that bring the stop points referent a device
-    public List<LocalizacaoDTO> findStopPointByDeviceAndData(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
+    public List<LocalizacaoDTO> findStopPointInSessionByDeviceAndData(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findOneLocalizationGroupedByDateWithInterval(stopPointSessionRequestDTO.deviceId(), stopPointSessionRequestDTO.startDate(), stopPointSessionRequestDTO.endDate()));
+        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(
+                locationRepository.findOneLocalizationGroupedByDateWithInterval(
+                        stopPointSessionRequestDTO.deviceId(),
+                        stopPointSessionRequestDTO.startDate(),
+                        stopPointSessionRequestDTO.endDate()
+                )
+        );
+
         if (listStop.isEmpty()) {
             throw new NoSuchElementException("Nenhuma Localização encontrada");
         }

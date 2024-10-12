@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record StopPointSessionRequestDTO(@JsonAlias("idDevice") Long deviceId,
-                                         @JsonAlias("device") String deviceName,
                                          @JsonAlias("startDate") LocalDate startDate,
                                          @JsonAlias("endDate") LocalDate endDate,
                                          @JsonAlias("centerCoordinates") CenterCoordinatesDTO coordinates,
