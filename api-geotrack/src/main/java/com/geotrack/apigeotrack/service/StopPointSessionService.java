@@ -26,12 +26,12 @@ public class StopPointSessionService {
     @Autowired
     StopPointService stopService;
 
+    // This function returns all Stop Point that are in a Geographic Session
     public StopPointSessionResponseDTO stopPointInSession(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
         List<LocalizacaoDTO> stopPoints = findStopPointByDeviceAndData(stopPointSessionRequestDTO);
-
         List<LocalizacaoDTO> stopPointsInSession = new ArrayList<>();
-
+        // Add in the list stopPointsInSession just the points that are into the session selected
         for (LocalizacaoDTO localizacao : stopPoints) {
             double distance = haversine(stopPointSessionRequestDTO, localizacao.latitude().doubleValue(), localizacao.longitude().doubleValue());
             if (distance <= stopPointSessionRequestDTO.radius()) {
@@ -40,9 +40,11 @@ public class StopPointSessionService {
         }
 
         StopPointSessionResponseDTO stopPointSessionResponseDTO = new StopPointSessionResponseDTO(stopPointsInSession);
+        // return list
         return stopPointSessionResponseDTO;
     }
 
+    // This function return a List from the database that bring the stop points referent a device
     public List<LocalizacaoDTO> findStopPointByDeviceAndData(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
         List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findOneLocalizationGroupedByDateWithInterval(stopPointSessionRequestDTO.deviceId(), stopPointSessionRequestDTO.startDate(), stopPointSessionRequestDTO.endDate()));
@@ -66,7 +68,7 @@ public class StopPointSessionService {
         return (stopPoints);
     }
 
-
+    // This function calculate the distance between two points
     public static double haversine(StopPointSessionRequestDTO stopPointSessionRequestDTO, double lat2, double lng2) {
         double lat1 = stopPointSessionRequestDTO.coordinates().latitude().doubleValue();
         double lng1 = stopPointSessionRequestDTO.coordinates().longitude().doubleValue();

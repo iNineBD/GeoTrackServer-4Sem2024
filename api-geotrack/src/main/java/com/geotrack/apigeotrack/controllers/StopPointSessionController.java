@@ -16,6 +16,7 @@ public class StopPointSessionController {
     StopPointSessionService stopPointSessionService;
 
     @GetMapping("/search")
+    // method that gets all stop points into a geographic session
     public StopPointSessionResponseDTO pointsInSession (@RequestBody StopPointSessionRequestDTO stopPointSessionRequestDTO){
        return stopPointSessionService.stopPointInSession(stopPointSessionRequestDTO);
     }
