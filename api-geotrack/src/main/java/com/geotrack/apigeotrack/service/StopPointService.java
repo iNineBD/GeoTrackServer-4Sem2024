@@ -146,7 +146,7 @@ public class StopPointService {
         // It will pass through all the stopping points
         for (LocalizacaoDTO point : stopPoints) {
             // Creates a list of coordinates with latitudes and longitudes
-            BigDecimal[] listCoordenates = {point.latitude(),point.longitude()};
+            BigDecimal[] listCoordenates = {point.longitude(),point.latitude()};
 
             // Creates the GeometryDTO object with latitudes and longitudes
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);

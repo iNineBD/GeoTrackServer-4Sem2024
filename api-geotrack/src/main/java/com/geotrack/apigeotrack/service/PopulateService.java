@@ -55,7 +55,7 @@ public class PopulateService {
                 continue;
             }
 
-            Location location = new Location(requestInsert.idCustomerBase(), requestInsert.latitude(), requestInsert.longitude(), requestInsert.dateTime(), user.get().getDevices().getFirst());
+            Location location = new Location(requestInsert.idCustomerBase(), requestInsert.longitude(), requestInsert.latitude(), requestInsert.dateTime(), user.get().getDevices().getFirst());
 
             if (location.getIdLocation().isEmpty()){
                 System.out.println("IDLocal not found para usuario: " + requestInsert.idUser());
