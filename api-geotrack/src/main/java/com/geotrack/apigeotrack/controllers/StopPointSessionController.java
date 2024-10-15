@@ -28,7 +28,7 @@ public class StopPointSessionController {
                                                        @RequestParam BigDecimal longitude,
                                                        @RequestParam double radius) {
 
-        CenterCoordinatesDTO coordinates = new CenterCoordinatesDTO(latitude, longitude);
+        CenterCoordinatesDTO coordinates = new CenterCoordinatesDTO(longitude,latitude);
         StopPointSessionRequestDTO stopPointSessionRequestDTO = new StopPointSessionRequestDTO(
                 deviceId, startDate, endDate, coordinates, radius);
 
