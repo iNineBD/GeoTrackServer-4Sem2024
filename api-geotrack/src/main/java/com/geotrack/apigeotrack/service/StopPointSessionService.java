@@ -65,8 +65,8 @@ public class StopPointSessionService {
         geoRedisService.addLocation(uuidRedis, stopPointSessionRequestDTO.coordinates().latitude(), stopPointSessionRequestDTO.coordinates().longitude(), "centerSession");
 
         List<LocalizacaoDTO> stopPoints = new ArrayList<>();
-        for (StopPointDBDTO stopPointDBDTO : listStop) {
-            LocalizacaoDTO point = toExecStopPointInSession(stopPointDBDTO, stopPoints, stopPointSessionRequestDTO.radius(), uuidRedis);
+        for (StopPointDBDTO stop2check : listStop) {
+            LocalizacaoDTO point = toExecStopPointInSession(stop2check, stopPoints, stopPointSessionRequestDTO.radius(), uuidRedis);
             if (point != null) {
                 stopPoints.add(point);
             }
