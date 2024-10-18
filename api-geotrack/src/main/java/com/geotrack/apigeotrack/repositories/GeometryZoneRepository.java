@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface GeometryZoneRepository extends JpaRepository<GeometrySession, Integer> {
 
-    @Query("select d from GeometrySession d where d.status = 1")
+    @Query("select d from GeometrySession d where d.status = 1 order by NLSSORT(d.name, 'NLS_SORT = BINARY_AI') ASC")
     List<GeometrySession> listSessions();
 
     boolean existsByName(String name);
