@@ -18,6 +18,6 @@ public interface GeometryZoneRepository extends JpaRepository<GeometrySession, I
 
     Optional<GeometrySession> findByIdSession(Integer id);
 
-    @Query("select count(d) > 0 from GeometrySession d where d.name = :name and d.idSession <> :id")
+    @Query("select count(d) > 0 from GeometrySession d where d.name = :name and d.idSession <> :id and d.status = 1")
     boolean existName(String name, Integer id);
 }
