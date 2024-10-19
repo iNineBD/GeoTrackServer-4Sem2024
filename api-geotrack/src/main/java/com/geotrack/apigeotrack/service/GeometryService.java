@@ -28,7 +28,7 @@ public class GeometryService {
     @Transactional
     public void insertGeometryZones(GeometryZoneRequestDTO geometryZoneRequestDTO) {
 
-        if (geometryZoneRepository.existsByName(geometryZoneRequestDTO.name().toUpperCase().trim())) {
+        if (geometryZoneRepository.existsByNameAndStatus(geometryZoneRequestDTO.name().toUpperCase().trim(),1)) {
             throw new IllegalArgumentException("Nome já existe no banco de dados!");
         }
 

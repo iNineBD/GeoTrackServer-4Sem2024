@@ -14,7 +14,7 @@ public interface GeometryZoneRepository extends JpaRepository<GeometrySession, I
     @Query("select d from GeometrySession d where d.status = 1 order by NLSSORT(d.name, 'NLS_SORT = BINARY_AI') ASC")
     List<GeometrySession> listSessions();
 
-    boolean existsByName(String name);
+    boolean existsByNameAndStatus(String name, Integer status);
 
     Optional<GeometrySession> findByIdSession(Integer id);
 
