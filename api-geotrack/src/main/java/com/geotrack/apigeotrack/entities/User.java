@@ -28,6 +28,6 @@ public class User {
     @Column(name = "cpf")
     private String cpf;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Devices> devices;
 }

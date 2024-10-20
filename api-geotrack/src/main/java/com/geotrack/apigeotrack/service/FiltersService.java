@@ -13,9 +13,11 @@ import com.geotrack.apigeotrack.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -41,7 +43,8 @@ public class FiltersService  {
         if(users.get().isEmpty()){
             throw new NoSuchElementException("Nenhum usuário encontrado");
         }
-        // In my return I modify the user objects to only show their ID and name
+
+        // My DataUsersDTO has a constructor that takes the user id, device id and concatenates the userName with the device code
         Page<DataUsersDTO> usersPage = users.get().map(DataUsersDTO::new);
 
         //Get the current page number
@@ -55,31 +58,5 @@ public class FiltersService  {
 
         return new ResponseUsers(usersResponse,pageAtual,totalPages);
 
-    }
-
-    @Cacheable(value = "lists", key = "#request")
-    public ResponseDevices listDevices(RequestDevice request) throws NoSuchElementException {
-        // Here it says which page I want and the number of items per page
-        PageRequest page = PageRequest.of(request.page(),5);
-
-        // Here I consult the devices in the DB and bring them in the form of a list
-        Optional<Page<Devices>> devices = devicesRepository.listDevices(request.idUser(),page);
-
-        if(devices.get().isEmpty()){
-            throw new NoSuchElementException("Nenhum dispositivo encontrado para o usuário");
-        }
-        // In my return I modify the devices objects to only show their ID and name
-        Page<DataDevicesDTO> devicesPage = devices.get().map(DataDevicesDTO::new);
-
-        //Get the current page number
-        int pageAtual = devicesPage.getNumber();
-
-        //Get the total number of pages
-        int totalPages = devicesPage.getTotalPages();
-
-        // Get the list of devices
-        List<DataDevicesDTO> devicesResponse = devicesPage.getContent();
-
-        return new ResponseDevices(devicesResponse,pageAtual,totalPages);
     }
 }

@@ -49,7 +49,7 @@ import java.util.NoSuchElementException;
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<RestErrorMessage> handleIllegalArgumentException(IllegalArgumentException ex) {
         ex.printStackTrace();
-        RestErrorMessage message = new RestErrorMessage("Método chamado com argumento inadequado. "+ex.getLocalizedMessage());
+        RestErrorMessage message = new RestErrorMessage(ex.getLocalizedMessage());
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

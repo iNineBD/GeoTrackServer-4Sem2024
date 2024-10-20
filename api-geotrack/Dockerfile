@@ -19,5 +19,3 @@ WORKDIR /app
 EXPOSE 8080
 # comand for started container
 CMD ["java", "-jar", "api-geotrack.jar"]
-
-#teste
