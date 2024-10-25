@@ -1,5 +1,6 @@
 package com.geotrack.apigeotrack.service.utils;
 
+import com.geotrack.apigeotrack.dto.routes.RouteSQLDTO;
 import com.geotrack.apigeotrack.dto.stopoint.LocalizacaoDTO;
 import com.geotrack.apigeotrack.dto.stopoint.StopPointDBDTO;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
@@ -33,6 +34,21 @@ public class UtilsServices {
             stopPoints.add(stopPoint);
         }
         return stopPoints;
+    }
+
+    public static List<RouteSQLDTO> convertToRouteSQLDTO(List<Object[]> results) {
+        List<RouteSQLDTO> routes = new ArrayList<>();
+        for (Object[] result : results) {
+            RouteSQLDTO stopPoint = new RouteSQLDTO(
+                    ((Number) result[0]).intValue(),
+                    (String) result[1],
+                    ((Timestamp) result[2]).toLocalDateTime(),
+                    ((Timestamp) result[3]).toLocalDateTime(),
+                    ((Number) result[4]).intValue()
+            );
+            routes.add(stopPoint);
+        }
+        return routes;
     }
 
     public static boolean checkStopPointDuplicate(StopPointDBDTO stopPointToCheck, List<LocalizacaoDTO> stopPointsInSession) {
