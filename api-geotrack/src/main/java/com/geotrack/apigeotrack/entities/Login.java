@@ -33,6 +33,12 @@ public class Login implements UserDetails {
     @Column(name = "email", length = 200, unique = true)
     private String email;
 
+    public Login(String name, String password, String email) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
     // method UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -69,4 +75,5 @@ public class Login implements UserDetails {
         // returning true because we are not controlling account enablement
         return true;
     }
+
 }
