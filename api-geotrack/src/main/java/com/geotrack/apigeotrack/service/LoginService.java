@@ -23,6 +23,11 @@ public class LoginService {
     private AuthenticationManager authenticationManager;
 
     public LoginResponseDTO login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+
+        if(authenticationRequestDTO.email().isEmpty() || authenticationRequestDTO.password().isEmpty()){
+            throw new IllegalArgumentException("Email ou senha não podem ser vazios!");
+        }
+
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(
                     authenticationRequestDTO.email().trim().toUpperCase(),
