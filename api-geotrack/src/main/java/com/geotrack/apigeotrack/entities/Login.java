@@ -22,7 +22,7 @@ public class Login implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @Column(name = "nome", length = 200)
     private String name;
@@ -33,12 +33,6 @@ public class Login implements UserDetails {
     @Column(name = "email", length = 200, unique = true)
     private String email;
 
-    public Login(String name, String password, String email) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
-
     // method UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,8 +42,7 @@ public class Login implements UserDetails {
 
     @Override
     public String getUsername() {
-        // using email as username
-        return this.email;
+        return email;
     }
 
     @Override
