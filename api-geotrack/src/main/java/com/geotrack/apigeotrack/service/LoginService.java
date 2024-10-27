@@ -6,6 +6,7 @@ import com.geotrack.apigeotrack.entities.Login;
 import com.geotrack.apigeotrack.service.utils.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,20 @@ public class LoginService {
 
     @Transactional
     public LoginResponseDTO login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+        try {
+            var usernamePassword = new UsernamePasswordAuthenticationToken(
+                    authenticationRequestDTO.email().trim().toUpperCase(),
+                    authenticationRequestDTO.password());
 
-        var usernamePassword = new UsernamePasswordAuthenticationToken(
-                authenticationRequestDTO.email(),
-                authenticationRequestDTO.password());
+            Authentication authentication = authenticationManager.authenticate(usernamePassword);
 
-        Authentication authentication = authenticationManager.authenticate(usernamePassword);
+            String token = tokenService.generateToken((Login) authentication.getPrincipal());
 
-        String token = tokenService.generateToken((Login) authentication.getPrincipal());
+            return new LoginResponseDTO(token);
 
-        return new LoginResponseDTO(token);
+        } catch (BadCredentialsException e) {
+
+            throw new IllegalArgumentException("Login Invalido!");
+        }
     }
 }
