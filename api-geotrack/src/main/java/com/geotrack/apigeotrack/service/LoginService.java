@@ -22,7 +22,6 @@ public class LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Transactional
     public LoginResponseDTO login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(
