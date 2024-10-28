@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Routes", description = "Operations to find routes")
@@ -29,8 +30,10 @@ public class RouteController {
     @GetMapping
     public ResponseEntity<List<ResponseFindRoutesDTO>> findRoutes(@RequestParam Long deviceId,
                                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-
-        return ResponseEntity.ok(routeService.findRoutes(deviceId, date));
+        LocalDateTime start = LocalDateTime.now();
+        List<ResponseFindRoutesDTO> response = routeService.findRoutes(deviceId, date);
+        System.out.println("Time to find routes: " + java.time.Duration.between(start, LocalDateTime.now()).toString());
+        return ResponseEntity.ok(response);
 
     }
 

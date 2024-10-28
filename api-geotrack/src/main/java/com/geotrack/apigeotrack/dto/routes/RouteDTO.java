@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 public class RouteDTO {
     @JsonProperty("date")
-    private LocalDateTime date;
+    private String date;
 
     @JsonProperty("latitude")
     private BigDecimal latitude;

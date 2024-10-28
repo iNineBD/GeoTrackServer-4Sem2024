@@ -89,8 +89,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "        DATA_HORA,\n" +
             "        ID_DISPOSITIVO,\n" +
             "        RN,\n" +
+            "        -- Verifica se a diferença de tempo e as coordenadas mudaram\n" +
             "        CASE \n" +
-            "            WHEN (DATA_HORA - LAG(DATA_HORA) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA)) <= INTERVAL '2' MINUTE\n" +
+            "            WHEN (DATA_HORA - LAG(DATA_HORA) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA)) >= INTERVAL '30' MINUTE\n" +
             "                AND (LATITUDE != LAG(LATITUDE) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA) \n" +
             "                OR LONGITUDE != LAG(LONGITUDE) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA))\n" +
             "            THEN NULL \n" +
@@ -113,7 +114,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             ")\n" +
             "SELECT\n" +
             "    ID_DISPOSITIVO,\n" +
-            "    LISTAGG(LATITUDE || ',' || LONGITUDE || '|' || TO_CHAR(DATA_HORA, 'DD-MON-YYYY HH:MI:SS AM'), '->') WITHIN GROUP (ORDER BY DATA_HORA) AS COORDENADAS,\n" +
+            "    LISTAGG(LATITUDE || ';' || LONGITUDE || '|' || TO_CHAR(DATA_HORA, 'DD-MON-YYYY HH:MI'), '->') WITHIN GROUP (ORDER BY DATA_HORA) AS COORDENADAS,\n" +
             "    MIN(DATA_HORA) AS INICIO_ROTA,\n" +
             "    MAX(DATA_HORA) AS FIM_ROTA,\n" +
             "    COUNT(DISTINCT LATITUDE || ',' || LONGITUDE) AS QTD_COORDENADAS\n" +
@@ -128,7 +129,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "    COUNT(DISTINCT LATITUDE || ',' || LONGITUDE) > 2\n" +
             "ORDER BY\n" +
             "    INICIO_ROTA;", nativeQuery = true)
-
     List<Object[]> findRouteByIdDevAndDate(Long idDev, LocalDate dateToFind);
 
 }

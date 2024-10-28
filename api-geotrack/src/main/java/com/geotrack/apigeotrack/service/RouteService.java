@@ -1,5 +1,6 @@
 package com.geotrack.apigeotrack.service;
 
+import com.geotrack.apigeotrack.dto.routes.RouteDTO;
 import com.geotrack.apigeotrack.dto.routes.RouteSQLDTO;
 import com.geotrack.apigeotrack.dto.routes.find.ResponseFindRoutesDTO;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
@@ -7,6 +8,7 @@ import com.geotrack.apigeotrack.service.utils.UtilsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +42,21 @@ public class RouteService {
             responseFindRoutesDTO.setDateStart(route.getStartDate());
             responseFindRoutesDTO.setDateEnd(route.getStopDate());
 
-            String[] coordinatesString = route.getCoordinates().split(";");
+            List<RouteDTO> routesDTO = new ArrayList<>();
+            String[] coordinatesString = route.getCoordinates().split("->");
+            for (String coordinate : coordinatesString) {
+                String[] latLongDate = coordinate.split("\\|");
+                String[] latLong = latLongDate[0].split(";");
+                BigDecimal lon = new BigDecimal(latLong[1].replace(",", "."));
+                BigDecimal lat = new BigDecimal(latLong[0].replace(",", "."));
+
+                routesDTO.add(new RouteDTO(latLongDate[1],lat, lon));
+            }
+
+            responseFindRoutesDTO.setRoutes(routesDTO);
+            response.add(responseFindRoutesDTO);
 
         }
-
-
         return response;
     }
 }
