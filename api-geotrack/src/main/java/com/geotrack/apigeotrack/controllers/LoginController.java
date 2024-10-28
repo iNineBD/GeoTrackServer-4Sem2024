@@ -29,11 +29,11 @@ public class LoginController {
     @Autowired
     RegisterService registerService;
 
-    @Operation(summary = "Login", description = "Realiza o login de um usuário, na aplicação, retornando o token de autenticação, usado em requisições futuras")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Login inválido")
-    })
+    @Operation(summary = "Login", description = "Realiza o login de um usuário, na aplicação, retornando o token de " +
+            "autenticação, usado em requisições futuras")
+    @ApiResponses(value = {@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description =
+            "Login realizado" + " com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Login inválido")})
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
@@ -42,22 +42,20 @@ public class LoginController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Cadastro", description = "Realiza o cadastro de um usuário, na aplicação, salvando-o na base de dados")
+    @Operation(summary = "Cadastro", description = "Realiza o cadastro de um usuário, na aplicação, salvando-o na " +
+            "base de dados")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Erro ao cadastrar usuário")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuário " +
+                    "cadastrado com sucesso"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Erro ao " +
+                    "cadastrar usuário")
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
-        try {
-            registerService.register(registerRequestDTO);
 
-            return new ResponseEntity<>(Map.of("message", "Usuário cadastrado com sucesso"), HttpStatus.CREATED);
+        registerService.register(registerRequestDTO);
 
-        } catch (IllegalArgumentException e) {
-
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return new ResponseEntity<>(Map.of("message", "Usuário cadastrado com sucesso"), HttpStatus.CREATED);
 
     }
 }

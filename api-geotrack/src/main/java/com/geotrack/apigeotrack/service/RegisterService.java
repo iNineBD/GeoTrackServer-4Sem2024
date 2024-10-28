@@ -20,12 +20,11 @@ public class RegisterService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    RegisterValidator registerValidator;
+
     @Transactional
     public Login register(@RequestBody RegisterRequestDTO registerRequestDTO) {
-
-        if (registerRequestDTO.email().isEmpty()){
-            throw new IllegalArgumentException("Email não pode ser vazio!");
-        }
 
         ValidateRegisterDTO objectValid = new ValidateRegisterDTO(
                 registerRequestDTO.name(),
@@ -33,7 +32,7 @@ public class RegisterService {
                 registerRequestDTO.password()
         );
 
-        RegisterValidator.validatesAll(objectValid);
+        registerValidator.validateAll(objectValid);
 
         // verify if email already exists
         if (loginRepository.findByEmail(registerRequestDTO.email().trim().toUpperCase()) != null) {

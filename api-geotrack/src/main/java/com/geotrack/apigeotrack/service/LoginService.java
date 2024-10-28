@@ -10,7 +10,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
@@ -24,7 +23,7 @@ public class LoginService {
 
     public LoginResponseDTO login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
-        if(authenticationRequestDTO.email().isEmpty() || authenticationRequestDTO.password().isEmpty()){
+        if (authenticationRequestDTO.email().isEmpty() || authenticationRequestDTO.password().isEmpty()) {
             throw new IllegalArgumentException("Email ou senha não podem ser vazios!");
         }
 
