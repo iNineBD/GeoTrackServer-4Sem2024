@@ -17,8 +17,10 @@ public class MetricsService {
 
     public MetricsResponse getQtdSessionsAndMonitored(){
 
+        // Query that returns the total number of active monitored
         Integer qtdMonitored = devicesRepository.qtdMonitoredAssets();
 
+        // Query that returns the total number of active sessions
         Integer qtdSessions = geometryZoneRepository.qtdSessionsAssets();
 
         MetricsResponse response = new MetricsResponse(qtdMonitored,qtdSessions);
