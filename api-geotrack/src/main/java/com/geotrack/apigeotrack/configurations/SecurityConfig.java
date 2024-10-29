@@ -29,6 +29,7 @@ public class SecurityConfig {
     SecurityFilter securityFilter;
 
     private static final String[] WHITE_LIST_URL = {
+            "/**",
             "/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
