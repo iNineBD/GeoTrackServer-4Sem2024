@@ -5,5 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record MetricsResponse(@JsonAlias("monitored") int qtdMonitored,
-                              @JsonAlias("sessions") int qtdSessions) {
+                              @JsonAlias("sessions") int qtdSessions,
+                              @JsonAlias("admins") int qtdAdmins) {
 }
