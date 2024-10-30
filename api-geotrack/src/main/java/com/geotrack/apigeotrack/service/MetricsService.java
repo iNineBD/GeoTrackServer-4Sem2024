@@ -27,6 +27,7 @@ public class MetricsService {
         // Query that returns the total number of active sessions
         Integer qtdSessions = geometryZoneRepository.qtdSessionsAssets();
 
+        // Query that returns the total number of people registered in the system
         Integer qtdUsers = loginRepository.getQtdUsers();
 
         MetricsResponse response = new MetricsResponse(qtdMonitored,qtdSessions,qtdUsers);
