@@ -20,6 +20,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -86,6 +91,28 @@ public class SecurityConfig {
                                 .email("https://github.com/iNineBD.com").url("apibdfatec@gmail.com"))
                         .license(new License().name("License of API")
                                 .url("API license URL")));
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Permitir solicitações de qualquer origem
+        config.setAllowCredentials(true);
+
+        // Substituir "*" por uma lista de origens específicas
+        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:8080"));
+
+        // Permitir solicitações de qualquer método (GET, POST, etc.)
+        config.addAllowedMethod("*");
+
+        // Permitir cabeçalhos específicos
+        config.addAllowedHeader("*");
+
+        config.addExposedHeader("fileName");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
 }
