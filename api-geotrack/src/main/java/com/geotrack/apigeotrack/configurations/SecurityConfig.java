@@ -110,6 +110,9 @@ public class SecurityConfig {
         // Permitir cabeçalhos específicos
         config.addAllowedHeader("*");
 
+        // Expor cabeçalhos específicos
+        config.addExposedHeader("fileName");
+
         config.addExposedHeader("fileName");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
