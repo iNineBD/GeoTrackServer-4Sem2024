@@ -102,7 +102,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
 
         // Substituir "*" por uma lista de origens específicas
-        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:8080"));
+        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:8080","http://localhost:3000" ));
 
         // Permitir solicitações de qualquer método (GET, POST, etc.)
         config.addAllowedMethod("*");
