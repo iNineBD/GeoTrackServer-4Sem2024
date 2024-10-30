@@ -17,4 +17,7 @@ public interface DevicesRepository extends JpaRepository<Devices, Integer> {
 
     Optional<Devices> findByIdDevices(Long id);
 
+
+    @Query("select count(d) from Devices d where d.status = 1")
+    Integer qtdMonitoredAssets();
 }
