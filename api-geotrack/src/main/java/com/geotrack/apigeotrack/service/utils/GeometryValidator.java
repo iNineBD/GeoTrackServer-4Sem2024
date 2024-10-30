@@ -1,17 +1,12 @@
 package com.geotrack.apigeotrack.service.utils;
 
 import com.geotrack.apigeotrack.dto.utils.ValidateZonesDTO;
-import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
 public class GeometryValidator {
-
-    @Autowired
-    GeometryZoneRepository geometryZoneRepository;
 
     public static void validatesAll(ValidateZonesDTO validateZonesDTO){
 
