@@ -12,6 +12,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -38,7 +39,7 @@ public class StopPointService {
         }
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
 
-        //Returns a list, ordered by device id and grouped by a time of 15 minutes, with the average of latitudes and longitudes
+        //Returns a list, ordered by device id and grouped by a entryTime of 15 minutes, with the average of latitudes and longitudes
         List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findStopPointsByUsers(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
 
         // Checks if the list is empty
@@ -133,7 +134,7 @@ public class StopPointService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
 
-        return new LocalizacaoDTO(in.latitude(), in.longitude());
+        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.entryTime());
     }
 
 
@@ -148,8 +149,11 @@ public class StopPointService {
             // Creates a list of coordinates with latitudes and longitudes
             BigDecimal[] listCoordenates = {point.longitude(),point.latitude()};
 
+            //
+            LocalDateTime time = point.time();
+
             // Creates the GeometryDTO object with latitudes and longitudes
-            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
+            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates, time);
 
             // Add the object to the list
             feature.add(new FeatureDTO("Feature",new PropertiesDTO(), geometry));

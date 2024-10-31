@@ -13,6 +13,7 @@ public record StopPointDBDTO(@JsonAlias("id_device") int idDev,
                              @JsonAlias("contador") int contador,
                              @JsonAlias("lat_long_list") String latLongList,
                              @JsonAlias("start_time") LocalDateTime startDate,
-                             @JsonAlias("start_time") LocalDateTime endDate) {
+                             @JsonAlias("start_time") LocalDateTime endDate,
+                             @JsonAlias("entry_time") LocalDateTime entryTime) {
 
 }
