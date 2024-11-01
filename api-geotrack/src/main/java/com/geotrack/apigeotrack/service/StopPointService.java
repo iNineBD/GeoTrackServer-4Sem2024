@@ -39,7 +39,7 @@ public class StopPointService {
         }
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
 
-        //Returns a list, ordered by device id and grouped by a entryTime of 15 minutes, with the average of latitudes and longitudes
+        //Returns a list, ordered by device id and grouped by a time of 15 minutes, with the average of latitudes and longitudes
         List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findStopPointsByUsers(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
 
         // Checks if the list is empty
