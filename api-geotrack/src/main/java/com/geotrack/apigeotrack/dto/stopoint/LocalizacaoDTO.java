@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record LocalizacaoDTO(@JsonAlias("latitude") BigDecimal latitude,
-                             @JsonAlias("longitude") BigDecimal longitude) {
+                             @JsonAlias("longitude") BigDecimal longitude,
+                             @JsonAlias("start_time") String startDate,
+                             @JsonAlias("end_time") String endDate) {
 
 }

@@ -119,6 +119,6 @@ public class StopPointSessionService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegisterRedis, "pontoMedio");
 
-        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude());
+        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude(), stopPointToCheck.startDate().toString(), stopPointToCheck.endDate().toString());
     }
 }
