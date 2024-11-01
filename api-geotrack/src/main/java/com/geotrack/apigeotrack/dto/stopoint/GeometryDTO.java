@@ -10,5 +10,6 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GeometryDTO(@JsonAlias("type") String type,
                           @JsonAlias("coordinates") BigDecimal[] coordinates,
-                          @JsonAlias("entryTime")LocalDateTime time) {
+                          @JsonAlias("start_time") String startDate,
+                          @JsonAlias("end_time") String endDate) {
 }

@@ -73,7 +73,7 @@ public class StopPointService {
                     String nameDevice = device.get().getCode().toUpperCase();
 
                     // Create the feature list
-                    List<FeatureDTO> feature = resquestGeoJson(stopPoints);
+                    List<FeatureDTO> feature = requestGeoJson(stopPoints);
                     // Create the geojson object
                     GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
                     // Add that user's stopping points to the list
@@ -134,12 +134,12 @@ public class StopPointService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
 
-        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.entryTime());
+        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.startDate().toString(), in.endDate().toString());
     }
 
 
 
-    public List<FeatureDTO> resquestGeoJson(List<LocalizacaoDTO> stopPoints) {
+    public List<FeatureDTO> requestGeoJson(List<LocalizacaoDTO> stopPoints) {
 
         // Creates a list of feature objects
         List<FeatureDTO> feature = new ArrayList<>(stopPoints.size());
@@ -149,11 +149,8 @@ public class StopPointService {
             // Creates a list of coordinates with latitudes and longitudes
             BigDecimal[] listCoordenates = {point.longitude(),point.latitude()};
 
-            //
-            LocalDateTime time = point.time();
-
             // Creates the GeometryDTO object with latitudes and longitudes
-            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates, time);
+            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates,point.startDate(), point.endDate());
 
             // Add the object to the list
             feature.add(new FeatureDTO("Feature",new PropertiesDTO(), geometry));

@@ -15,7 +15,6 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "    AVG(latitude)  AS avg_latitude,\n" +
             "    AVG(longitude) AS avg_longitude,\n" +
             "    COUNT(*) AS contador,\n" +
-            "    MIN(data_hora) AS entry_time, ,\n" +
             "    MIN(data_hora) AS start_time,\n" +
             "    MAX(data_hora) AS end_time,\n" +
             "    LISTAGG(latitude\n" +
