@@ -4,6 +4,7 @@ package com.geotrack.apigeotrack.controllers;
 import com.geotrack.apigeotrack.dto.routes.find.ResponseFindRoutesDTO;
 import com.geotrack.apigeotrack.dto.zone.getAllCircle.GeometryZoneResponseDTO;
 import com.geotrack.apigeotrack.service.RouteService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,6 +29,7 @@ public class RouteController {
     private RouteService routeService;
 
 
+    @Operation(summary = "Retorna uma lista das rotas identificadas para o dispositivo buscado", description = "Consulta as rotas identificadas para o dispositivo buscado entre as datas informadas")
     @GetMapping
     public ResponseEntity<Map<String,List<ResponseFindRoutesDTO>>> findRoutes(@RequestParam Long deviceId,
                                                                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
