@@ -92,30 +92,4 @@ public class SecurityConfig {
                         .license(new License().name("License of API")
                                 .url("API license URL")));
     }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-
-        // Permitir solicitações de qualquer origem
-        config.setAllowCredentials(true);
-
-        // Substituir "*" por uma lista de origens específicas
-        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:8080","http://localhost:3000" ));
-
-        // Permitir solicitações de qualquer método (GET, POST, etc.)
-        config.addAllowedMethod("*");
-
-        // Permitir cabeçalhos específicos
-        config.addAllowedHeader("*");
-
-        // Expor cabeçalhos específicos
-        config.addExposedHeader("fileName");
-
-        config.addExposedHeader("fileName");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-
 }

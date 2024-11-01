@@ -2,23 +2,35 @@ package com.geotrack.apigeotrack.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class CorsConfig {
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Habilita CORS para todas as rotas
-                        .allowedOrigins("http://127.0.0.1:3000", "http://localhost:3000","http://localhost:5173") // Permite qualquer origem (ou defina os domínios permitidos)
-                        .allowedMethods("*") // Métodos HTTP permitidos
-                        .allowedHeaders("*") // Permite todos os cabeçalhos
-                        .allowCredentials(true); // Define se credenciais (cookies) serão permitidas
-            }
-        };
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Permitir solicitações de qualquer origem
+        config.setAllowCredentials(true);
+
+        // Substituir "*" por uma lista de origens específicas
+        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:8080","http://127.0.0.1:3000", "http://localhost:3000","http://localhost:5173"));
+
+        // Permitir solicitações de qualquer método (GET, POST, etc.)
+        config.addAllowedMethod("*");
+
+        // Permitir cabeçalhos específicos
+        config.addAllowedHeader("*");
+
+        config.addExposedHeader("fileName");
+
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
