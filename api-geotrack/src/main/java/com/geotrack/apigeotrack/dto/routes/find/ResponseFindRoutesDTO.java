@@ -16,11 +16,11 @@ import java.util.List;
 @Setter
 public class ResponseFindRoutesDTO {
     @JsonProperty("date_start")
-    private LocalDateTime dateStart;
+    private String dateStart;
 
     @JsonProperty("date_end")
-    private LocalDateTime dateEnd;
+    private String dateEnd;
 
-    @JsonProperty("routes")
-    private List<RouteDTO> routes;
+    @JsonProperty("coordinates")
+    private List<RouteDTO> coordinates;
 }

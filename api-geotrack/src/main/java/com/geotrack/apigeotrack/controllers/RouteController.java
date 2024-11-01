@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Routes", description = "Operations to find routes")
 @RestController
@@ -28,12 +29,13 @@ public class RouteController {
 
 
     @GetMapping
-    public ResponseEntity<List<ResponseFindRoutesDTO>> findRoutes(@RequestParam Long deviceId,
-                                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public ResponseEntity<Map<String,List<ResponseFindRoutesDTO>>> findRoutes(@RequestParam Long deviceId,
+                                                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
+                                                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEnd) {
         LocalDateTime start = LocalDateTime.now();
-        List<ResponseFindRoutesDTO> response = routeService.findRoutes(deviceId, date);
+        List<ResponseFindRoutesDTO> response = routeService.findRoutes(deviceId, dateStart, dateEnd);
         System.out.println("Time to find routes: " + java.time.Duration.between(start, LocalDateTime.now()).toString());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("routes", response));
 
     }
 
