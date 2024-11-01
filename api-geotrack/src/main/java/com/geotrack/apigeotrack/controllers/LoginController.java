@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Tag(name = "Authentication", description = "Operations to login and register users")
+@Tag(name = "Autenticação de Usuários", description = "Operações de Login e Cadastro de Usuários")
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
@@ -29,11 +29,7 @@ public class LoginController {
     @Autowired
     RegisterService registerService;
 
-    @Operation(summary = "Login", description = "Realiza o login de um usuário, na aplicação, retornando o token de " +
-            "autenticação, usado em requisições futuras")
-    @ApiResponses(value = {@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description =
-            "Login realizado" + " com sucesso"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Login inválido")})
+    @Operation(summary = "Login", description = "Realiza o login de um usuário, na aplicação, retornando o token de autenticação, usado em requisições futuras")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
@@ -42,14 +38,7 @@ public class LoginController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Cadastro", description = "Realiza o cadastro de um usuário, na aplicação, salvando-o na " +
-            "base de dados")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuário " +
-                    "cadastrado com sucesso"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Erro ao " +
-                    "cadastrar usuário")
-    })
+    @Operation(summary = "Cadastro", description = "Realiza o cadastro de um usuário, na aplicação, salvando-o na base de dados")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
 

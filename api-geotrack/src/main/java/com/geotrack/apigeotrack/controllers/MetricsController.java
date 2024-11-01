@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Metrics",description = "Return of total monitored and active sessions metrics")
+@Tag(name = "Métricas",description = "Operações para obter métricas do sistema")
 @RestController
 @RequestMapping("/metrics")
 public class MetricsController {
@@ -18,7 +18,7 @@ public class MetricsController {
     @Autowired
     MetricsService metricsService;
 
-    @Operation(summary = "Total return of monitored and active sessions", description = "Returns data on the number of monitored people saved in the system and also the number of active sessions")
+    @Operation(summary = "Retorna a quantidade de zonas geográficas, usuários administradores e dispositivos monitorados", description = "Retorna a quantidade de zonas geográficas, usuários administradores e dispositivos monitorados")
     @GetMapping
     public ResponseEntity<MetricsResponse> fullSessionsAndMOnitored (){
 

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
-@Tag(name = "Filters",description = "Operações para retornar os usuários e dispositivos")
+@Tag(name = "Listas de Usuários e Dispositivos",description = "Filtros para listar usuários e dispositivos")
 @RestController
 @RequestMapping("/filters")
 public class FiltersController {
