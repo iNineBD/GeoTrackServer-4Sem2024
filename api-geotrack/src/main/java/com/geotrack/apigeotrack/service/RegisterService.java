@@ -5,6 +5,7 @@ import com.geotrack.apigeotrack.dto.utils.ValidateRegisterDTO;
 import com.geotrack.apigeotrack.entities.Login;
 import com.geotrack.apigeotrack.repositories.LoginRepository;
 import com.geotrack.apigeotrack.service.utils.RegisterValidator;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class RegisterService {
     @Autowired
     RegisterValidator registerValidator;
 
+    @Operation(summary = "Registrar Usuário", description = "Registrar um novo usuário no sistema, cadastrando nome, email e senha")
     @Transactional
     public Login register(@RequestBody RegisterRequestDTO registerRequestDTO) {
 
