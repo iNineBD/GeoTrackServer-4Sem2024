@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+@Schema(description = "DTO que representa um usuário com informações sobre o dispositivo.")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DataUsersDTO(@Schema(description = "Identificador único do usuário", example = "123")
                            @JsonAlias("idUser")

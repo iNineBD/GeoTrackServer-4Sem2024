@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
+@Schema(description = "DTO para resposta de dispositivos disponíveis")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record ResponseDevices(@Schema(description = "Lista de dispositivos disponíveis para a página atual")
                               @JsonAlias("listDevices")
