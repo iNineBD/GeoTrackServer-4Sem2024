@@ -4,6 +4,7 @@ import com.geotrack.apigeotrack.dto.login.AuthenticationRequestDTO;
 import com.geotrack.apigeotrack.dto.login.LoginResponseDTO;
 import com.geotrack.apigeotrack.entities.Login;
 import com.geotrack.apigeotrack.service.utils.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,7 @@ public class LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Operation(summary = "Login", description = "Realiza o login do usuário")
     public LoginResponseDTO login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
         if (authenticationRequestDTO.email().isEmpty() || authenticationRequestDTO.password().isEmpty()) {

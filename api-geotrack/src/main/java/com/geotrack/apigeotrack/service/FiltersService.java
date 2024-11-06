@@ -10,6 +10,7 @@ import com.geotrack.apigeotrack.entities.Devices;
 import com.geotrack.apigeotrack.entities.User;
 import com.geotrack.apigeotrack.repositories.DevicesRepository;
 import com.geotrack.apigeotrack.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ public class FiltersService  {
     @Autowired
     DevicesRepository devicesRepository;
 
-
+    @Operation(summary = "Listar dispositivos", description = "Listar dispositivos cadastrados")
     @Cacheable(value = "lists", key = "#request")
     public ResponseUsers listUsers(RequestUser request) throws NoSuchElementException{
         // Here it says which page I want and the number of items per page

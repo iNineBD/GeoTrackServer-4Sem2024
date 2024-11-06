@@ -9,8 +9,10 @@ import com.geotrack.apigeotrack.entities.Location;
 import com.geotrack.apigeotrack.entities.User;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +31,8 @@ public class PopulateService {
     @Autowired
     LocationRepository locationRepository;
 
+    @Operation(summary = "Popula o banco de dados", description = "Popula o banco de dados com os dados do arquivo")
+    @Transactional
     public void populate(String pathToFile) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
