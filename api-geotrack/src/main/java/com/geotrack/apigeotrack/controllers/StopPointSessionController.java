@@ -18,6 +18,7 @@ import java.time.LocalDate;
 @Tag(name = "Pontos de parada na Zona Geográfica", description = "Operações para obter pontos de parada dentro de uma zona geográfica")
 @RestController
 @RequestMapping("/stoppointsession")
+@CrossOrigin(origins = "*")
 public class StopPointSessionController {
     @Autowired
     StopPointSessionService stopPointSessionService;

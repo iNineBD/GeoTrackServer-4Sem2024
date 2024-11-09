@@ -12,6 +12,7 @@ import java.util.List;
 @Tag(name = "Pontos de Parada", description = "Operações para obter pontos de parada")
 @RestController
 @RequestMapping("/stoppoint")
+@CrossOrigin(origins = "*")
 public class StopPointController {
 
     @Autowired

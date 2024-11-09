@@ -18,6 +18,7 @@ import java.util.Map;
 @Tag(name = "Áreas Geográficas", description = "Operações com Áreas Geográficas")
 @RestController
 @RequestMapping("/zone")
+@CrossOrigin(origins = "*")
 public class GeometryController {
 
     @Autowired
