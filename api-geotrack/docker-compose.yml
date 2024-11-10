@@ -1,19 +1,18 @@
-version: '3'
 services:
-#  app:
-#    build: .
-#    container_name: geotrack_app
-#    ports:
-#      - "8080:8080"
-#    networks:
-#      - app_network
-#    depends_on:
-#      - redis
-#    environment:
-#      - SPRING_REDIS_HOST=redis
-#      - SPRING_REDIS_PORT=6379
-#    volumes:
-#      - ./app/logs:/app/logs
+  app:
+    build: .
+    container_name: geotrack_app
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+    depends_on:
+      - redis
+    environment:
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    volumes:
+      - ./app/logs:/app/logs
   redis:
     image: redis:latest
     container_name: redis

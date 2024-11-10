@@ -9,6 +9,7 @@ import com.geotrack.apigeotrack.dto.zone.updateCircle.UpdateGeometryZonesDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
 import com.geotrack.apigeotrack.service.utils.GeometryValidator;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class GeometryService {
     GeometryZoneRepository geometryZoneRepository;
 
     // method to insertCircle zone zones in database
+    @Operation(summary = "Inserir Zona Geométrica", description = "Inserir Zona Geométrica no banco de dados")
     @Transactional
     public void insertGeometryZones(GeometryZoneRequestDTO geometryZoneRequestDTO) {
 
@@ -54,6 +56,8 @@ public class GeometryService {
         geometryZoneRepository.save(geometrySession);
     }
 
+    // method to list all zones
+    @Operation(summary = "Listar Zonas Geométricas", description = "Listar todas as Zonas Geométricas cadastradas")
     public List<GeometryZoneResponseDTO> listAllGeometryZones() {
         // select in database
         List<GeometrySession> geometryZones = geometryZoneRepository.listSessions();
@@ -72,6 +76,8 @@ public class GeometryService {
     }
 
     // method to updateCircle status zone zones
+    @Operation(summary = "Deletar Zona Geométrica", description = "Deletar Zona Geométrica no banco de dados")
+    @Transactional
     public void deleteZones(DeleteZoneDTO deleteZoneDTO) {
 
         Optional<GeometrySession> zoneDeleted = geometryZoneRepository.findById(deleteZoneDTO.id());
@@ -86,6 +92,7 @@ public class GeometryService {
     }
 
     // method to updateCircle zone zones
+    @Operation(summary = "Editar Zona Geométrica", description = "Editar Zona Geométrica no banco de dados")
     @Transactional
     public void editZones(UpdateGeometryZonesDTO updateGeometryZonesDTO) {
 

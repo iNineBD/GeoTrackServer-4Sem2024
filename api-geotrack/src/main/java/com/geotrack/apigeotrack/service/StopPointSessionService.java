@@ -8,6 +8,7 @@ import com.geotrack.apigeotrack.dto.stopointsessions.StopPointSessionResponseDTO
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
 import com.geotrack.apigeotrack.service.utils.UtilsServices;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.geo.Distance;
@@ -35,6 +36,7 @@ public class StopPointSessionService {
     GeoRedisServices geoRedisService;
 
     // This function returns all Stop Point that are in a Geographic Session
+    @Operation(summary = "Retorna os pontos de parada dos dispositivos em uma sessão geográfica", description = "Retorna os pontos de parada dos dispositivos que estão em uma sessão geográfica")
     @Cacheable(value = "stoppingPoints", key = "#stopPointSessionRequestDTO")
     public StopPointSessionResponseDTO stopPointInSession(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
@@ -45,6 +47,7 @@ public class StopPointSessionService {
     }
 
     // This function return a List from the database that bring the stop points referent a device
+    @Operation(summary = "Retorna os pontos de parada dos dispositivos que estão em uma sessão geográfica", description = "FIltra os pontos de parada dos dispositivos que estão em uma sessão geográfica por dispositivo e data")
     public List<LocalizacaoDTO> findStopPointInSessionByDeviceAndData(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
         List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(
@@ -81,7 +84,7 @@ public class StopPointSessionService {
         return (stopPoints);
     }
 
-
+    @Operation(summary = "Retorna os pontos de parada dos dispositivos que estão em uma sessão geográfica", description = "FIltra os pontos de parada dos dispositivos que estão em uma sessão geográfica por dispositivo e data")
     public LocalizacaoDTO toExecStopPointInSession(StopPointDBDTO stopPointToCheck, List<LocalizacaoDTO> stopPointsInSession, double radiusMeters, String idRegisterRedis) {
 
         // validates if the coordinate has already been inserted in the list
@@ -119,6 +122,6 @@ public class StopPointSessionService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegisterRedis, "pontoMedio");
 
-        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude());
+        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude(), stopPointToCheck.startDate().toString(), stopPointToCheck.endDate().toString());
     }
 }

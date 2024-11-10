@@ -6,12 +6,14 @@ import com.geotrack.apigeotrack.repositories.DevicesRepository;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.service.utils.GeoRedisServices;
 import com.geotrack.apigeotrack.service.utils.UtilsServices;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,6 +31,7 @@ public class StopPointService {
     @Autowired
     GeoRedisServices geoRedisService;
 
+    @Operation(summary = "Retorna os pontos de parada dos dispositivos", description = "Retorna os pontos de parada dos dispositivos")
     @Cacheable(value = "stoppingPoints", key = "#requestDTO")
     public List<StopPointResponseDTO> findStopPointByDeviceAndData(StopPointRequestDTO requestDTO) {
 
@@ -72,7 +75,7 @@ public class StopPointService {
                     String nameDevice = device.get().getCode().toUpperCase();
 
                     // Create the feature list
-                    List<FeatureDTO> feature = resquestGeoJson(stopPoints);
+                    List<FeatureDTO> feature = requestGeoJson(stopPoints);
                     // Create the geojson object
                     GeoJsonDTO geoJson = new GeoJsonDTO("FeatureCollection",feature);
                     // Add that user's stopping points to the list
@@ -96,6 +99,7 @@ public class StopPointService {
     }
 
 
+    @Operation(summary = "Logica de Comparação de Pontos de Parada", description = "Logica de Comparação de Pontos de Parada dos dispositivos de acordo com distancia entre os pontos")
     public LocalizacaoDTO toExecStopPoint(StopPointDBDTO in, List<LocalizacaoDTO> stopPoints) {
 
         // validates if the coordinate has already been inserted in the list
@@ -133,12 +137,12 @@ public class StopPointService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
 
-        return new LocalizacaoDTO(in.latitude(), in.longitude());
+        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.startDate().toString(), in.endDate().toString());
     }
 
 
-
-    public List<FeatureDTO> resquestGeoJson(List<LocalizacaoDTO> stopPoints) {
+    @Operation(summary = "Criação de GeoJson", description = "Criação de GeoJson para os pontos de parada")
+    public List<FeatureDTO> requestGeoJson(List<LocalizacaoDTO> stopPoints) {
 
         // Creates a list of feature objects
         List<FeatureDTO> feature = new ArrayList<>(stopPoints.size());
@@ -149,7 +153,7 @@ public class StopPointService {
             BigDecimal[] listCoordenates = {point.longitude(),point.latitude()};
 
             // Creates the GeometryDTO object with latitudes and longitudes
-            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates);
+            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates,point.startDate(), point.endDate());
 
             // Add the object to the list
             feature.add(new FeatureDTO("Feature",new PropertiesDTO(), geometry));
