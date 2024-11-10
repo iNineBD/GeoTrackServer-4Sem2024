@@ -19,6 +19,12 @@ public class RegisterValidator {
     }
 
     private void validateName(String name) {
+
+        String nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$";
+        if (!name.matches(nameRegex)) {
+            throw new IllegalArgumentException("Nome não pode conter caracteres especiais ou números!");
+        }
+
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome não pode ser vazio!");
         }
