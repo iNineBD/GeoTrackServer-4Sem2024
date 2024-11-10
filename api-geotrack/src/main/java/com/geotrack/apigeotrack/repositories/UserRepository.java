@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<Page<User>> listUser(PageRequest page);
 
     Optional<User> findById(Integer id);
+
 }

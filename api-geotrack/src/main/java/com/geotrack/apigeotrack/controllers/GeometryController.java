@@ -13,42 +13,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
-@Tag(name = "Geometry Zones", description = "Operations to zone zones to insertCircle, listing and exclusion")
+@Tag(name = "Áreas Geográficas", description = "Operações com Áreas Geográficas")
 @RestController
 @RequestMapping("/zone")
+@CrossOrigin(origins = "*")
 public class GeometryController {
 
     @Autowired
     GeometryService geometryService;
 
     // method to insertCircle zone zones
-    @Operation(summary = "Adiciona uma Zona Geométrica ao Banco de dados")
+    @Operation(summary = "Adiciona uma Área Geográfica ao Banco de dados", description = "Recebe os dados de uma Área Geográfica e salva no banco de dados")
     @PostMapping
-    public ResponseEntity<String> insertCircle(@RequestBody GeometryZoneRequestDTO geometryZoneRequestDTO) {
+    public ResponseEntity<Map<String,String>> insertCircle(@RequestBody GeometryZoneRequestDTO geometryZoneRequestDTO) {
         geometryService.insertGeometryZones(geometryZoneRequestDTO);
-        return new ResponseEntity<>("Zona inserida com Sucesso", HttpStatus.CREATED);
+        return new ResponseEntity<>(Map.of("message","Área inserida com Sucesso"),HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Listagem de Zonas Geométricas", description = "Retorna uma lista de Zonas Geométricas ativas no banco de dados")
+    @Operation(summary = "Listagem de Áreas Geográficas", description = "Retorna uma lista de Áreas Geográficas ativas no banco de dados")
     @GetMapping
     public ResponseEntity<List<GeometryZoneResponseDTO>> getAllCircle() {
         geometryService.listAllGeometryZones();
         return ResponseEntity.ok().body(geometryService.listAllGeometryZones());
     }
 
-    @Operation(summary = "Deleta uma Zona Geométrica", description = "Deleta uma Zona Geométrica do banco de dados, alterando o status para 0")
+    @Operation(summary = "Deleta uma Área Geográfica", description = "Deleta uma Área Geográfica do banco de dados, alterando o status para 0")
     @DeleteMapping
-    public ResponseEntity<String> deleteCircle(@RequestBody DeleteZoneDTO deleteZoneDTO) {
+    public ResponseEntity<Map<String,String>> deleteCircle(@RequestBody DeleteZoneDTO deleteZoneDTO) {
         geometryService.deleteZones(deleteZoneDTO);
-        return new ResponseEntity<>("Zona deletada com Sucesso", HttpStatus.OK);
+        return new ResponseEntity<>(Map.of("message","Área deletada com Sucesso"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Edita uma Zona Geométrica", description = "Recebe os dados alterados de uma zona geométrica, e salva-os no banco de dados")
+    @Operation(summary = "Edita uma Área Geográfica", description = "Recebe os dados alterados de uma Área geográfica, e salva-os no banco de dados")
     @PutMapping
-    public ResponseEntity<String> updateCircle(@RequestBody UpdateGeometryZonesDTO updateGeometryZonesDTO){
+    public ResponseEntity<Map<String,String>> updateCircle(@RequestBody UpdateGeometryZonesDTO updateGeometryZonesDTO){
         geometryService.editZones(updateGeometryZonesDTO);
-        return new ResponseEntity<>("Zona Geométrica editada com Sucesso",HttpStatus.OK);
+        return new ResponseEntity<>(Map.of("message","Área Geográfica editada com Sucesso"),HttpStatus.OK);
     }
 
 }

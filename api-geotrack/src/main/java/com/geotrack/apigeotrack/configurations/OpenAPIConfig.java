@@ -11,15 +11,15 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 title = "GeoTrack",
                 version = "v1",
                 description = """
-                        Aplicação Spring Boot para monitoramento de dispositivos IoT.
+                        Aplicação para visualização de dados geográficos a partir de dispositivos IoT.
 
-                        Suporta filtros geoespaciais, como busca por proximidade e rotas, com alta performance em uma base de 500.000 registros.
-                        Utiliza Redis para cache e otimização de consultas.
+                        Aplicação consiste em desenvolver interações com mapas, permitindo a visualização de dispositivos IoT em tempo real,
+                        além de permitir a criação de áreas geográficas.
                         """,
                 contact = @Contact(
                         name = "iNine",
                         url = "https://github.com/iNineBD",
-                        email = "contato@inine.com"
+                        email = "apibdfatec@gmail.com"
                 ),
                 license = @License(
                         name = "MIT License",

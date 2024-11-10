@@ -6,6 +6,7 @@ import com.geotrack.apigeotrack.entities.User;
 import com.geotrack.apigeotrack.repositories.DevicesRepository;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class InsertDataService {
     @Autowired
     DevicesRepository devicesRepository;
 
+    @Operation(summary = "Inserir dados de localização", description = "Inserir dados de localização no banco de dados")
     @Transactional
     public void insertDataService(List<RequestInsert> requestInserts) throws Exception {
         // Coleta todos os IDs de usuários
