@@ -43,7 +43,7 @@ public class RouteService {
 }
 
 private void validateRoutes(Long deviceId, LocalDate dateStart, LocalDate dateEnd, List<List<RoutesOracleDTO>> routesObjects) {
-    if (routesObjects.isEmpty() || routesObjects.size() < 3) {
+    if (routesObjects.isEmpty()) {
         throw new NoSuchElementException("Não foi possível encontrar rotas para o dispositivo " + deviceId + " entre as datas " + dateStart + " e " + dateEnd);
     }
 }

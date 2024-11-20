@@ -58,6 +58,9 @@ public class UtilsServices {
             );
             routes.add(stopPoint);
         }
+        if (!routes.isEmpty()) {
+            returned.add(routes);
+        }
         return returned;
     }
 
