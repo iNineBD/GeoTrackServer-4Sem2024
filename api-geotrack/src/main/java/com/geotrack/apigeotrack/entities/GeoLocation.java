@@ -5,15 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "localizacao2", schema = "ITO1")
+@Table(name = "Geo_localizacao", schema = "ITO1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -37,5 +35,6 @@ public class GeoLocation {
     @ManyToOne
     @JoinColumn(name = "id_dispositivo", nullable = false)
     private Devices devices;
+
 
 }
