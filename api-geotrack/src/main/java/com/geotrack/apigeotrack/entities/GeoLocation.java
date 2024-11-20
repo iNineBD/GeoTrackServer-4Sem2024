@@ -6,8 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
@@ -20,12 +21,12 @@ import java.time.LocalDate;
 public class GeoLocation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_localizacao", nullable = false, length = 38)
     private String idLocation;
 
     @Column(name = "loc_geo", columnDefinition = "SDO_GEOMETRY")
-    private Geometry geometry;
+    private Point geometry;
 
     @Column(name = "data_hora")
     private Timestamp dateTime;

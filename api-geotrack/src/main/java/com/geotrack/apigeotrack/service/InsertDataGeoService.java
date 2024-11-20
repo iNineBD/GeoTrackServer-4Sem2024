@@ -5,12 +5,13 @@ import com.geotrack.apigeotrack.entities.GeoLocation;
 import com.geotrack.apigeotrack.entities.User;
 import com.geotrack.apigeotrack.repositories.InsertDataGeoRepository;
 import com.geotrack.apigeotrack.repositories.UserRepository;
+import com.geotrack.apigeotrack.service.utils.GeometryUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
@@ -46,8 +47,9 @@ public class InsertDataGeoService {
             User user = userMap.get(Integer.valueOf(requestInsert.idUser()));
             GeoLocation location = new GeoLocation();
 
-            // Criar a geometria com latitude e longitude
-            location.setGeometry(criarSdoGeometry(requestInsert.latitude(), requestInsert.longitude()));
+            // Criar geometria
+            Point geometry = GeometryUtils.criarGeometry(requestInsert.latitude(), requestInsert.longitude());
+            location.setGeometry(geometry);
 
             // Configura o dispositivo (presumindo que 'user.getDevices().getFirst()' está correto)
             location.setDevices(user.getDevices().getFirst());
@@ -63,16 +65,5 @@ public class InsertDataGeoService {
 
         // Salva todos os locais de uma vez
         insertDataGeoRepository.saveAll(listAll);
-    }
-
-    private SDO_GEOMETRY criarSdoGeometry(BigDecimal latitude, BigDecimal longitude) {
-        // Exemplo simplificado de como criar uma geometria usando SDO_GEOMETRY
-        return new SDO_GEOMETRY(
-                2001,  // Tipo de geometria 2001 para ponto
-                4326,  // SRID (Sistema de Referência de Coordenadas)
-                null,  // Nenhuma informação adicional
-                new SDO_ELEM_INFO_ARRAY(1, 1, 1),  // Elemento de informações
-                new SDO_ORDINATE_ARRAY(longitude.doubleValue(), latitude.doubleValue())  // Coordenadas (longitude, latitude)
-        );
     }
 }
