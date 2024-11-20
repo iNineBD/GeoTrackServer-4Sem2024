@@ -6,11 +6,11 @@ import com.geotrack.apigeotrack.dto.login.RegisterRequestDTO;
 import com.geotrack.apigeotrack.service.LoginService;
 import com.geotrack.apigeotrack.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -29,7 +29,7 @@ public class LoginController {
 
     @Operation(summary = "Login", description = "Realiza o login de um usuário, na aplicação, retornando o token de autenticação, usado em requisições futuras")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@Validated @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
         LoginResponseDTO response = loginService.login(authenticationRequestDTO);
 
@@ -38,7 +38,7 @@ public class LoginController {
 
     @Operation(summary = "Cadastro", description = "Realiza o cadastro de um usuário, na aplicação, salvando-o na base de dados")
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
+    public ResponseEntity<?> register(@Validated @RequestBody RegisterRequestDTO registerRequestDTO) {
 
         registerService.register(registerRequestDTO);
 
