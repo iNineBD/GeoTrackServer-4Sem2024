@@ -30,7 +30,7 @@ public class RouteService {
     validateRoutes(deviceId, dateStart, dateEnd, routesObjects);
 
     for (List<RoutesOracleDTO> route : routesObjects) {
-        if (route.size() >= 3) {
+        if (route.size() >= 5) {
             response.add(getResponseFindRoutesDTO(route));
         }
     }
