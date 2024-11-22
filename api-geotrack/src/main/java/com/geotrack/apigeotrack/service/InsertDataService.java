@@ -89,6 +89,7 @@ public class InsertDataService {
 
         List<GeoLocation> listAll = new ArrayList<>();
         for (RequestInsertGeo requestInsert : requestInsertGeo) {
+
             User user = userMap.get(Integer.valueOf(requestInsert.idUser()));
             GeoLocation location = new GeoLocation();
 
@@ -108,7 +109,6 @@ public class InsertDataService {
             listAll.add(location);
         }
 
-        // Salva todos os locais de uma vez
         insertDataGeoRepository.saveAll(listAll);
     }
 }

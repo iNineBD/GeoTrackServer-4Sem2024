@@ -29,7 +29,7 @@ public class LoginController {
 
     @Operation(summary = "Login", description = "Realiza o login de um usuário, na aplicação, retornando o token de autenticação, usado em requisições futuras")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@Validated @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
         LoginResponseDTO response = loginService.login(authenticationRequestDTO);
 
@@ -38,7 +38,7 @@ public class LoginController {
 
     @Operation(summary = "Cadastro", description = "Realiza o cadastro de um usuário, na aplicação, salvando-o na base de dados")
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Validated @RequestBody RegisterRequestDTO registerRequestDTO) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
 
         registerService.register(registerRequestDTO);
 

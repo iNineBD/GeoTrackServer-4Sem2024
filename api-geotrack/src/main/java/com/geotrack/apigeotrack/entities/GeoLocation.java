@@ -36,5 +36,4 @@ public class GeoLocation {
     @JoinColumn(name = "id_dispositivo", nullable = false)
     private Devices devices;
 
-
 }
