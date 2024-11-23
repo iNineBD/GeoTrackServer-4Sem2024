@@ -39,10 +39,17 @@ public class RedisConfig {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
+        // partition to stopping points
+        RedisCacheConfiguration routesCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(60))
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+
         // expose partitions
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
         cacheConfigurations.put("lists", listsCacheConfig);
         cacheConfigurations.put("stoppingPoints", stoppingPointsCacheConfig);
+        cacheConfigurations.put("routes", routesCacheConfig);
 
         // build configurations
         return RedisCacheManager.builder(redisConnectionFactory)

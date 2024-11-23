@@ -2,6 +2,7 @@ package com.geotrack.apigeotrack.service.utils;
 
 import com.geotrack.apigeotrack.dto.stopoint.LocalizacaoDTO;
 import com.geotrack.apigeotrack.dto.stopoint.StopPointDBDTO;
+import com.geotrack.apigeotrack.dto.routes.find.RoutesOracleDTO;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,34 @@ public class UtilsServices {
             stopPoints.add(stopPoint);
         }
         return stopPoints;
+    }
+
+    public static List<List<RoutesOracleDTO>> convertToRouteSQLDTO(List<Object[]> results) {
+        List<List<RoutesOracleDTO>> returned = new ArrayList<>();
+
+        List<RoutesOracleDTO> routes = new ArrayList<>();
+        int atual = 0;
+        for (Object[] result : results) {
+
+            if (atual != ((Number) result[4]).intValue()) {
+                atual = ((Number) result[4]).intValue();
+                returned.add(routes);
+                routes = new ArrayList<>();
+            }
+
+            RoutesOracleDTO stopPoint = new RoutesOracleDTO(
+                    (String) result[0],
+                    ((BigDecimal) result[1]).setScale(8, RoundingMode.HALF_UP),
+                    ((BigDecimal) result[2]).setScale(8, RoundingMode.HALF_UP),
+                    ((Timestamp) result[3]).toLocalDateTime(),
+                    ((Number) result[4]).intValue()
+            );
+            routes.add(stopPoint);
+        }
+        if (!routes.isEmpty()) {
+            returned.add(routes);
+        }
+        return returned;
     }
 
     public static boolean checkStopPointDuplicate(StopPointDBDTO stopPointToCheck, List<LocalizacaoDTO> stopPointsInSession) {

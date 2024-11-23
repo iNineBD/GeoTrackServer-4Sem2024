@@ -1,6 +1,7 @@
 package com.geotrack.apigeotrack.repositories;
 
 import com.geotrack.apigeotrack.entities.Location;
+import com.geotrack.apigeotrack.dto.routes.find.RoutesOracleDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -63,5 +64,74 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "HAVING count(*) > 2\n" +
             "ORDER BY time_group", nativeQuery = true)
     List<Object[]> findStopPointsByUsersAndSession(Long idDev, LocalDate startDate, LocalDate finalDate);
+
+
+    @Query(value = "WITH dados_filtrados AS (\n" +
+            "    SELECT\n" +
+            "        ID_LOCALIZACAO,\n" +
+            "        LATITUDE,\n" +
+            "        LONGITUDE,\n" +
+            "        DATA_HORA,\n" +
+            "        ID_DISPOSITIVO,\n" +
+            "        ROW_NUMBER() OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA) AS RN\n" +
+            "    FROM\n" +
+            "        ito1.localizacao\n" +
+            "    WHERE\n" +
+            "        ID_DISPOSITIVO = :idDev\n" +
+            "        AND DATA_REFERENCIA >= :dateStart\n" +
+            "        AND DATA_REFERENCIA <= :dateEnd\n" +
+            "), dados_com_grupos AS (\n" +
+            "    SELECT\n" +
+            "        ID_LOCALIZACAO,\n" +
+            "        LATITUDE,\n" +
+            "        LONGITUDE,\n" +
+            "        DATA_HORA,\n" +
+            "        ID_DISPOSITIVO,\n" +
+            "        RN,\n" +
+            "        CASE \n" +
+            "            WHEN (DATA_HORA - LAG(DATA_HORA) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA)) >= INTERVAL '15' MINUTE\n" +
+            "            THEN NULL \n" +
+            "            ELSE RN \n" +
+            "        END AS GRUPO\n" +
+            "    FROM\n" +
+            "        dados_filtrados\n" +
+            "), grupos_sequenciais AS (\n" +
+            "    SELECT\n" +
+            "        ID_LOCALIZACAO,\n" +
+            "        LATITUDE,\n" +
+            "        LONGITUDE,\n" +
+            "        DATA_HORA,\n" +
+            "        ID_DISPOSITIVO,\n" +
+            "        SUM(CASE WHEN GRUPO IS NULL THEN 1 ELSE 0 END) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY RN) AS GRUPO_SEQ\n" +
+            "    FROM\n" +
+            "        dados_com_grupos\n" +
+            "), coordenadas_filtradas AS (\n" +
+            "    SELECT\n" +
+            "        ID_LOCALIZACAO,\n" +
+            "        LATITUDE,\n" +
+            "        LONGITUDE,\n" +
+            "        DATA_HORA,\n" +
+            "        ID_DISPOSITIVO,\n" +
+            "        GRUPO_SEQ,\n" +
+            "        LAG(LATITUDE) OVER (PARTITION BY GRUPO_SEQ ORDER BY DATA_HORA) AS LAT_PREV,\n" +
+            "        LAG(LONGITUDE) OVER (PARTITION BY GRUPO_SEQ ORDER BY DATA_HORA) AS LONG_PREV\n" +
+            "    FROM\n" +
+            "        grupos_sequenciais\n" +
+            ")\n" +
+            "SELECT\n" +
+            "    ID_LOCALIZACAO,\n" +
+            "    LATITUDE,\n" +
+            "    LONGITUDE,\n" +
+            "    DATA_HORA,\n" +
+            "    GRUPO_SEQ\n" +
+            "FROM\n" +
+            "    coordenadas_filtradas\n" +
+            "WHERE\n" +
+            "    (LATITUDE != LAT_PREV OR LAT_PREV IS NULL)\n" +
+            "    OR (LONGITUDE != LONG_PREV OR LONG_PREV IS NULL)\n" +
+            "ORDER BY\n" +
+            "    ID_DISPOSITIVO, DATA_HORA", nativeQuery = true)
+    List<Object[]>  findRouteByIdDevAndDate(Long idDev, LocalDate dateStart, LocalDate dateEnd);
+
 }
 
