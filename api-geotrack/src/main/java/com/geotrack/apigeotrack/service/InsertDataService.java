@@ -6,7 +6,7 @@ import com.geotrack.apigeotrack.entities.GeoLocation;
 import com.geotrack.apigeotrack.entities.Location;
 import com.geotrack.apigeotrack.entities.User;
 import com.geotrack.apigeotrack.repositories.DevicesRepository;
-import com.geotrack.apigeotrack.repositories.InsertDataGeoRepository;
+import com.geotrack.apigeotrack.repositories.GeoLocationRepository;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.repositories.UserRepository;
 import com.geotrack.apigeotrack.service.utils.GeometryUtils;
@@ -67,11 +67,12 @@ public class InsertDataService {
     }
 
     @Autowired
-    InsertDataGeoRepository insertDataGeoRepository;
+    GeoLocationRepository geoLocationRepository;
 
     @Operation(summary = "Inserir dados de localização", description = "Inserir dados de localização no banco de dados")
     @Transactional
     public void insertDataGeoService(List<RequestInsertGeo> requestInsertGeo) throws Exception {
+
         // Coleta todos os IDs de usuários
         Set<Integer> userIds = requestInsertGeo.stream()
                 .map(requestInsert -> Integer.valueOf(requestInsert.idUser()))
@@ -101,14 +102,14 @@ public class InsertDataService {
             location.setDevices(user.getDevices().getFirst());
 
             // Configura a data e hora
-            location.setDateTime(Timestamp.valueOf(requestInsert.dateTime()));
+            location.setDateTime(requestInsert.dateTime());
 
             // Configura a data de referência
             location.setDateReferences(requestInsert.dateTime().toLocalDate());
 
-            listAll.add(location);
+            geoLocationRepository.insertGeoLocation(requestInsert.longitude(), requestInsert.latitude(), requestInsert.dateTime(), requestInsert.dateTime().toLocalDate(), user.getDevices().getFirst().getIdDevices());
+
         }
 
-        insertDataGeoRepository.saveAll(listAll);
     }
 }

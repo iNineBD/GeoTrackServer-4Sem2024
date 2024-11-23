@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Geo_localizacao", schema = "ITO1")
@@ -27,7 +27,7 @@ public class GeoLocation {
     private Point geometry;
 
     @Column(name = "data_hora")
-    private Timestamp dateTime;
+    private LocalDateTime dateTime;
 
     @Column(name = "data_referencia")
     private LocalDate dateReferences;
