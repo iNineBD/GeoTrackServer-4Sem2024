@@ -27,9 +27,11 @@ public class UtilsServices {
                     ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
                     ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
                     ((Number) result[3]).intValue(),
-                    (String) result[6],
-                    ((Timestamp) result[4]).toLocalDateTime(),
-                    ((Timestamp) result[5]).toLocalDateTime()
+                    ((Number) result[4]).intValue(),
+                    ((BigDecimal) result[5]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) result[6]).setScale(4, RoundingMode.HALF_UP),
+                    ((Timestamp) result[7]).toLocalDateTime(),
+                    ((Timestamp) result[8]).toLocalDateTime()
             );
             stopPoints.add(stopPoint);
         }
@@ -68,8 +70,8 @@ public class UtilsServices {
         if (!stopPointsInSession.isEmpty()) {
 
             // setScale 2 is a tecnic to decrease repetition
-            BigDecimal scaledInLatitude = stopPointToCheck.latitude().setScale(2, RoundingMode.HALF_UP);
-            BigDecimal scaledInLongitude = stopPointToCheck.longitude().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal scaledInLatitude = stopPointToCheck.avgLatitude().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal scaledInLongitude = stopPointToCheck.avgLongitude().setScale(2, RoundingMode.HALF_UP);
 
             for (LocalizacaoDTO localizacaoDTO : stopPointsInSession) {
                 BigDecimal scaledStopLatitude = localizacaoDTO.latitude().setScale(2, RoundingMode.HALF_UP);

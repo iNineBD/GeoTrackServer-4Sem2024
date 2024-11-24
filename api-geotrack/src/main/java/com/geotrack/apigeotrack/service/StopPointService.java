@@ -13,7 +13,6 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -106,19 +105,18 @@ public class StopPointService {
         if (UtilsServices.checkStopPointDuplicate(in, stopPoints)) return null;
 
         // create a unique id to indentify register in cache
-        String idRegister = in.startDate().toString() + in.endDate().toString() + in.latitude() + in.longitude();
+        String idRegister = in.startDate().toString() + in.endDate().toString() + in.avgLatitude() + in.avgLongitude();
 
         // add avg lat and long in cache
-        geoRedisService.addLocation(idRegister, in.latitude(), in.longitude(), "pontoMedio");
+        geoRedisService.addLocation(idRegister, in.avgLatitude(), in.avgLongitude(), "pontoMedio");
 
         // db return a list of lat and long. Here we separate this
-        String[] coordinates= in.latLongList().split("\\|");
-        for(int i = 0 ; i < coordinates.length ; i++) {
+        int coordinates= in.grupoLocalizacao();
+        for(int i = 0 ; i < coordinates ; i++) {
 
             // bd return a "map" to lat e long. Here we separate this
-            String[] latLongArray = coordinates[i].split(";");
-            BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
-            BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
+            BigDecimal latitude = in.latitude();
+            BigDecimal longitude = in.longitude();
 
             // add px in cache
             geoRedisService.addLocation(idRegister, latitude, longitude, "p"+i);
@@ -137,7 +135,7 @@ public class StopPointService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
 
-        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.startDate().toString(), in.endDate().toString());
+        return new LocalizacaoDTO(in.avgLatitude(), in.avgLongitude(), in.startDate().toString(), in.endDate().toString());
     }
 
 

@@ -91,20 +91,19 @@ public class StopPointSessionService {
         if (UtilsServices.checkStopPointDuplicate(stopPointToCheck, stopPointsInSession)) return null;
 
         // add avg lat and long in cache
-        geoRedisService.addLocation(idRegisterRedis, stopPointToCheck.latitude(), stopPointToCheck.longitude(), "pontoMedio");
+        geoRedisService.addLocation(idRegisterRedis, stopPointToCheck.avgLatitude(), stopPointToCheck.avgLongitude(), "pontoMedio");
 
         Distance distanceToCenterSession = geoRedisService.calculateDistance(idRegisterRedis, "centerSession", "pontoMedio");
 
         if (distanceToCenterSession.getValue() > radiusMeters) return null;
 
         // db return a list of lat and long. Here we separate this
-        String[] coordinates= stopPointToCheck.latLongList().split("\\|");
-        for(int i = 0 ; i < coordinates.length ; i++) {
+        int coordinates= stopPointToCheck.grupoLocalizacao();
+        for(int i = 0 ; i < coordinates ; i++) {
 
             // bd return a "map" to lat e long. Here we separate this
-            String[] latLongArray = coordinates[i].split(";");
-            BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
-            BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
+            BigDecimal latitude = stopPointToCheck.latitude();
+            BigDecimal longitude = stopPointToCheck.longitude();
 
             // add px in cache
             geoRedisService.addLocation(idRegisterRedis, latitude, longitude, "p"+i);
@@ -122,6 +121,6 @@ public class StopPointSessionService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegisterRedis, "pontoMedio");
 
-        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude(), stopPointToCheck.startDate().toString(), stopPointToCheck.endDate().toString());
+        return new LocalizacaoDTO(stopPointToCheck.avgLatitude(), stopPointToCheck.avgLongitude(), stopPointToCheck.startDate().toString(), stopPointToCheck.endDate().toString());
     }
 }
