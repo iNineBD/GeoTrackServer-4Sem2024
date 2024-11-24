@@ -19,7 +19,7 @@ public interface GeoLocationRepository extends JpaRepository<GeoLocation, Intege
             ") VALUES ( \n" +
             "    SDO_GEOMETRY(2001, 4326, SDO_POINT_TYPE(?, ?, NULL), NULL, NULL), \n" +
             "    ?, \n" +
-            "    TRUNC(TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS.FF3')), \n" +
+            "    TRUNC(?), \n" +
             "    ? \n" +
             ")\n", nativeQuery = true)
     void insertGeoLocation(BigDecimal longitude, BigDecimal latitude, LocalDateTime dataHora, LocalDate dataReferencia, Long idDispositivo);
