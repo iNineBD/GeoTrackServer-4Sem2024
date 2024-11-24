@@ -35,7 +35,6 @@ public class GeometryController {
     @Operation(summary = "Listagem de Áreas Geográficas", description = "Retorna uma lista de Áreas Geográficas ativas no banco de dados")
     @GetMapping
     public ResponseEntity<List<GeometryZoneResponseDTO>> getAllCircle() {
-        geometryService.listAllGeometryZones();
         return ResponseEntity.ok().body(geometryService.listAllGeometryZones());
     }
 
