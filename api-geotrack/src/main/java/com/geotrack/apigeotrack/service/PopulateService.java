@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.geotrack.apigeotrack.dto.insertdata.RequestInsert;
 import com.geotrack.apigeotrack.entities.Location;
 import com.geotrack.apigeotrack.entities.User;
+import com.geotrack.apigeotrack.repositories.GeoLocationRepository;
 import com.geotrack.apigeotrack.repositories.LocationRepository;
 import com.geotrack.apigeotrack.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,9 @@ public class PopulateService {
 
     @Autowired
     LocationRepository locationRepository;
+
+    @Autowired
+    GeoLocationRepository geoLocationRepository;
 
     @Operation(summary = "Popula o banco de dados", description = "Popula o banco de dados com os dados do arquivo")
     @Transactional
@@ -66,17 +70,19 @@ public class PopulateService {
                 continue;
             }
 
-            insertAll.add(location);
+//            insertAll.add(location);
 
-            if (insertAll.size() >= 500){
-                LocalDateTime agora = LocalDateTime.now();
-                locationRepository.saveAll(insertAll);
-                System.out.println("Levou: " + Duration.between(agora, LocalDateTime.now()).toString());
-                insertAll.clear();
-            }
+            geoLocationRepository.insertGeoLocation(requestInsert.longitude(), requestInsert.latitude(), requestInsert.dateTime(), requestInsert.dateTime().toLocalDate(), user.get().getDevices().getFirst().getIdDevices());
+
+//            if (insertAll.size() >= 500){
+//                LocalDateTime agora = LocalDateTime.now();
+//                locationRepository.saveAll(insertAll);
+//                System.out.println("Levou: " + Duration.between(agora, LocalDateTime.now()).toString());
+//                insertAll.clear();
+//            }
         }
 
         jsonParser.close();
-        locationRepository.saveAll(insertAll);
+//        locationRepository.saveAll(insertAll);
     }
 }
