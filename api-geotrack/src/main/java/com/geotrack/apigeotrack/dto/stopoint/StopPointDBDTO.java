@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Schema(name = "StopPointDBDTO", description = "DTO para Pontos de parada")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record StopPointDBDTO(@JsonAlias("id_dispositivo")
+public record StopPointDBDTO(@JsonAlias("id_device")
                              @Schema(description = "Identificador do dispositivo", example = "1")
                              int idDev,
 

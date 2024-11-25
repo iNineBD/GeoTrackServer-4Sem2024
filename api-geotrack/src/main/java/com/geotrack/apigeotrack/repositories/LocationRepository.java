@@ -10,97 +10,98 @@ import java.util.List;
 
 public interface LocationRepository extends JpaRepository<Location, Integer> {
 
-    @Query(value = "WITH cte_localizacao AS (\n" +
-            "    SELECT \n" +
-            "        ID_LOCALIZACAO,\n" +
-            "        latitude,\n" +
-            "        longitude,\n" +
-            "        DATA_HORA,\n" +
-            "        DATA_REFERENCIA AS DATA_REF,\n" +
-            "        ID_DISPOSITIVO,\n" +
-            "        LAG(DATA_HORA) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA) AS DATA_HORA_ANTERIOR,\n" +
-            "        CASE \n" +
-            "            WHEN DATA_HORA - LAG(DATA_HORA) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA) > INTERVAL '15' MINUTE \n" +
-            "            THEN 1 \n" +
-            "            ELSE 0 \n" +
-            "        END AS NOVO_GRUPO\n" +
-            "    FROM \n" +
-            "        ito1.localizacao\n" +
-            "    WHERE \n" +
-            "        ID_DISPOSITIVO IN (:idsDev)\n" +
-            "        AND DATA_REFERENCIA BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') \n" +
-            "                          AND TO_DATE(:finalDate, 'YYYY-MM-DD')\n" +
-            "),\n" +
-            "cte_grupos AS (\n" +
-            "    SELECT \n" +
-            "        ID_LOCALIZACAO,\n" +
-            "        latitude,\n" +
-            "        longitude,\n" +
-            "        DATA_HORA,\n" +
-            "        DATA_REF,\n" +
-            "        ID_DISPOSITIVO,\n" +
-            "        DATA_HORA_ANTERIOR,\n" +
-            "        NOVO_GRUPO,\n" +
-            "        SUM(NOVO_GRUPO) OVER (PARTITION BY ID_DISPOSITIVO ORDER BY DATA_HORA) AS grupo_localizacao\n" +
-            "    FROM \n" +
-            "        cte_localizacao\n" +
-            "),\n" +
-            "cte_contador AS (\n" +
-            "    SELECT \n" +
-            "        grupo_localizacao,\n" +
-            "        COUNT(*) AS contador,\n" +
-            "        MIN(DATA_HORA) AS start_time,\n" +
-            "        MAX(DATA_HORA) AS end_time \n" +
-            "    FROM \n" +
-            "        cte_grupos\n" +
-            "    GROUP BY \n" +
-            "        grupo_localizacao\n" +
-            "),\n" +
-            "cte_medias AS (\n" +
-            "    SELECT \n" +
-            "        grupo_localizacao,\n" +
-            "        AVG(latitude) AS avg_latitude,\n" +
-            "        AVG(longitude) AS avg_longitude\n" +
-            "    FROM \n" +
-            "        cte_grupos\n" +
-            "    GROUP BY \n" +
-            "        grupo_localizacao\n" +
-            "),\n" +
-            "cte_filtrados AS (\n" +
-            "    SELECT \n" +
-            "        g.*,\n" +
-            "        c.contador,\n" +
-            "        c.start_time,\n" +
-            "        c.end_time,\n" +
-            "        m.avg_latitude,\n" +
-            "        m.avg_longitude\n" +
-            "    FROM \n" +
-            "        cte_grupos g\n" +
-            "    JOIN \n" +
-            "        cte_contador c\n" +
-            "    ON \n" +
-            "        g.grupo_localizacao = c.grupo_localizacao\n" +
-            "    JOIN\n" +
-            "        cte_medias m\n" +
-            "    ON\n" +
-            "        g.grupo_localizacao = m.grupo_localizacao\n" +
-            "    WHERE \n" +
-            "        c.contador > 2\n" +
-            ")\n" +
-            "SELECT \n" +
-            "    ID_DISPOSITIVO,\n" +
-            "    avg_latitude,\n" +
-            "    avg_longitude,\n" +
-            "    contador,\n" +
-            "    grupo_localizacao,\n" +
-            "    longitude,\n" +
-            "    latitude,\n" +
-            "    start_time,\n" +
-            "    end_time\n" +
-            "FROM \n" +
-            "    cte_filtrados\n" +
-            "ORDER BY \n" +
-            "    grupo_localizacao", nativeQuery = true)
+    @Query(value = """
+                WITH cte_localizacao AS (
+                    SELECT 
+                        ID_LOCALIZACAO,
+                        latitude,
+                        longitude,
+                        DATA_HORA,
+                        DATA_REFERENCIA AS DATA_REF,
+                        id_dispositivo,
+                        LAG(DATA_HORA) OVER (PARTITION BY id_dispositivo ORDER BY DATA_HORA) AS DATA_HORA_ANTERIOR,
+                        CASE 
+                            WHEN DATA_HORA - LAG(DATA_HORA) OVER (PARTITION BY id_dispositivo ORDER BY DATA_HORA) > INTERVAL '15' MINUTE 
+                            THEN 1 
+                            ELSE 0 
+                        END AS NOVO_GRUPO
+                    FROM 
+                        ito1.localizacao
+                    WHERE 
+                        id_dispositivo IN :idsDev
+                        AND DATA_REFERENCIA BETWEEN :startDate AND :finalDate
+                ),
+                cte_grupos AS (
+                    SELECT 
+                        ID_LOCALIZACAO,
+                        latitude,
+                        longitude,
+                        DATA_HORA,
+                        DATA_REF,
+                        id_dispositivo,
+                        DATA_HORA_ANTERIOR,
+                        NOVO_GRUPO,
+                        SUM(NOVO_GRUPO) OVER (PARTITION BY id_dispositivo ORDER BY DATA_HORA) AS grupo_localizacao
+                    FROM 
+                        cte_localizacao
+                ),
+                cte_contador AS (
+                    SELECT 
+                        grupo_localizacao,
+                        COUNT(*) AS contador,
+                        MIN(DATA_HORA) AS start_time,
+                        MAX(DATA_HORA) AS end_time
+                    FROM 
+                        cte_grupos
+                    GROUP BY 
+                        grupo_localizacao
+                ),
+                cte_medias AS (
+                    SELECT 
+                        grupo_localizacao,
+                        AVG(latitude) AS avg_latitude,
+                        AVG(longitude) AS avg_longitude
+                    FROM 
+                        cte_grupos
+                    GROUP BY 
+                        grupo_localizacao
+                ),
+                cte_filtrados AS (
+                    SELECT 
+                        g.*,
+                        c.contador,
+                        c.start_time,
+                        c.end_time,
+                        m.avg_latitude,
+                        m.avg_longitude
+                    FROM 
+                        cte_grupos g
+                    JOIN 
+                        cte_contador c
+                    ON 
+                        g.grupo_localizacao = c.grupo_localizacao
+                    JOIN
+                        cte_medias m
+                    ON
+                        g.grupo_localizacao = m.grupo_localizacao
+                    WHERE 
+                        c.contador > 2
+                )
+                SELECT 
+                    id_dispositivo,
+                    avg_latitude,
+                    avg_longitude,
+                    contador,
+                    grupo_localizacao,
+                    latitude,
+                    longitude,
+                    start_time,
+                    end_time
+                FROM 
+                    cte_filtrados
+                ORDER BY 
+                    grupo_localizacao
+            """, nativeQuery = true)
     List<Object[]> findStopPointsByUsers(List<Long> idsDev, LocalDate startDate, LocalDate finalDate);
 
     @Query(value = "WITH grouped_data AS (\n" +
@@ -194,7 +195,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "    OR (LONGITUDE != LONG_PREV OR LONG_PREV IS NULL)\n" +
             "ORDER BY\n" +
             "    ID_DISPOSITIVO, DATA_HORA", nativeQuery = true)
-    List<Object[]>  findRouteByIdDevAndDate(Long idDev, LocalDate dateStart, LocalDate dateEnd);
+    List<Object[]> findRouteByIdDevAndDate(Long idDev, LocalDate dateStart, LocalDate dateEnd);
 
 }
 
