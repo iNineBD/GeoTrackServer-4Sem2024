@@ -39,7 +39,7 @@ public class StopPointService {
             throw new IllegalArgumentException("Limite de dispositivos excedido. Máximo de 5 por consulta");
         }
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
-
+        List<Object[]> a = locationRepository.findStopPointsByUsers(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate());
         //Returns a list, ordered by device id and grouped by a time of 15 minutes, with the average of latitudes and longitudes
         List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findStopPointsByUsers(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
 
