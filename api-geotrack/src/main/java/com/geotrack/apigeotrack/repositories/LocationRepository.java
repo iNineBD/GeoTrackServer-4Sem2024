@@ -54,7 +54,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "                    id_dispositivo,\n" +
             "                    COUNT(*) AS TOTAL_ITENS,\n" +
             "                    AVG(latitude) AS MEDIA_LATITUDE,\n" +
-            "                    AVG(longitude) AS MEDIA_LONGITUDE\n" +
+            "                    AVG(longitude) AS MEDIA_LONGITUDE,\n" +
+            "                    MAX(DATA_HORA) AS DATA_FIM, \n" +
+            "                    MIN(DATA_HORA) AS DATA_INICIO"+
             "                FROM \n" +
             "                    cte_grupos\n" +
             "                GROUP BY \n" +
@@ -67,7 +69,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "                g.DATA_HORA,\n" +
             "                g.grupo_localizacao,\n" +
             "                c.MEDIA_LATITUDE,\n" +
-            "                c.MEDIA_LONGITUDE\n" +
+            "                c.MEDIA_LONGITUDE,\n" +
+            "                C.DATA_INICIO, \n" +
+            "                C.DATA_FIM"+
             "            FROM \n" +
             "                cte_grupos g\n" +
             "            JOIN \n" +
@@ -98,9 +102,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "                FROM \n" +
             "                    ito1.localizacao\n" +
             "                WHERE \n" +
-            "                    id_dispositivo IN (:idDev)\n" +
-            "                    AND DATA_REFERENCIA BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') \n" +
-            "                                          AND TO_DATE(:finalDate, 'YYYY-MM-DD')\n" +
+            "                    id_dispositivo = :idDev\n" +
+            "                    AND DATA_REFERENCIA >= :startDate\n" +
+            "                    AND DATA_REFERENCIA <= :finalDate\n" +
             "            ),\n" +
             "            cte_grupos AS (\n" +
             "                SELECT \n" +
@@ -124,7 +128,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "                    id_dispositivo,\n" +
             "                    COUNT(*) AS TOTAL_ITENS,\n" +
             "                    AVG(latitude) AS MEDIA_LATITUDE,\n" +
-            "                    AVG(longitude) AS MEDIA_LONGITUDE\n" +
+            "                    AVG(longitude) AS MEDIA_LONGITUDE,\n" +
+            "                    MAX(DATA_HORA) AS DATA_FIM, \n" +
+            "                    MIN(DATA_HORA) AS DATA_INICIO"+
             "                FROM \n" +
             "                    cte_grupos\n" +
             "                GROUP BY \n" +
@@ -137,7 +143,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
             "                g.DATA_HORA,\n" +
             "                g.grupo_localizacao,\n" +
             "                c.MEDIA_LATITUDE,\n" +
-            "                c.MEDIA_LONGITUDE\n" +
+            "                c.MEDIA_LONGITUDE,\n" +
+            "                C.DATA_INICIO, \n" +
+            "                C.DATA_FIM"+
             "            FROM \n" +
             "                cte_grupos g\n" +
             "            JOIN \n" +
