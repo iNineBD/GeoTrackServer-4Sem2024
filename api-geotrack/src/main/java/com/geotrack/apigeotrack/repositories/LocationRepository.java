@@ -10,8 +10,75 @@ import java.util.List;
 
 public interface LocationRepository extends JpaRepository<Location, Integer> {
 
-    @Query(value = "", nativeQuery = true)
-    List<Object[]> findStopPointsByUsers(List<Long> idsDev, LocalDate startDate, LocalDate finalDate);
+    @Query(value = "WITH cte_localizacao AS (\n" +
+            "                SELECT \n" +
+            "                    ID_LOCALIZACAO,\n" +
+            "                    latitude,\n" +
+            "                    longitude,\n" +
+            "                    DATA_HORA,\n" +
+            "                    DATA_REFERENCIA AS DATA_REF,\n" +
+            "                    id_dispositivo,\n" +
+            "                    LAG(DATA_HORA) OVER (PARTITION BY id_dispositivo ORDER BY DATA_HORA) AS DATA_HORA_ANTERIOR,\n" +
+            "                    -- Marca 1 onde a diferença é maior que 15 minutos, caso contrário 0\n" +
+            "                    CASE \n" +
+            "                        WHEN DATA_HORA - LAG(DATA_HORA) OVER (PARTITION BY id_dispositivo ORDER BY DATA_HORA) > INTERVAL '15' MINUTE \n" +
+            "                        THEN 1 \n" +
+            "                        ELSE 0 \n" +
+            "                    END AS MARCA_GRUPO\n" +
+            "                FROM \n" +
+            "                    ito1.localizacao\n" +
+            "                WHERE \n" +
+            "                    id_dispositivo IN :idsDev\n" +
+            "                    AND DATA_REFERENCIA >= :startDate\n" +
+            "                    AND DATA_REFERENCIA <= :finalDate\n" +
+            "            ),\n" +
+            "            cte_grupos AS (\n" +
+            "                SELECT \n" +
+            "                    ID_LOCALIZACAO,\n" +
+            "                    latitude,\n" +
+            "                    longitude,\n" +
+            "                    DATA_HORA,\n" +
+            "                    DATA_REF,\n" +
+            "                    id_dispositivo,\n" +
+            "                    DATA_HORA_ANTERIOR,\n" +
+            "                    MARCA_GRUPO,\n" +
+            "                    -- Incrementa o grupo toda vez que encontrar um 1 em MARCA_GRUPO\n" +
+            "                    SUM(MARCA_GRUPO) \n" +
+            "                    OVER (PARTITION BY id_dispositivo ORDER BY DATA_HORA ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) + 1 AS GRUPO_LOCALIZACAO\n" +
+            "                FROM \n" +
+            "                    cte_localizacao\n" +
+            "            ),\n" +
+            "            cte_contagem AS (\n" +
+            "                SELECT \n" +
+            "                    GRUPO_LOCALIZACAO,\n" +
+            "                    id_dispositivo,\n" +
+            "                    COUNT(*) AS TOTAL_ITENS,\n" +
+            "                    AVG(latitude) AS MEDIA_LATITUDE,\n" +
+            "                    AVG(longitude) AS MEDIA_LONGITUDE\n" +
+            "                FROM \n" +
+            "                    cte_grupos\n" +
+            "                GROUP BY \n" +
+            "                    GRUPO_LOCALIZACAO, id_dispositivo\n" +
+            "            )\n" +
+            "            SELECT \n" +
+            "                g.id_dispositivo,\n" +
+            "                g.latitude,\n" +
+            "                g.longitude,\n" +
+            "                g.DATA_HORA,\n" +
+            "                g.grupo_localizacao,\n" +
+            "                c.MEDIA_LATITUDE,\n" +
+            "                c.MEDIA_LONGITUDE\n" +
+            "            FROM \n" +
+            "                cte_grupos g\n" +
+            "            JOIN \n" +
+            "                cte_contagem c\n" +
+            "            ON \n" +
+            "                g.GRUPO_LOCALIZACAO = c.GRUPO_LOCALIZACAO\n" +
+            "               AND g.id_dispositivo = c.id_dispositivo\n" +
+            "               AND c.total_itens >= 15\n" +
+            "            ORDER BY \n" +
+            "                g.id_dispositivo, g.DATA_HORA", nativeQuery = true)
+    List<Object[]> findStopPointsByUsersWithoutSession(List<Long> idsDev, LocalDate startDate, LocalDate finalDate);
 
     @Query(value = "WITH cte_localizacao AS (\n" +
             "                SELECT \n" +
