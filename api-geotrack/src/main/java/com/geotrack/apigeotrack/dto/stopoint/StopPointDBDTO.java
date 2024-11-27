@@ -33,6 +33,14 @@ public record StopPointDBDTO(@JsonAlias("id_device")
                              @Schema(description = "Longitude no momento de registro", example = "-46.633308")
                              LocalDateTime dataHora,
 
+                             @JsonAlias("data_inicio")
+                             @Schema(description = "Longitude no momento de registro", example = "-46.633308")
+                             LocalDateTime startTime,
+
+                             @JsonAlias("data_fim")
+                             @Schema(description = "Longitude no momento de registro", example = "-46.633308")
+                             LocalDateTime endTime,
+
                              @JsonAlias("grupo_localizacao")
                              @Schema(description = "Latitude no momento de registro", example = "-23.550520")
                              int grupoLocalizacao) {
