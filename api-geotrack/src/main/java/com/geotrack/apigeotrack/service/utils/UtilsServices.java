@@ -19,24 +19,22 @@ public class UtilsServices {
     @Autowired
     LocationRepository locationRepository;
 
-    public static List<StopPointDBDTO> convertToStopPointDTO(List<Object[]> results) {
-        List<StopPointDBDTO> stopPoints = new ArrayList<>();
-        for (Object[] result : results) {
-            StopPointDBDTO stopPoint = new StopPointDBDTO(
-                    ((Number) result[0]).intValue(),
-                    ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
-                    ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
-                    ((Number) result[3]).intValue(),
-                    ((Number) result[4]).intValue(),
-                    ((BigDecimal) result[5]).setScale(4, RoundingMode.HALF_UP),
-                    ((BigDecimal) result[6]).setScale(4, RoundingMode.HALF_UP),
-                    ((Timestamp) result[7]).toLocalDateTime(),
-                    ((Timestamp) result[8]).toLocalDateTime()
-            );
-            stopPoints.add(stopPoint);
-        }
-        return stopPoints;
-    }
+//    public static List<StopPointDBDTO> convertToStopPointDTO(List<Object[]> results) {
+//        List<StopPointDBDTO> stopPoints = new ArrayList<>();
+//        for (Object[] result : results) {
+//            StopPointDBDTO stopPoint = new StopPointDBDTO(
+//                    ((Number) result[0]).intValue(),
+//                    ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
+//                    ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
+//                    ((BigDecimal) result[3]).setScale(4, RoundingMode.HALF_UP),
+//                    ((BigDecimal) result[4]).setScale(4, RoundingMode.HALF_UP),
+//                    ((Timestamp) result[5]).toLocalDateTime(),
+//                    ((Number) result[6]).intValue()
+//            );
+//            stopPoints.add(stopPoint);
+//        }
+//        return stopPoints;
+//    }
 
     public static List<List<RoutesOracleDTO>> convertToRouteSQLDTO(List<Object[]> results) {
         List<List<RoutesOracleDTO>> returned = new ArrayList<>();

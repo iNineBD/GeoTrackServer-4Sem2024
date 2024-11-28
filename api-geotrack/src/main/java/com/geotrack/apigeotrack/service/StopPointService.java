@@ -13,6 +13,7 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,13 +61,15 @@ public class StopPointService {
         for (Object[] temp : listStop) {
 
             StopPointDBDTO stopPointDBDTO = new StopPointDBDTO(
-                    ((BigDecimal) temp[0]).intValue(),
-                    (BigDecimal) temp[1],
-                    (BigDecimal) temp[2],
-                    (BigDecimal) temp[5],
-                    (BigDecimal) temp[6],
+                    ((Number) temp[0]).intValue(),
+                    ((BigDecimal) temp[1]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) temp[2]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) temp[5]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) temp[6]).setScale(4, RoundingMode.HALF_UP),
                     ((Timestamp) temp[3]).toLocalDateTime(),
-                    ((BigDecimal) temp[5]).intValue()
+                    ((Timestamp) temp[7]).toLocalDateTime(),
+                    ((Timestamp) temp[8]).toLocalDateTime(),
+                    ((Number) temp[4]).intValue()
             );
 
             //Gets the object's current device id number
@@ -148,14 +151,14 @@ public class StopPointService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
 
-        String datestart = in.dataHora().toString();
+        String datestart = in.startTime().toString();
 
 
         if (!stopPoints.isEmpty() && stopPoints.get(0) != null) {
             datestart = stopPoints.getFirst().startDate();
         }
 
-        return new LocalizacaoDTO(in.avgLatitude(), in.avgLongitude(), datestart, in.dataHora().toString());
+        return new LocalizacaoDTO(in.avgLatitude(), in.avgLongitude(), in.startTime().toString(), in.endTime().toString());
     }
 
 
@@ -173,7 +176,7 @@ public class StopPointService {
             String startDate = stopPoints.get(0).startDate();
 
             // Creates the GeometryDTO object with latitudes and longitudes
-            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates,startDate, point.endDate());
+            GeometryDTO geometry = new GeometryDTO("Point", listCoordenates,point.startDate(), point.endDate());
 
             // Add the object to the list
             feature.add(new FeatureDTO("Feature",new PropertiesDTO(), geometry));
