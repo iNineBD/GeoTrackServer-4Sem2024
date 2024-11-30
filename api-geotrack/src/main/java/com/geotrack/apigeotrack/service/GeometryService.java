@@ -125,6 +125,7 @@ public class GeometryService {
         zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
         zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());
         zoneEdited.get().setRadius(updateGeometryZonesDTO.radius());
+        zoneEdited.get().setStatus(0);
 
         // save in database
         geometryZoneRepository.save(zoneEdited.get());
