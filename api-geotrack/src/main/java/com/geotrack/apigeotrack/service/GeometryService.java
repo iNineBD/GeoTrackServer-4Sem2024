@@ -48,6 +48,7 @@ public class GeometryService {
                 null,
                 geometryZoneRequestDTO.name().toUpperCase().trim(),
                 1,
+                0,
                 geometryZoneRequestDTO.type(),
                 geometryZoneRequestDTO.center().longitude(),
                 geometryZoneRequestDTO.center().latitude(),
