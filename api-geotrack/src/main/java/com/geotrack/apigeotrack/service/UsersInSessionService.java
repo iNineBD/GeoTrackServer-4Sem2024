@@ -29,7 +29,7 @@ public class UsersInSessionService {
     @Operation(summary = "Listar Usuários em Sessão", description = "Listar todos os usuários que tem algma localização dentro da sessão escolhida")
     public ResponseUsersInSessionDTO listUsersInSession(RequestUsersInSessionDTO requestUsersInSessionDTO) {
 
-        List<Long> listDevices = associationGeoLocRepository.listDevices(requestUsersInSessionDTO.idSession(), requestUsersInSessionDTO.dataInicio(), requestUsersInSessionDTO.dataFim());
+        List<Long> listDevices = associationGeoLocRepository.listDevices(requestUsersInSessionDTO.idSession());
 
         if (listDevices.isEmpty()) {
             throw new IllegalArgumentException("Não existem usuários dentro da sessão escolhida!");

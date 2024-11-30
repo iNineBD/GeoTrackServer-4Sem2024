@@ -10,9 +10,5 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record RequestUsersInSessionDTO(
         @JsonAlias("idSession") @Schema(description = "Identificador da sessão", example = "1")
-        Integer idSession,
-        @JsonAlias("startDate") @Schema(description = "Data de início do período de análise", example = "2024-01-01")
-        LocalDate dataInicio,
-        @JsonAlias("endDate") @Schema(description = "Data de término do período de análise", example = "2024-01-31")
-        LocalDate dataFim) {
+        Integer idSession){
 }

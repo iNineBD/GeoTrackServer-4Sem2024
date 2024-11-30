@@ -28,7 +28,4 @@ public class AssociationGeoLoc {
     @MapsId("idDevices")
     @JoinColumn(name = "id_dispositivo", nullable = false, referencedColumnName = "id_dispositivo", foreignKey = @ForeignKey(name = "fk_geo_localizacao"))
     private Devices idDevices;
-
-    @Column(name = "data_associacao")
-    private LocalDate dateAssociation;
 }

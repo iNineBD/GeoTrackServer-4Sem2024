@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface AssociationGeoLocRepository extends JpaRepository<AssociationGeoLoc, AssociationGeoLocId> {
 
-    @Query("select distinct d.idDevices.idDevices from AssociationGeoLoc d where d.idSession.idSession = :idSession AND d.dateAssociation between :dataInicio and :dataFim")
-    List<Long> listDevices(Integer idSession, LocalDate dataInicio, LocalDate dataFim);
+    @Query("select distinct d.idDevices.idDevices from AssociationGeoLoc d where d.idSession.idSession = :idSession")
+    List<Long> listDevices(Integer idSession);
 
 }
