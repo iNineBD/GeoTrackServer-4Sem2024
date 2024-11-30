@@ -10,7 +10,7 @@ import java.util.List;
 
 @Schema(name = "StopPointRequestDTO", description = "DTO para requisição de pontos de parada")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record StopPointRequestDTO(@JsonAlias("idsDevices")
+public record StopPointRequestDTO(@JsonAlias("devices")
                                   @Schema(description = "Lista de identificadores dos dispositivos",
                                           example = "[1, 2, 3]")
                                   List<Long> devices,

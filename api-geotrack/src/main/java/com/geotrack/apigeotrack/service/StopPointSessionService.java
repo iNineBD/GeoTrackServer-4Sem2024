@@ -15,6 +15,9 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -50,7 +53,7 @@ public class StopPointSessionService {
     @Operation(summary = "Retorna os pontos de parada dos dispositivos que estão em uma sessão geográfica", description = "FIltra os pontos de parada dos dispositivos que estão em uma sessão geográfica por dispositivo e data")
     public List<LocalizacaoDTO> findStopPointInSessionByDeviceAndData(StopPointSessionRequestDTO stopPointSessionRequestDTO) {
 
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(
+        List<Object[]> listStop = (
                 locationRepository.findStopPointsByUsersAndSession(
                         stopPointSessionRequestDTO.deviceId(),
                         stopPointSessionRequestDTO.startDate(),
@@ -68,8 +71,22 @@ public class StopPointSessionService {
         geoRedisService.addLocation(uuidRedis, stopPointSessionRequestDTO.coordinates().latitude(), stopPointSessionRequestDTO.coordinates().longitude(), "centerSession");
 
         List<LocalizacaoDTO> stopPoints = new ArrayList<>();
-        for (StopPointDBDTO stop2check : listStop) {
-            LocalizacaoDTO point = toExecStopPointInSession(stop2check, stopPoints, stopPointSessionRequestDTO.radius(), uuidRedis);
+        for (Object[] result : listStop) {
+
+            StopPointDBDTO stopPoint = new StopPointDBDTO(
+                    ((Number) result[0]).intValue(),
+                    ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) result[5]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) result[6]).setScale(4, RoundingMode.HALF_UP),
+                    ((Timestamp) result[3]).toLocalDateTime(),
+                    ((Timestamp) result[7]).toLocalDateTime(),
+                    ((Timestamp) result[8]).toLocalDateTime(),
+                    ((Number) result[4]).intValue()
+
+
+            );
+            LocalizacaoDTO point = toExecStopPointInSession(stopPoint, stopPoints, stopPointSessionRequestDTO.radius(), uuidRedis);
             if (point != null) {
                 stopPoints.add(point);
             }
@@ -91,20 +108,19 @@ public class StopPointSessionService {
         if (UtilsServices.checkStopPointDuplicate(stopPointToCheck, stopPointsInSession)) return null;
 
         // add avg lat and long in cache
-        geoRedisService.addLocation(idRegisterRedis, stopPointToCheck.latitude(), stopPointToCheck.longitude(), "pontoMedio");
+        geoRedisService.addLocation(idRegisterRedis, stopPointToCheck.avgLatitude(), stopPointToCheck.avgLongitude(), "pontoMedio");
 
         Distance distanceToCenterSession = geoRedisService.calculateDistance(idRegisterRedis, "centerSession", "pontoMedio");
 
         if (distanceToCenterSession.getValue() > radiusMeters) return null;
 
         // db return a list of lat and long. Here we separate this
-        String[] coordinates= stopPointToCheck.latLongList().split("\\|");
-        for(int i = 0 ; i < coordinates.length ; i++) {
+        int coordinates= stopPointToCheck.grupoLocalizacao();
+        for(int i = 0 ; i < coordinates ; i++) {
 
             // bd return a "map" to lat e long. Here we separate this
-            String[] latLongArray = coordinates[i].split(";");
-            BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
-            BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
+            BigDecimal latitude = stopPointToCheck.latitude();
+            BigDecimal longitude = stopPointToCheck.longitude();
 
             // add px in cache
             geoRedisService.addLocation(idRegisterRedis, latitude, longitude, "p"+i);
@@ -122,6 +138,6 @@ public class StopPointSessionService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegisterRedis, "pontoMedio");
 
-        return new LocalizacaoDTO(stopPointToCheck.latitude(), stopPointToCheck.longitude(), stopPointToCheck.startDate().toString(), stopPointToCheck.endDate().toString());
+        return new LocalizacaoDTO(stopPointToCheck.avgLatitude(), stopPointToCheck.avgLongitude(), stopPointToCheck.startTime().toString(), stopPointToCheck.endTime().toString());
     }
 }
