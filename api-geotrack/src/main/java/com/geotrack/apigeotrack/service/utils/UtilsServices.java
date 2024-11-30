@@ -19,22 +19,22 @@ public class UtilsServices {
     @Autowired
     LocationRepository locationRepository;
 
-    public static List<StopPointDBDTO> convertToStopPointDTO(List<Object[]> results) {
-        List<StopPointDBDTO> stopPoints = new ArrayList<>();
-        for (Object[] result : results) {
-            StopPointDBDTO stopPoint = new StopPointDBDTO(
-                    ((Number) result[0]).intValue(),
-                    ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
-                    ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
-                    ((Number) result[3]).intValue(),
-                    (String) result[6],
-                    ((Timestamp) result[4]).toLocalDateTime(),
-                    ((Timestamp) result[5]).toLocalDateTime()
-            );
-            stopPoints.add(stopPoint);
-        }
-        return stopPoints;
-    }
+//    public static List<StopPointDBDTO> convertToStopPointDTO(List<Object[]> results) {
+//        List<StopPointDBDTO> stopPoints = new ArrayList<>();
+//        for (Object[] result : results) {
+//            StopPointDBDTO stopPoint = new StopPointDBDTO(
+//                    ((Number) result[0]).intValue(),
+//                    ((BigDecimal) result[1]).setScale(4, RoundingMode.HALF_UP),
+//                    ((BigDecimal) result[2]).setScale(4, RoundingMode.HALF_UP),
+//                    ((BigDecimal) result[3]).setScale(4, RoundingMode.HALF_UP),
+//                    ((BigDecimal) result[4]).setScale(4, RoundingMode.HALF_UP),
+//                    ((Timestamp) result[5]).toLocalDateTime(),
+//                    ((Number) result[6]).intValue()
+//            );
+//            stopPoints.add(stopPoint);
+//        }
+//        return stopPoints;
+//    }
 
     public static List<List<RoutesOracleDTO>> convertToRouteSQLDTO(List<Object[]> results) {
         List<List<RoutesOracleDTO>> returned = new ArrayList<>();
@@ -68,8 +68,8 @@ public class UtilsServices {
         if (!stopPointsInSession.isEmpty()) {
 
             // setScale 2 is a tecnic to decrease repetition
-            BigDecimal scaledInLatitude = stopPointToCheck.latitude().setScale(2, RoundingMode.HALF_UP);
-            BigDecimal scaledInLongitude = stopPointToCheck.longitude().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal scaledInLatitude = stopPointToCheck.avgLatitude().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal scaledInLongitude = stopPointToCheck.avgLongitude().setScale(2, RoundingMode.HALF_UP);
 
             for (LocalizacaoDTO localizacaoDTO : stopPointsInSession) {
                 BigDecimal scaledStopLatitude = localizacaoDTO.latitude().setScale(2, RoundingMode.HALF_UP);
