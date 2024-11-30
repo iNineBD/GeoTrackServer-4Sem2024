@@ -13,29 +13,36 @@ public record StopPointDBDTO(@JsonAlias("id_device")
                              @Schema(description = "Identificador do dispositivo", example = "1")
                              int idDev,
 
-                             @JsonAlias("avg_latitude")
+                             @JsonAlias("latitude")
                              @Schema(description = "Latitude média do dispositivo", example = "-23.550520")
                              BigDecimal latitude,
 
-                             @JsonAlias("avg_longitude")
+                             @JsonAlias("longitude")
                              @Schema(description = "Longitude média do dispositivo", example = "-46.633308")
                              BigDecimal longitude,
 
-                             @JsonAlias("contador")
+                             @JsonAlias("media_latitude")
                              @Schema(description = "Contador de eventos ou registros relacionados ao dispositivo", example = "10")
-                             int contador,
+                             BigDecimal avgLatitude,
 
-                             @JsonAlias("lat_long_list")
-                             @Schema(description = "Lista de coordenadas (latitude e longitude) em formato de string",
-                                     example = "[[-23.550520, -46.633308], [-23.5564, -46.6422]]")
-                             String latLongList,
+                             @JsonAlias("media_longitude")
+                             @Schema(description = "Grupo de localizações que são potenciais pontos de parada", example = "10")
+                             BigDecimal avgLongitude,
 
-                             @JsonAlias("start_time")
-                             @Schema(description = "Data e hora de início do período de análise", example = "2024-01-01T00:00:00")
-                             LocalDateTime startDate,
+                             @JsonAlias("data_hora")
+                             @Schema(description = "Longitude no momento de registro", example = "-46.633308")
+                             LocalDateTime dataHora,
 
-                             @JsonAlias("end_time")
-                             @Schema(description = "Data e hora de término do período de análise", example = "2024-01-31T23:59:59")
-                             LocalDateTime endDate) {
+                             @JsonAlias("data_inicio")
+                             @Schema(description = "Longitude no momento de registro", example = "-46.633308")
+                             LocalDateTime startTime,
+
+                             @JsonAlias("data_fim")
+                             @Schema(description = "Longitude no momento de registro", example = "-46.633308")
+                             LocalDateTime endTime,
+
+                             @JsonAlias("grupo_localizacao")
+                             @Schema(description = "Latitude no momento de registro", example = "-23.550520")
+                             int grupoLocalizacao) {
 
 }
