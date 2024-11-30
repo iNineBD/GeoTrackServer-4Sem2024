@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +71,7 @@ public class PopulateService {
 //            insertAll.add(location);
 
             geoLocationRepository.insertGeoLocation(requestInsert.longitude(), requestInsert.latitude(), requestInsert.dateTime(), requestInsert.dateTime().toLocalDate(), user.get().getDevices().getFirst().getIdDevices());
-
+            System.out.println("Inserido: " + requestInsert.idCustomerBase());
 //            if (insertAll.size() >= 500){
 //                LocalDateTime agora = LocalDateTime.now();
 //                locationRepository.saveAll(insertAll);
