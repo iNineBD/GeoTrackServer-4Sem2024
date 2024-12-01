@@ -2,7 +2,9 @@ package com.geotrack.apigeotrack.repositories;
 
 import com.geotrack.apigeotrack.entities.AssociationGeoLoc;
 import com.geotrack.apigeotrack.entities.AssociationGeoLocId;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +18,8 @@ public interface AssociationGeoLocRepository extends JpaRepository<AssociationGe
     List<Long> listDevices(Integer idSession);
 
 
+    @Transactional
+    @Modifying
     @Query("delete from AssociationGeoLoc d where d.idSession.idSession = :idSession")
     void deleteAssoc(Integer idSession);
 
