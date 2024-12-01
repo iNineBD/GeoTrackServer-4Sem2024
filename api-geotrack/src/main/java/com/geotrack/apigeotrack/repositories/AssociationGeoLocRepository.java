@@ -15,4 +15,8 @@ public interface AssociationGeoLocRepository extends JpaRepository<AssociationGe
     @Query("select distinct d.idDevices.idDevices from AssociationGeoLoc d where d.idSession.idSession = :idSession")
     List<Long> listDevices(Integer idSession);
 
+
+    @Query("delete from AssociationGeoLoc d where d.idSession.idSession = :idSession")
+    void deleteAssoc(Integer idSession);
+
 }
