@@ -40,7 +40,7 @@ docker-compose up -d
 
 Após a aplicação estar rodando, você pode testar a API usando ferramentas como [Swagger](http://localhost:8080/swagger-ui/index.html#/)
 
-A API estará disponível em:
+A API estará disponível no endpoint:
 
 ```
 http://localhost:8080/
