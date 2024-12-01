@@ -27,6 +27,9 @@ public class GeometrySession {
     @Column(name = "status")
     private Integer status;
 
+    @Column(name = "processado")
+    private Integer processado;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo")
     private GeometryForms type;

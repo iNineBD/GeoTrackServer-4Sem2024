@@ -27,7 +27,7 @@ public class PopulateController {
     @Operation(summary = "Popular dados de localização no banco de dados", description = "Popular o banco de dados com os dados de localização recebidos pelo cliente")
     @PostMapping()
     public ResponseEntity<String> enterDatas() throws IOException {
-        populateService.populate("C:\\Users\\joaom\\Downloads\\Fatec_Locations_202409212325.json");
+        populateService.populate("/home/edu/Downloads/Fatec_Locations_202411240107.json");
         return ResponseEntity.ok("Dados inseridos");
     }
 }

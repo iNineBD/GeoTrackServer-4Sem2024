@@ -13,6 +13,8 @@ import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +42,8 @@ public class StopPointService {
             throw new IllegalArgumentException("Limite de dispositivos excedido. Máximo de 5 por consulta");
         }
         List<StopPointResponseDTO> deviceGeoJsonList = new ArrayList<>();
-
+        List<Object[]> listStop = locationRepository.findStopPointsByUsersWithoutSession(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate());
         //Returns a list, ordered by device id and grouped by a time of 15 minutes, with the average of latitudes and longitudes
-        List<StopPointDBDTO> listStop = UtilsServices.convertToStopPointDTO(locationRepository.findStopPointsByUsers(requestDTO.devices(), requestDTO.startDate(), requestDTO.finalDate()));
 
         // Checks if the list is empty
         if (listStop.isEmpty()) {
@@ -51,13 +52,25 @@ public class StopPointService {
         List<LocalizacaoDTO> stopPoints = new ArrayList<>();
 
         // Get the first device id from the list
-        Integer idPrevious = listStop.get(0).idDev();
+        Integer idPrevious = listStop.getFirst()[0] != null ? ((BigDecimal) listStop.getFirst()[0]).intValue() : null;
 
         // Create an iterator
         int i = 0;
 
         // It will go through each line of the listStop
-        for (StopPointDBDTO stopPointDBDTO : listStop) {
+        for (Object[] temp : listStop) {
+
+            StopPointDBDTO stopPointDBDTO = new StopPointDBDTO(
+                    ((Number) temp[0]).intValue(),
+                    ((BigDecimal) temp[1]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) temp[2]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) temp[5]).setScale(4, RoundingMode.HALF_UP),
+                    ((BigDecimal) temp[6]).setScale(4, RoundingMode.HALF_UP),
+                    ((Timestamp) temp[3]).toLocalDateTime(),
+                    ((Timestamp) temp[7]).toLocalDateTime(),
+                    ((Timestamp) temp[8]).toLocalDateTime(),
+                    ((Number) temp[4]).intValue()
+            );
 
             //Gets the object's current device id number
             Integer idCurrent = stopPointDBDTO.idDev();
@@ -106,19 +119,20 @@ public class StopPointService {
         if (UtilsServices.checkStopPointDuplicate(in, stopPoints)) return null;
 
         // create a unique id to indentify register in cache
-        String idRegister = in.startDate().toString() + in.endDate().toString() + in.latitude() + in.longitude();
+        String idRegister = in.dataHora().toString() + in.avgLatitude() + in.avgLongitude();
+
+
 
         // add avg lat and long in cache
-        geoRedisService.addLocation(idRegister, in.latitude(), in.longitude(), "pontoMedio");
+        geoRedisService.addLocation(idRegister, in.avgLatitude(), in.avgLongitude(), "pontoMedio");
 
         // db return a list of lat and long. Here we separate this
-        String[] coordinates= in.latLongList().split("\\|");
-        for(int i = 0 ; i < coordinates.length ; i++) {
+        int coordinates = in.grupoLocalizacao();
+        for(int i = 0 ; i < coordinates ; i++) {
 
             // bd return a "map" to lat e long. Here we separate this
-            String[] latLongArray = coordinates[i].split(";");
-            BigDecimal latitude = new BigDecimal(latLongArray[0].replace(",", "."));
-            BigDecimal longitude = new BigDecimal(latLongArray[1].replace(",", "."));
+            BigDecimal latitude = in.latitude();
+            BigDecimal longitude = in.longitude();
 
             // add px in cache
             geoRedisService.addLocation(idRegister, latitude, longitude, "p"+i);
@@ -137,7 +151,14 @@ public class StopPointService {
         // remove pontoMedio from cache
         geoRedisService.removeLocation(idRegister, "pontoMedio");
 
-        return new LocalizacaoDTO(in.latitude(), in.longitude(), in.startDate().toString(), in.endDate().toString());
+        String datestart = in.startTime().toString();
+
+
+        if (!stopPoints.isEmpty() && stopPoints.get(0) != null) {
+            datestart = stopPoints.getFirst().startDate();
+        }
+
+        return new LocalizacaoDTO(in.avgLatitude(), in.avgLongitude(), in.startTime().toString(), in.endTime().toString());
     }
 
 
@@ -151,6 +172,8 @@ public class StopPointService {
         for (LocalizacaoDTO point : stopPoints) {
             // Creates a list of coordinates with latitudes and longitudes
             BigDecimal[] listCoordenates = {point.longitude(),point.latitude()};
+
+            String startDate = stopPoints.get(0).startDate();
 
             // Creates the GeometryDTO object with latitudes and longitudes
             GeometryDTO geometry = new GeometryDTO("Point", listCoordenates,point.startDate(), point.endDate());

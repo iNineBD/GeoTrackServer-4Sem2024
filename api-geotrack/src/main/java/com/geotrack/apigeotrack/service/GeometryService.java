@@ -7,6 +7,7 @@ import com.geotrack.apigeotrack.dto.zone.insertCircle.CenterCoordinatesDTO;
 import com.geotrack.apigeotrack.dto.zone.insertCircle.GeometryZoneRequestDTO;
 import com.geotrack.apigeotrack.dto.zone.updateCircle.UpdateGeometryZonesDTO;
 import com.geotrack.apigeotrack.entities.GeometrySession;
+import com.geotrack.apigeotrack.repositories.AssociationGeoLocRepository;
 import com.geotrack.apigeotrack.repositories.GeometryZoneRepository;
 import com.geotrack.apigeotrack.service.utils.GeometryValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,9 @@ public class GeometryService {
 
     @Autowired
     GeometryZoneRepository geometryZoneRepository;
+
+    @Autowired
+    AssociationGeoLocRepository associationGeoLocRepository;
 
     // method to insertCircle zone zones in database
     @Operation(summary = "Inserir Zona Geométrica", description = "Inserir Zona Geométrica no banco de dados")
@@ -48,6 +52,7 @@ public class GeometryService {
                 null,
                 geometryZoneRequestDTO.name().toUpperCase().trim(),
                 1,
+                0,
                 geometryZoneRequestDTO.type(),
                 geometryZoneRequestDTO.center().longitude(),
                 geometryZoneRequestDTO.center().latitude(),
@@ -125,7 +130,9 @@ public class GeometryService {
         zoneEdited.get().setLongitude(updateGeometryZonesDTO.center().longitude());
         zoneEdited.get().setLatitude(updateGeometryZonesDTO.center().latitude());
         zoneEdited.get().setRadius(updateGeometryZonesDTO.radius());
+        zoneEdited.get().setProcessado(0);
 
+        associationGeoLocRepository.deleteAssoc(zoneEdited.get().getIdSession());
         // save in database
         geometryZoneRepository.save(zoneEdited.get());
     }

@@ -3,6 +3,7 @@ package com.geotrack.apigeotrack.service;
 import com.geotrack.apigeotrack.dto.login.AuthenticationRequestDTO;
 import com.geotrack.apigeotrack.dto.login.LoginResponseDTO;
 import com.geotrack.apigeotrack.entities.Login;
+import com.geotrack.apigeotrack.repositories.LoginRepository;
 import com.geotrack.apigeotrack.service.utils.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class LoginService {
     private TokenService tokenService;
 
     @Autowired
+    LoginRepository loginRepository;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Operation(summary = "Login", description = "Realiza o login do usuário")
@@ -27,6 +31,11 @@ public class LoginService {
 
         if (authenticationRequestDTO.email().isEmpty() || authenticationRequestDTO.password().isEmpty()) {
             throw new IllegalArgumentException("Email ou senha não podem ser vazios!");
+        }
+
+        // verify if email exists
+        if (loginRepository.findByEmail(authenticationRequestDTO.email().trim().toUpperCase()) == null) {
+            throw new IllegalArgumentException("Email está incorreto ou não possui cadastro");
         }
 
         try {
@@ -42,7 +51,7 @@ public class LoginService {
 
         } catch (BadCredentialsException e) {
 
-            throw new IllegalArgumentException("Login Invalido!");
+            throw new IllegalArgumentException("Senha invalida!");
         }
     }
 }
