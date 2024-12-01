@@ -1,47 +1,56 @@
 # Back-end GeoTrack
 Este projeto é uma API desenvolvida em Java Spring que fornece dados de geolocalização a partir de uma base de dados de 500.000 registros. A API é projetada para responder com dados em formato GEOJSON e é adequada para visualização em mapas.
 
+## Guia de Instalação e Acesso ao Projeto GeoTrack
+
+Este guia irá ensinar como baixar e executar o projeto **GeoTrack** utilizando Docker e como acessar a aplicação através do navegador.
+
 ## Pré-requisitos
 
-Antes de executar a aplicação, certifique-se de ter os seguintes itens instalados:
+Antes de começar, certifique-se de que:
 
-- [JDK 18 ou superior](https://openjdk.java.net/install/)
-- [Maven](https://maven.apache.org/install.html)
-- [Docker](https://docs.docker.com/get-docker/)
+1. **Docker** está instalado em sua máquina.  
+   Caso não esteja, siga as instruções em [Docker Documentation](https://docs.docker.com/get-docker/).
 
-## Clonando o Repositório
+2. Você tem uma conexão ativa com a internet para baixar as imagens necessárias.
 
-Clone este repositório usando o comando:
+---
 
-```bash
-git clone https://github.com/iNineBD/GeoTrackServer-4Sem2024.git
-cd GeoTrackServer-4Sem2024.git
-```
+## Escolha da Versão da Imagem
 
-## Configuração do Banco de Dados
+A versão da imagem do GeoTrack depende da sprint atual do projeto. Certifique-se de usar a versão correspondente especificada no formato `:<versão>` no comando `docker pull`.  
+Por exemplo, para a segunda sprint, utilize `:2.0`.
 
-Configure a conexão no arquivo `src/main/resources/external.properties` com as credenciais corretas:
+---
 
-```properties
-DATABASE_URL=<tns cloud>
-DATABASE_USER=<usuário>
-DATABASE_PASSWORD=<senha>
-```
+## Passos para Baixar e Executar
 
-### Executando a aplicação via Container Docker Compose
+### 1. Baixar as Imagens do Docker Hub
 
-Rode o comando abaixo via terminal. Certifique-se de estar no mesmo diretório do arquivo `docker-compose.yml`:
+Abra o terminal e execute os comandos abaixo para baixar as imagens do **GeoTrack** e do **Redis**:
 
 ```bash
-docker-compose up -d
+docker pull inineapi/geotrack4sem:<versão>
+docker pull inineapi/redis:latest
 ```
 
-## Testando a API
+### 2. Executar as Imagens no Docker
 
-Após a aplicação estar rodando, você pode testar a API usando ferramentas como [Swagger](http://localhost:8080/swagger-ui/index.html#/)
+Depois de baixar as imagens, execute os containers para iniciar a aplicação. Utilize o comando abaixo para iniciar os containers:
 
-A API estará disponível no endpoint:
+```bash
+docker run -d --name geotrack-api -p 8080:8080 inineapi/geotrack4sem:<versão>
+docker run -d --name redis -p 6379:6379 inineapi/redis:latest
+```
+
+### 3. Acessar a Aplicação no Navegador
+
+Após os containers estarem em execução, abra o navegador de sua preferência e digite o seguinte endereço:
 
 ```
-http://localhost:8080/
+http://localhost:8080
 ```
+
+---
+
+Pronto! Agora você está preparado para explorar os dados de geolocalização do GeoTrack e utilizá-los em sua aplicação ou para visualização em mapas.
