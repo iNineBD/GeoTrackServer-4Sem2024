@@ -36,7 +36,7 @@ public class RouteService {
     }
 
     if (response.isEmpty()) {
-        throw new NoSuchElementException("Não foi possível encontrar rotas para o dispositivo selecionado entre as datas " + dateStart + " e " + dateEnd);
+        throw new NoSuchElementException("Não foi possível encontrar rotas para o dispositivo selecionado entre as datas selecionadas");
     }
 
     return response;
@@ -44,7 +44,7 @@ public class RouteService {
 
 private void validateRoutes(Long deviceId, LocalDate dateStart, LocalDate dateEnd, List<List<RoutesOracleDTO>> routesObjects) {
     if (routesObjects.isEmpty()) {
-        throw new NoSuchElementException("Não foi possível encontrar rotas para o dispositivo selecionado entre as datas " + dateStart + " e " + dateEnd);
+        throw new NoSuchElementException("Não foi possível encontrar rotas para o dispositivo selecionado entre as datas selecionadas");
     }
 }
 
