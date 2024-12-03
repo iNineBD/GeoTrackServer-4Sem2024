@@ -108,6 +108,10 @@ public class StopPointService {
             i++;
         }
 
+        if (deviceGeoJsonList.isEmpty()) {
+            throw new NoSuchElementException("Nenhum ponto de parada encontrado para os dispositivos. ");
+        }
+
         return deviceGeoJsonList;
     }
 
